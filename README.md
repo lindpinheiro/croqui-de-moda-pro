@@ -37,6 +37,11 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
    pelos que têm mais curtidas no portfólio do Joel (81,7 mil / 21,4 mil /
    11,4 mil). Se vocês quiserem posts específicos, me mandem os links de
    `instagram.com/p/...` ou `/reel/...` que eu troco.
+8. **Seção "Tutoriais"** (`#tutoriais`) — os 3 cards (estampas com IA, como
+   importar/usar, como imprimir) ainda são só capa + "em breve", sem vídeo de
+   verdade (procurem o comentário `TODO` no `index.html`). Quando gravarem,
+   subam no YouTube (pode ser "não listado") e troquem o `.tut-thumb` de cada
+   card pelo iframe de embed do YouTube — é só me mandar os links que eu faço.
 
 ## SEO e copy
 

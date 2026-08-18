@@ -33,7 +33,7 @@
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "Croqui de Moda PRO",
-  "description": "Pacote com 77 arquivos de croqui de moda profissional: 27 modelos (femininos, masculinos, plus size e manequim técnico), cada um em versão lineart, corpo renderizado e segundo tom de pele.",
+  "description": "Pacote com 77 arquivos de croqui de moda profissional: 27 modelos (femininos, masculinos, plus size e manequim técnico), cada um em versão lineart, corpo renderizado e segundo tom de pele. Inclui mini curso em vídeo, com módulo de criação de estampas com IA.",
   "brand": { "@type": "Person", "name": "Joel Pinheiro" },
   "offers": {
     "@type": "Offer",
@@ -71,6 +71,11 @@
       "@type": "Question",
       "name": "Quais formas de pagamento são aceitas?",
       "acceptedAnswer": { "@type": "Answer", "text": "Pix, cartão de crédito e boleto, conforme a plataforma de checkout escolhida." }
+    },
+    {
+      "@type": "Question",
+      "name": "Por que não gero direto numa IA ou pego uma imagem no Pinterest?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sem uma base de referência sólida, a IA costuma errar anatomia e proporção, e o resultado varia a cada tentativa. E imagem solta de Pinterest não tem licença de uso comercial nem garantia de resolução. As bases do pack são traço original do Joel, com qualidade testada em produções reais — servem tanto pra desenhar à mão quanto como referência pra IA, com resultado muito mais consistente." }
     }
   ]
 }
@@ -209,6 +214,39 @@
   .video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;justify-items:center;}
   .video-grid > blockquote{margin:0 !important;}
 
+  .tut-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .tut-card{
+    background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;transition:transform .18s ease, border-color .18s ease;
+  }
+  .tut-card:hover{transform:translateY(-4px);border-color:var(--violet);}
+  .tut-card.featured{border-color:rgba(255,47,143,.5);box-shadow:0 0 44px -20px rgba(255,47,143,.55);}
+  .tut-card.featured:hover{border-color:var(--pink);}
+  .tut-thumb{
+    aspect-ratio:16/9;position:relative;display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(255,47,143,.16), transparent 60%),
+      radial-gradient(ellipse at 65% 75%, rgba(155,92,255,.14), transparent 60%),
+      var(--bg-alt);
+  }
+  .tut-play{
+    width:50px;height:50px;border-radius:50%;
+    background:rgba(255,255,255,.06);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .tut-badge{
+    position:absolute;top:12px;right:12px;
+    font-family:var(--font-mono);font-size:.64rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+    padding:4px 10px;border-radius:999px;
+    background:rgba(215,255,62,.12);color:var(--lime);border:1px solid rgba(215,255,62,.4);
+  }
+  .tut-card.featured .tut-badge{
+    background:rgba(255,47,143,.14);color:var(--pink);border-color:rgba(255,47,143,.45);
+  }
+  .tut-body{padding:22px;}
+  .tut-body h3{margin:0 0 8px;font-size:1rem;font-weight:600;}
+  .tut-body p{margin:0;color:var(--ink-soft);font-size:.9rem;}
+
   section{padding:56px 0;}
   section.alt{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
   h2{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 10px;font-weight:700;}
@@ -251,9 +289,9 @@
     box-shadow:0 0 70px -22px rgba(155,92,255,.55);
     padding:44px 36px;
   }
-  .price{font-family:var(--font-display);font-weight:700;font-size:2.8rem;margin:10px 0 4px;
+  .price{font-family:var(--font-display);font-weight:700;font-size:2.8rem;margin:10px 0 0;
     background:linear-gradient(90deg,var(--lime),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;}
-  .price small{font-family:var(--font-body);font-size:1rem;font-weight:400;color:var(--ink-soft);-webkit-text-fill-color:var(--ink-soft);}
+  .price-note{font-family:var(--font-body);font-size:.95rem;color:var(--ink-soft);margin:2px 0 4px;}
   .price-old{color:var(--ink-faint);text-decoration:line-through;font-size:1.05rem;}
   .pricing ul{list-style:none;padding:0;margin:24px 0;text-align:left;display:inline-block;}
   .pricing li{margin:10px 0;padding-left:26px;position:relative;color:var(--ink-soft);}
@@ -361,6 +399,53 @@
           </div>
           <h3>Alta resolução</h3>
           <p>Arquivos organizados e prontos para impressão ou uso digital, sem perda de qualidade.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tutoriais">
+    <div class="wrap">
+      <div class="eyebrow">Bônus incluso</div>
+      <h2>Mini curso: aprenda a tirar o máximo do pack</h2>
+      <p class="section-lead">Além dos 77 arquivos, o Croqui de Moda PRO vem com um mini curso em vídeo — incluindo um módulo mostrando como usar IA para criar estampas e texturas profissionais em cima da sua base, sem substituir o seu traço.</p>
+      <div class="tut-grid">
+        <!-- TODO(Joel/Lindberg): quando os vídeos estiverem prontos, subir no YouTube (não listado, se quiser) e trocar o .tut-thumb pelo iframe de embed. Ver README. -->
+        <div class="tut-card featured">
+          <div class="tut-thumb">
+            <span class="tut-badge">Mini curso incluso</span>
+            <div class="tut-play">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--ink)"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div class="tut-body">
+            <h3>Estampas com IA sobre a base</h3>
+            <p>Passo a passo pra gerar texturas e estampas com IA e aplicar em cima do croqui já renderizado — pra criar peças com cara profissional em minutos.</p>
+          </div>
+        </div>
+        <div class="tut-card">
+          <div class="tut-thumb">
+            <span class="tut-badge">Em breve</span>
+            <div class="tut-play">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--ink)"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div class="tut-body">
+            <h3>Como importar e usar</h3>
+            <p>Como abrir os arquivos no Procreate, Photoshop ou Clip Studio Paint e organizar as camadas antes de começar a ilustrar.</p>
+          </div>
+        </div>
+        <div class="tut-card">
+          <div class="tut-thumb">
+            <span class="tut-badge">Em breve</span>
+            <div class="tut-play">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--ink)"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div class="tut-body">
+            <h3>Como imprimir certinho</h3>
+            <p>Escala e resolução corretas pra imprimir a versão lineart sem distorcer, pra quem prefere desenhar no papel.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -487,17 +572,43 @@
     </div>
   </section>
 
+  <section id="porque">
+    <div class="wrap">
+      <h2>Por que não uma IA qualquer ou o Pinterest?</h2>
+      <p class="section-lead">Dá pra tentar. Mas tem dois problemas que ninguém conta.</p>
+      <div class="grid-3" style="grid-template-columns:repeat(2,1fr);">
+        <div class="card">
+          <div class="icon-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2L12 3z"/><line x1="12" y1="9" x2="12" y2="14"/><circle cx="12" cy="17.1" r=".6" fill="var(--pink)" stroke="none"/></svg>
+          </div>
+          <h3>IA sem base = resultado inconsistente</h3>
+          <p>Gerar uma peça do zero, sem uma referência sólida, costuma sair com anatomia estranha e um resultado diferente a cada tentativa. Dando uma base profissional como ponto de partida, a IA erra muito menos — e o resultado sai consistente, tentativa após tentativa.</p>
+        </div>
+        <div class="card">
+          <div class="icon-badge lime">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg>
+          </div>
+          <h3>Pinterest não tem garantia nenhuma</h3>
+          <p>Imagem solta da internet: você não sabe a resolução real, se pode usar comercialmente, nem quantas outras pessoas já usaram a mesma. As bases do pack são traço original do Joel, já aprovado por marcas e artistas como Ludmilla e KATSEYE, com licença de uso comercial garantida.</p>
+        </div>
+      </div>
+      <p class="section-lead" style="margin:28px 0 0;">Você não está pagando por "um desenho de corpo" — está pagando por uma base com qualidade testada em produções reais, pronta pra sustentar o seu traço ou o da IA sem parecer amadora.</p>
+    </div>
+  </section>
+
   <section class="alt" id="preco">
     <div class="wrap">
       <h2 style="text-align:center;">Garanta o seu</h2>
       <p class="section-lead" style="margin-left:auto;margin-right:auto;text-align:center;">Lançamento em breve — entre na lista e seja avisado assim que abrir.</p>
       <div class="pricing">
         <span class="soon-badge">Em breve</span>
-        <div class="price">R$ 90 <small>pagamento único</small></div>
+        <div class="price">R$ 97,50</div>
+        <p class="price-note">pagamento único</p>
         <p class="price-old">de R$ 139</p>
         <ul>
           <li>27 modelos: feminino, masculino, plus size e manequim técnico</li>
           <li>77 arquivos: lineart + corpo renderizado + segundo tom de pele</li>
+          <li>Mini curso: como usar, imprimir e criar estampas com IA</li>
           <li>Licença para uso comercial dos seus próprios croquis</li>
           <li>Entrega automática por e-mail</li>
           <li>Suporte via WhatsApp</li>
@@ -538,6 +649,10 @@
       <details>
         <summary>Quais formas de pagamento são aceitas?</summary>
         <p>Pix, cartão de crédito e boleto, conforme a plataforma de checkout escolhida.</p>
+      </details>
+      <details>
+        <summary>Por que não gero direto numa IA ou pego uma imagem no Pinterest?</summary>
+        <p>Sem uma base de referência sólida, a IA costuma errar anatomia e proporção, e o resultado varia a cada tentativa. E imagem solta de Pinterest não tem licença de uso comercial nem garantia de resolução. As bases do pack são traço original do Joel, com qualidade testada em produções reais — servem tanto pra desenhar à mão quanto como referência pra IA, com resultado muito mais consistente.</p>
       </details>
       <details>
         <summary>Ainda tenho dúvidas, como falo com o Joel?</summary>
