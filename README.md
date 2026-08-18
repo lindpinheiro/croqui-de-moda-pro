@@ -38,15 +38,19 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
    do Joel usando o pack (`DQ4XvT-jpb1`, `DYZqfMhjV5a`, `DUvudSEDnxR`). Se
    quiserem trocar os posts, me mandem os links de `instagram.com/p/...` ou
    `/reel/...`.
-   - **Cabeçalho/rodapé branco removido**: como o embed é um iframe do
-     próprio Instagram (não dá pra restilizar o conteúdo, é de outro
-     domínio), a solução foi "cortar" o card por fora — a altura do card e
-     a posição do iframe são ajustadas via JS (`HEADER_H`/`FOOTER_H` no
-     script no fim do `index.html`) pra esconder a faixa branca de
-     cima (avatar/usuário) e de baixo (curtidas/"Ver mais no Instagram").
-     Isso é uma estimativa visual, calibrada nos 3 posts atuais — se
-     trocarem os posts e a faixa branca voltar a aparecer (ou cortar
-     demais a imagem), me avisem que reajusto os números.
+   - **Cabeçalho/rodapé em dark mode**: o Instagram não oferece um modo
+     escuro pro embed, e por ser um iframe de outro domínio não dá pra
+     restilizar o header/footer originais dele. A solução foi cortar o
+     header/footer BRANCOS do Instagram pra fora da área visível (via JS,
+     ajustando `HEADER_H`/`FOOTER_H` no script no fim do `index.html`,
+     que mostra só a mídia) e desenhar um cabeçalho/rodapé **nossos**, em
+     HTML/CSS, no tema escuro do site: avatar do Joel + "joelcoveero" +
+     selo verificado no topo, e ícones de curtir/comentar/compartilhar/
+     salvar (sem número de curtidas/comentários) embaixo — tudo decorativo,
+     não conectado à API do Instagram de verdade.
+   - O corte do `HEADER_H`/`FOOTER_H` é uma estimativa visual calibrada nos
+     3 posts atuais. Se trocarem os posts e sobrar uma tarja branca (ou
+     cortar demais a imagem), me avisem que reajusto os números.
    - **Limitação**: quando o post embutido é do tipo carrossel (várias fotos,
      ex. `?img_index=1`), o Instagram não deixa esse carrossel interno trocar
      de foto sozinho — só com clique manual nas setinhas. Isso é controlado
