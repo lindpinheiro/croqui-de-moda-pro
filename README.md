@@ -1,4 +1,4 @@
-# Croqui PRO — loja do pack de croquis do Joel
+# Fashion Croqui PRO — loja do pack de croquis do Joel
 
 Landing page / loja de venda do pack de croquis do Joel Coveero (@joelcoveero).
 Site estático simples (HTML puro, sem build, sem backend) — feito para ser
@@ -24,6 +24,20 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 4. As imagens de croqui (hero e galeria) são peças do portfólio pessoal do
    Joel puxadas da pasta `CROQUIS/PNG` do Drive — troque por artes oficiais
    do pack assim que ele estiver fechado.
+5. **Domínio no `<head>`** — `canonical`, `og:url` e `og:image` estão
+   apontando para `https://fashioncroquipro.com.br/`, um domínio placeholder
+   que ainda não existe. Troque pelas URLs reais assim que vocês registrarem
+   o domínio e definirem onde o site vai ficar publicado.
+
+## SEO e copy
+
+Título, meta descrição, textos de venda e a estrutura de "O que vem no pack"
+vieram de um briefing que vocês já tinham montado com o ChatGPT (nome do
+produto, diferenciais e conteúdo real: 27 modelos × 3 versões = 77 arquivos).
+Se o preço, nome final ou conteúdo do pack mudar, atualize também:
+- `<title>`, `meta description`, tags `og:*`/`twitter:*` e o JSON-LD no
+  `<head>` do `index.html`;
+- a seção `#preco` (preço e itens inclusos).
 
 ## Recomendação de checkout (produto digital, público brasileiro)
 
