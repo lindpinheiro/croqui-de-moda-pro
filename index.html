@@ -221,7 +221,7 @@
   .trust-handle{display:block;font-family:var(--font-mono);font-size:.74rem;color:var(--ink-faint);margin:2px 0 8px;}
   .trust-quote{color:var(--ink-soft);font-size:.88rem;margin:0;}
 
-  .ig-carousel{position:relative;height:560px;max-width:100%;margin:0 auto;}
+  .ig-carousel{position:relative;height:560px;max-width:100%;margin:0 auto;transition:height .4s ease;}
   .ig-slide{
     position:absolute;top:0;left:50%;
     width:328px;height:560px;
@@ -597,27 +597,27 @@
 
   <section class="alt" id="videos">
     <div class="wrap">
-      <h2>Veja o traço em movimento</h2>
-      <p class="section-lead">Alguns dos posts com melhor engajamento do Instagram do Joel (@joelcoveero), direto da fonte.</p>
+      <h2>Veja o pack em ação</h2>
+      <p class="section-lead">Alguns posts do Joel usando o pack de croquis, direto do Instagram (@joelcoveero).</p>
       <div class="ig-carousel" id="ig-carousel">
         <div class="ig-slide">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DX8QWoutVv1/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:328px; padding:0; width:100%;">
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DQ4XvT-jpb1/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:328px; padding:0; width:100%;">
             <div style="padding:32px 20px;text-align:center;">
-              <a href="https://www.instagram.com/p/DX8QWoutVv1/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram</a>
+              <a href="https://www.instagram.com/p/DQ4XvT-jpb1/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram</a>
             </div>
           </blockquote>
         </div>
         <div class="ig-slide">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DW7S8n9jbjl/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:328px; padding:0; width:100%;">
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DYZqfMhjV5a/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:328px; padding:0; width:100%;">
             <div style="padding:32px 20px;text-align:center;">
-              <a href="https://www.instagram.com/p/DW7S8n9jbjl/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram</a>
+              <a href="https://www.instagram.com/p/DYZqfMhjV5a/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram</a>
             </div>
           </blockquote>
         </div>
         <div class="ig-slide">
-          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DX7NNziNNx_/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:328px; padding:0; width:100%;">
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DUvudSEDnxR/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:328px; padding:0; width:100%;">
             <div style="padding:32px 20px;text-align:center;">
-              <a href="https://www.instagram.com/p/DX7NNziNNx_/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram</a>
+              <a href="https://www.instagram.com/p/DUvudSEDnxR/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram</a>
             </div>
           </blockquote>
         </div>
@@ -756,6 +756,13 @@
     var active = 0;
     var timer;
 
+    function syncHeight() {
+      var activeSlide = slides[active];
+      if (activeSlide && activeSlide.dataset.trimmed === "1") {
+        carousel.style.height = activeSlide.offsetHeight + "px";
+      }
+    }
+
     function render() {
       slides.forEach(function (slide, i) {
         slide.classList.remove("active", "prev", "next", "hidden");
@@ -765,6 +772,7 @@
         else if (offset === n - 1) slide.classList.add("prev");
         else slide.classList.add("hidden");
       });
+      syncHeight();
     }
 
     function resetTimer() {
@@ -772,7 +780,7 @@
       timer = setInterval(function () {
         active = (active + 1) % n;
         render();
-      }, 4500);
+      }, 20000);
     }
 
     slides.forEach(function (slide, i) {
@@ -786,6 +794,44 @@
 
     render();
     resetTimer();
+
+    // Instagram's embed always ships a white header (avatar/username) and
+    // footer (like icons + "Ver mais no Instagram") that we can't restyle
+    // (cross-origin iframe). Instead we crop them out: once the iframe
+    // reports a stable height, shift it up to hide the header and shrink
+    // the visible window so the footer falls outside it.
+    var HEADER_H = 90;
+    var FOOTER_H = 230;
+    var MIN_H = 260;
+    var MAX_H = 500;
+
+    function trimEmbeds() {
+      slides.forEach(function (slide) {
+        if (slide.dataset.trimmed === "1") return;
+        var iframe = slide.querySelector("iframe.instagram-media");
+        if (!iframe) return;
+        var h = parseInt(iframe.style.height || iframe.getAttribute("height") || "0", 10);
+        if (!h) return;
+        var lastH = parseInt(slide.dataset.lastH || "0", 10);
+        if (h === lastH) {
+          var visible = Math.max(MIN_H, Math.min(MAX_H, h - HEADER_H - FOOTER_H));
+          slide.style.height = visible + "px";
+          iframe.style.marginTop = -HEADER_H + "px";
+          slide.dataset.trimmed = "1";
+          syncHeight();
+        } else {
+          slide.dataset.lastH = String(h);
+        }
+      });
+    }
+
+    var trimAttempts = 0;
+    var trimInterval = setInterval(function () {
+      trimEmbeds();
+      trimAttempts++;
+      var allTrimmed = slides.every(function (s) { return s.dataset.trimmed === "1"; });
+      if (allTrimmed || trimAttempts > 20) clearInterval(trimInterval);
+    }, 350);
   })();
 </script>
 

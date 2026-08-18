@@ -34,13 +34,24 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
    pra usar num site comercial; se quiserem trocar por fotos/logos reais,
    é só substituir o conteúdo de `.trust-avatar` em cada card.
 7. **Vídeos do Instagram** (`#videos`) — carrossel automático (troca a cada
-   4,5s, clique num card lateral pra trazê-lo pra frente) com os 3 posts
-   embutidos escolhidos pelos que têm mais curtidas no portfólio do Joel
-   (81,7 mil / 21,4 mil / 11,4 mil). Se vocês quiserem posts específicos, me
-   mandem os links de `instagram.com/p/...` ou `/reel/...` que eu troco. Como
-   o conteúdo do embed é controlado pelo Instagram (sem legenda, versão
-   compacta), não dá pra restilizar o fundo branco/claro dele pro tema escuro
-   do site — é uma limitação da própria plataforma.
+   20s, clique num card lateral pra trazê-lo pra frente) com 3 posts reais
+   do Joel usando o pack (`DQ4XvT-jpb1`, `DYZqfMhjV5a`, `DUvudSEDnxR`). Se
+   quiserem trocar os posts, me mandem os links de `instagram.com/p/...` ou
+   `/reel/...`.
+   - **Cabeçalho/rodapé branco removido**: como o embed é um iframe do
+     próprio Instagram (não dá pra restilizar o conteúdo, é de outro
+     domínio), a solução foi "cortar" o card por fora — a altura do card e
+     a posição do iframe são ajustadas via JS (`HEADER_H`/`FOOTER_H` no
+     script no fim do `index.html`) pra esconder a faixa branca de
+     cima (avatar/usuário) e de baixo (curtidas/"Ver mais no Instagram").
+     Isso é uma estimativa visual, calibrada nos 3 posts atuais — se
+     trocarem os posts e a faixa branca voltar a aparecer (ou cortar
+     demais a imagem), me avisem que reajusto os números.
+   - **Limitação**: quando o post embutido é do tipo carrossel (várias fotos,
+     ex. `?img_index=1`), o Instagram não deixa esse carrossel interno trocar
+     de foto sozinho — só com clique manual nas setinhas. Isso é controlado
+     inteiramente pelo iframe do Instagram (outro domínio), não temos como
+     automatizar isso pelo nosso lado.
 8. **Seção "Tutoriais"** (`#tutoriais`) — os 4 cards (estampas com IA,
    coleções consistentes com IA, como importar/usar, como imprimir) ainda são
    só capa + "em breve"/"mini curso incluso", sem vídeo de verdade (procurem
