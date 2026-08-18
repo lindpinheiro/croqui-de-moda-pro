@@ -153,6 +153,29 @@
   .gallery img{width:100%;height:280px;object-fit:contain;}
   .gallery figcaption{margin-top:10px;font-family:var(--font-mono);font-size:.78rem;letter-spacing:.03em;color:var(--ink-faint);}
 
+  .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .trust-card{
+    background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;display:flex;gap:16px;align-items:flex-start;
+    transition:transform .18s ease, border-color .18s ease;
+  }
+  .trust-card:hover{transform:translateY(-4px);border-color:var(--pink);}
+  .trust-avatar{
+    width:44px;height:44px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-display);font-weight:700;font-size:.95rem;color:#0a0710;
+  }
+  .trust-avatar.pink{background:linear-gradient(135deg,var(--pink),#ff9ecf);}
+  .trust-avatar.lime{background:linear-gradient(135deg,var(--lime),#a8e600);}
+  .trust-avatar.violet{background:linear-gradient(135deg,var(--violet),#c9a6ff);}
+  .trust-body a.trust-name{color:var(--ink);text-decoration:none;font-weight:700;font-size:.98rem;}
+  .trust-body a.trust-name:hover{color:var(--lime);}
+  .trust-handle{display:block;font-family:var(--font-mono);font-size:.74rem;color:var(--ink-faint);margin:2px 0 8px;}
+  .trust-quote{color:var(--ink-soft);font-size:.88rem;margin:0;}
+
+  .video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;justify-items:center;}
+  .video-grid > blockquote{margin:0 !important;}
+
   section{padding:56px 0;}
   section.alt{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
   h2{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 10px;font-weight:700;}
@@ -233,6 +256,7 @@
     .hero .wrap{grid-template-columns:1fr;}
     .hero-visual{order:-1;aspect-ratio:16/10;}
     .grid-3{grid-template-columns:1fr;}
+    .trust-grid{grid-template-columns:1fr;}
     .about{grid-template-columns:1fr;}
     nav.site{display:none;}
   }
@@ -349,6 +373,67 @@
     </div>
   </section>
 
+  <section id="confianca">
+    <div class="wrap">
+      <div class="eyebrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--lime)" style="vertical-align:-2px;margin-right:6px;"><circle cx="12" cy="8" r="6"/><path d="M8 13l-2 8 6-3 6 3-2-8"/></svg>
+        Trusted by: colaborações de elite
+      </div>
+      <h2>Confiado por quem faz a cultura pop acontecer</h2>
+      <p class="section-lead">Meu traço já deu forma a conceitos para ícones da cultura pop e marcas de vanguarda. Atuar nos bastidores de grandes produções me deu o repertório necessário para entender o tempo e a exigência do mercado de luxo e do entretenimento.</p>
+      <div class="trust-grid">
+        <div class="trust-card">
+          <div class="trust-avatar pink">L</div>
+          <div class="trust-body">
+            <a class="trust-name" href="https://www.instagram.com/ludmilla/" target="_blank" rel="noopener">Ludmilla</a>
+            <span class="trust-handle">@ludmilla · Grammy Winner</span>
+            <p class="trust-quote">Arte para o single "Fragmentos".</p>
+          </div>
+        </div>
+        <div class="trust-card">
+          <div class="trust-avatar violet">K</div>
+          <div class="trust-body">
+            <a class="trust-name" href="https://www.instagram.com/katseyeworld/" target="_blank" rel="noopener">KATSEYE</a>
+            <span class="trust-handle">@katseyeworld</span>
+            <p class="trust-quote">Welcome to KATSEYE world — WILD out now.</p>
+          </div>
+        </div>
+        <div class="trust-card">
+          <div class="trust-avatar lime">S</div>
+          <div class="trust-body">
+            <a class="trust-name" href="https://www.instagram.com/ssjheni/" target="_blank" rel="noopener">ssjheni</a>
+            <span class="trust-handle">@ssjheni</span>
+            <p class="trust-quote">Arte de coleção para a criadora ssjheni.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="videos">
+    <div class="wrap">
+      <h2>Veja o traço em movimento</h2>
+      <p class="section-lead">Alguns dos posts com melhor engajamento do Instagram do Joel (@joelcoveero), direto da fonte.</p>
+      <div class="video-grid">
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DX8QWoutVv1/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:280px; padding:0; width:100%;">
+          <div style="padding:32px 20px;text-align:center;">
+            <a href="https://www.instagram.com/p/DX8QWoutVv1/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram (81,7 mil curtidas)</a>
+          </div>
+        </blockquote>
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DW7S8n9jbjl/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:280px; padding:0; width:100%;">
+          <div style="padding:32px 20px;text-align:center;">
+            <a href="https://www.instagram.com/p/DW7S8n9jbjl/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram (21,4 mil curtidas)</a>
+          </div>
+        </blockquote>
+        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DX7NNziNNx_/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:280px; padding:0; width:100%;">
+          <div style="padding:32px 20px;text-align:center;">
+            <a href="https://www.instagram.com/p/DX7NNziNNx_/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram (11,4 mil curtidas)</a>
+          </div>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
   <section id="joel">
     <div class="wrap about">
       <div class="about-photo">
@@ -443,6 +528,7 @@
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
+<script async src="//www.instagram.com/embed.js"></script>
 
 </body>
 </html>

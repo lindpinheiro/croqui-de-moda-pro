@@ -28,6 +28,15 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
    apontando para `https://fashioncroquipro.com.br/`, um domínio placeholder
    que ainda não existe. Troque pelas URLs reais assim que vocês registrarem
    o domínio e definirem onde o site vai ficar publicado.
+6. **Seção "Trusted By"** (`#confianca`) — os avatares de Ludmilla, KATSEYE e
+   ssjheni são só as iniciais (L/K/S) coloridas, não as fotos reais deles.
+   Preferi não puxar as fotos de perfil de terceiros sem autorização deles
+   pra usar num site comercial; se quiserem trocar por fotos/logos reais,
+   é só substituir o conteúdo de `.trust-avatar` em cada card.
+7. **Vídeos do Instagram** (`#videos`) — os 3 posts embutidos foram escolhidos
+   pelos que têm mais curtidas no portfólio do Joel (81,7 mil / 21,4 mil /
+   11,4 mil). Se vocês quiserem posts específicos, me mandem os links de
+   `instagram.com/p/...` ou `/reel/...` que eu troco.
 
 ## SEO e copy
 
@@ -50,6 +59,19 @@ com segurança), use uma plataforma pronta de produto digital:
 - Passo a passo: criar conta na plataforma escolhida → cadastrar o "Croqui
   PRO" como produto digital → subir o arquivo final do pack → copiar o link
   de checkout → colar no `href` do botão `#checkout-btn` no `index.html`.
+
+## Dependência externa: embeds do Instagram
+
+A seção `#videos` usa o widget oficial de embed do Instagram
+(`instagram.com/embed.js`, carregado no fim do `index.html`). Isso significa:
+- não baixamos/hospedamos nenhum vídeo — o Instagram serve o player direto
+  pelos servidores dele, então continua "grátis" de manter;
+- o vídeo só aparece se o script do Instagram carregar no navegador de quem
+  visita (pode demorar um instante, ou não carregar se a pessoa estiver com
+  bloqueador de rastreadores/anúncios muito agressivo) — por isso cada
+  embed tem um link de fallback ("Ver publicação no Instagram") caso o
+  player não carregue;
+- se o post original for apagado ou ficar privado, o embed para de funcionar.
 
 ## Como publicar (gratuito)
 
