@@ -221,8 +221,28 @@
   .trust-handle{display:block;font-family:var(--font-mono);font-size:.74rem;color:var(--ink-faint);margin:2px 0 8px;}
   .trust-quote{color:var(--ink-soft);font-size:.88rem;margin:0;}
 
-  .video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;justify-items:center;}
-  .video-grid > blockquote{margin:0 !important;}
+  .ig-carousel{position:relative;height:560px;max-width:100%;margin:0 auto;}
+  .ig-slide{
+    position:absolute;top:0;left:50%;
+    width:328px;height:560px;
+    border-radius:var(--radius);overflow:hidden;
+    background:var(--bg-card);border:1px solid var(--line);
+    transition:transform .5s ease, opacity .5s ease;
+    cursor:pointer;
+  }
+  .ig-slide::after{content:"";position:absolute;inset:0;pointer-events:none;}
+  .ig-slide.active{transform:translateX(-50%) scale(1);z-index:3;opacity:1;cursor:default;box-shadow:0 24px 60px -20px rgba(255,47,143,.55);border-color:rgba(255,47,143,.5);}
+  .ig-slide.prev{transform:translateX(calc(-50% - 190px)) scale(.82);z-index:2;opacity:.55;}
+  .ig-slide.next{transform:translateX(calc(-50% + 190px)) scale(.82);z-index:2;opacity:.55;}
+  .ig-slide.hidden{transform:translateX(-50%) scale(.7);z-index:1;opacity:0;pointer-events:none;}
+  .ig-slide blockquote{margin:0 !important;width:100% !important;min-width:0 !important;max-width:none !important;}
+  @media (prefers-reduced-motion: reduce){ .ig-slide{transition:none;} }
+  @media (max-width:820px){
+    .ig-carousel{height:520px;}
+    .ig-slide{width:280px;height:480px;}
+    .ig-slide.prev{transform:translateX(calc(-50% - 130px)) scale(.78);}
+    .ig-slide.next{transform:translateX(calc(-50% + 130px)) scale(.78);}
+  }
 
   .tut-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
   .tut-card{
@@ -579,22 +599,28 @@
     <div class="wrap">
       <h2>Veja o traço em movimento</h2>
       <p class="section-lead">Alguns dos posts com melhor engajamento do Instagram do Joel (@joelcoveero), direto da fonte.</p>
-      <div class="video-grid">
-        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DX8QWoutVv1/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:280px; padding:0; width:100%;">
-          <div style="padding:32px 20px;text-align:center;">
-            <a href="https://www.instagram.com/p/DX8QWoutVv1/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram (81,7 mil curtidas)</a>
-          </div>
-        </blockquote>
-        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DW7S8n9jbjl/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:280px; padding:0; width:100%;">
-          <div style="padding:32px 20px;text-align:center;">
-            <a href="https://www.instagram.com/p/DW7S8n9jbjl/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram (21,4 mil curtidas)</a>
-          </div>
-        </blockquote>
-        <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/p/DX7NNziNNx_/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:280px; padding:0; width:100%;">
-          <div style="padding:32px 20px;text-align:center;">
-            <a href="https://www.instagram.com/p/DX7NNziNNx_/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram (11,4 mil curtidas)</a>
-          </div>
-        </blockquote>
+      <div class="ig-carousel" id="ig-carousel">
+        <div class="ig-slide">
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DX8QWoutVv1/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:328px; padding:0; width:100%;">
+            <div style="padding:32px 20px;text-align:center;">
+              <a href="https://www.instagram.com/p/DX8QWoutVv1/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram</a>
+            </div>
+          </blockquote>
+        </div>
+        <div class="ig-slide">
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DW7S8n9jbjl/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:328px; padding:0; width:100%;">
+            <div style="padding:32px 20px;text-align:center;">
+              <a href="https://www.instagram.com/p/DW7S8n9jbjl/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram</a>
+            </div>
+          </blockquote>
+        </div>
+        <div class="ig-slide">
+          <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/p/DX7NNziNNx_/" data-instgrm-version="14" style="background:#FFF; border:0; border-radius:3px; box-shadow:0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15); margin:0; max-width:400px; min-width:328px; padding:0; width:100%;">
+            <div style="padding:32px 20px;text-align:center;">
+              <a href="https://www.instagram.com/p/DX7NNziNNx_/?utm_source=ig_embed" style="color:#1a1a1a;font-family:Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;" target="_blank" rel="noopener">Ver publicação no Instagram</a>
+            </div>
+          </blockquote>
+        </div>
       </div>
     </div>
   </section>
@@ -721,6 +747,47 @@
   document.getElementById("year").textContent = new Date().getFullYear();
 </script>
 <script async src="//www.instagram.com/embed.js"></script>
+<script>
+  (function () {
+    var carousel = document.getElementById("ig-carousel");
+    if (!carousel) return;
+    var slides = Array.prototype.slice.call(carousel.querySelectorAll(".ig-slide"));
+    var n = slides.length;
+    var active = 0;
+    var timer;
+
+    function render() {
+      slides.forEach(function (slide, i) {
+        slide.classList.remove("active", "prev", "next", "hidden");
+        var offset = (i - active + n) % n;
+        if (offset === 0) slide.classList.add("active");
+        else if (offset === 1) slide.classList.add("next");
+        else if (offset === n - 1) slide.classList.add("prev");
+        else slide.classList.add("hidden");
+      });
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      timer = setInterval(function () {
+        active = (active + 1) % n;
+        render();
+      }, 4500);
+    }
+
+    slides.forEach(function (slide, i) {
+      slide.addEventListener("click", function () {
+        if (i === active) return;
+        active = i;
+        render();
+        resetTimer();
+      });
+    });
+
+    render();
+    resetTimer();
+  })();
+</script>
 
 </body>
 </html>

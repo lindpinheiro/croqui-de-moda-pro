@@ -33,10 +33,14 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
    Preferi não puxar as fotos de perfil de terceiros sem autorização deles
    pra usar num site comercial; se quiserem trocar por fotos/logos reais,
    é só substituir o conteúdo de `.trust-avatar` em cada card.
-7. **Vídeos do Instagram** (`#videos`) — os 3 posts embutidos foram escolhidos
-   pelos que têm mais curtidas no portfólio do Joel (81,7 mil / 21,4 mil /
-   11,4 mil). Se vocês quiserem posts específicos, me mandem os links de
-   `instagram.com/p/...` ou `/reel/...` que eu troco.
+7. **Vídeos do Instagram** (`#videos`) — carrossel automático (troca a cada
+   4,5s, clique num card lateral pra trazê-lo pra frente) com os 3 posts
+   embutidos escolhidos pelos que têm mais curtidas no portfólio do Joel
+   (81,7 mil / 21,4 mil / 11,4 mil). Se vocês quiserem posts específicos, me
+   mandem os links de `instagram.com/p/...` ou `/reel/...` que eu troco. Como
+   o conteúdo do embed é controlado pelo Instagram (sem legenda, versão
+   compacta), não dá pra restilizar o fundo branco/claro dele pro tema escuro
+   do site — é uma limitação da própria plataforma.
 8. **Seção "Tutoriais"** (`#tutoriais`) — os 4 cards (estampas com IA,
    coleções consistentes com IA, como importar/usar, como imprimir) ainda são
    só capa + "em breve"/"mini curso incluso", sem vídeo de verdade (procurem
