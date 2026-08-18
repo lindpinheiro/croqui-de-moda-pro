@@ -1,4 +1,4 @@
-# Fashion Croqui PRO — loja do pack de croquis do Joel
+# Croqui de Moda PRO — loja do pack de croquis do Joel
 
 Landing page / loja de venda do pack de croquis do Joel Coveero (@joelcoveero).
 Site estático simples (HTML puro, sem build, sem backend) — feito para ser
@@ -25,7 +25,7 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
    Joel puxadas da pasta `CROQUIS/PNG` do Drive — troque por artes oficiais
    do pack assim que ele estiver fechado.
 5. **Domínio no `<head>`** — `canonical`, `og:url` e `og:image` estão
-   apontando para `https://fashioncroquipro.com.br/`, um domínio placeholder
+   apontando para `https://croquidemodapro.com.br/`, um domínio placeholder
    que ainda não existe. Troque pelas URLs reais assim que vocês registrarem
    o domínio e definirem onde o site vai ficar publicado.
 6. **Seção "Trusted By"** (`#confianca`) — os avatares de Ludmilla, KATSEYE e
@@ -41,10 +41,28 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 ## SEO e copy
 
 Título, meta descrição, textos de venda e a estrutura de "O que vem no pack"
-vieram de um briefing que vocês já tinham montado com o ChatGPT (nome do
-produto, diferenciais e conteúdo real: 27 modelos × 3 versões = 77 arquivos).
+vieram de um briefing que vocês já tinham montado com o ChatGPT (diferenciais
+e conteúdo real: 27 modelos × 3 versões = 77 arquivos). Nome do produto:
+**Croqui de Moda PRO** — trocado de "Fashion Croqui PRO" porque "croqui de
+moda" é o termo que as pessoas de fato buscam no Google; como o produto ainda
+não tinha sido lançado/divulgado, trocar o nome agora não tem custo de marca.
+
+Ajustes feitos para SEO/atrair estudante de moda:
+- H1 e brand agora contêm a frase "croqui de moda" (antes o H1 não tinha
+  nenhuma palavra-chave, só a copy de persuasão);
+- o parágrafo do hero menciona explicitamente **TCC, portfólio e trabalhos
+  da faculdade** — os momentos reais em que um estudante de moda procura isso;
+- adicionei um segundo JSON-LD (`FAQPage`, no `<head>`) reaproveitando as
+  perguntas da seção `#faq`, pra tentar ganhar rich snippet no Google.
+
+Vale ter expectativa realista: página única, sem backlinks, dificilmente
+rankeia organicamente para um termo concorrido como "croqui de moda" — o SEO
+aqui ajuda mais em busca de marca (quem viu o anúncio no Instagram e busca
+"croqui de moda pro" no Google) e no preview ao compartilhar o link. O canal
+de crescimento principal continua sendo o Instagram pago, como já planejado.
+
 Se o preço, nome final ou conteúdo do pack mudar, atualize também:
-- `<title>`, `meta description`, tags `og:*`/`twitter:*` e o JSON-LD no
+- `<title>`, `meta description`, tags `og:*`/`twitter:*` e os dois JSON-LD no
   `<head>` do `index.html`;
 - a seção `#preco` (preço e itens inclusos).
 
