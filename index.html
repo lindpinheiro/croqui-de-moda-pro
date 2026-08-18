@@ -7,6 +7,7 @@
 <meta name="description" content="O único pacote com croquis totalmente renderizados e lineart em alta qualidade. Ideal para estudantes, ilustradores e fashion designers que querem desenhar mais rápido.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Joel Pinheiro (@joelcoveero)">
+<meta name="theme-color" content="#0a0710">
 <link rel="canonical" href="https://fashioncroquipro.com.br/">
 
 <meta property="og:type" content="website">
@@ -23,6 +24,10 @@
 <meta name="twitter:image" content="https://fashioncroquipro.com.br/assets/hero-croqui.png">
 
 <link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,500&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -39,46 +44,56 @@
 </script>
 <style>
   :root{
-    --bg:#faf7f2;
-    --bg-alt:#ffffff;
-    --ink:#1c1a17;
-    --ink-soft:#5b564d;
-    --accent:#b5793a;
-    --accent-dark:#8a5a26;
-    --line:#e7e0d4;
-    --radius:14px;
-    --max:1100px;
+    --bg:#0a0710;
+    --bg-alt:#120b1c;
+    --bg-card:#171025;
+    --ink:#f6f2fb;
+    --ink-soft:#b3a7c7;
+    --ink-faint:#786e93;
+    --line:#2b2140;
+    --pink:#ff2f8f;
+    --lime:#d7ff3e;
+    --violet:#9b5cff;
+    --radius:18px;
+    --max:1120px;
+    --font-display:'Unbounded',sans-serif;
+    --font-body:'Plus Jakarta Sans',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{
     margin:0;
-    font-family:"Segoe UI",Helvetica,Arial,sans-serif;
-    background:var(--bg);
+    font-family:var(--font-body);
+    background:
+      radial-gradient(ellipse 900px 520px at 12% -8%, rgba(255,47,143,.18), transparent 60%),
+      radial-gradient(ellipse 750px 520px at 105% 8%, rgba(155,92,255,.16), transparent 55%),
+      var(--bg);
     color:var(--ink);
-    line-height:1.55;
+    line-height:1.6;
   }
   img{max-width:100%;display:block;}
   a{color:inherit;}
+  h1,h2,h3{font-family:var(--font-display);text-wrap:balance;}
   .wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
 
   header.site{
     position:sticky;top:0;z-index:10;
-    background:rgba(250,247,242,.92);
-    backdrop-filter:blur(6px);
+    background:rgba(10,7,16,.78);
+    backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
   }
   header.site .wrap{
     display:flex;align-items:center;justify-content:space-between;
     padding:14px 24px;
   }
-  .brand{font-weight:700;letter-spacing:.02em;font-size:1.1rem;text-decoration:none;}
-  .brand span{color:var(--accent-dark);}
-  nav.site a{margin-left:22px;text-decoration:none;font-size:.95rem;color:var(--ink-soft);}
-  nav.site a:hover{color:var(--ink);}
+  .brand{font-family:var(--font-display);font-weight:700;letter-spacing:.01em;font-size:1.05rem;text-decoration:none;}
+  .brand span{background:linear-gradient(90deg,var(--pink),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  nav.site a{margin-left:22px;text-decoration:none;font-size:.92rem;color:var(--ink-soft);transition:color .15s ease;}
+  nav.site a:hover{color:var(--lime);}
   .btn{
     display:inline-block;
-    background:var(--accent);
+    background:linear-gradient(90deg,var(--pink),var(--violet));
     color:#fff;
     padding:12px 26px;
     border-radius:999px;
@@ -87,30 +102,41 @@
     font-size:1rem;
     border:none;
     cursor:pointer;
-    transition:background .15s ease, transform .15s ease;
+    box-shadow:0 8px 26px -10px rgba(255,47,143,.6);
+    transition:box-shadow .18s ease, transform .18s ease;
   }
-  .btn:hover{background:var(--accent-dark);transform:translateY(-1px);}
+  .btn:hover{box-shadow:0 10px 32px -8px rgba(255,47,143,.8);transform:translateY(-1px);}
   .btn.ghost{
-    background:transparent;border:1.5px solid var(--accent);color:var(--accent-dark);
+    background:transparent;border:1.5px solid var(--violet);color:var(--ink);box-shadow:none;
   }
-  .btn.ghost:hover{background:var(--accent);color:#fff;}
+  .btn.ghost:hover{background:rgba(155,92,255,.14);box-shadow:none;}
   .btn.small{padding:8px 18px;font-size:.9rem;}
 
   .hero{padding:64px 0 40px;}
   .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;}
   .eyebrow{
-    text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;
-    color:var(--accent-dark);font-weight:700;margin-bottom:14px;
+    font-family:var(--font-mono);
+    text-transform:uppercase;letter-spacing:.1em;font-size:.76rem;
+    color:var(--lime);font-weight:600;margin-bottom:16px;
   }
-  h1{font-size:clamp(2rem,4vw,2.9rem);line-height:1.12;margin:0 0 18px;}
-  .hero p.lead{font-size:1.1rem;color:var(--ink-soft);margin:0 0 28px;max-width:46ch;}
+  h1{font-size:clamp(2rem,4vw,2.75rem);line-height:1.15;margin:0 0 18px;font-weight:700;}
+  .hero p.lead{font-size:1.08rem;color:var(--ink-soft);margin:0 0 28px;max-width:46ch;}
   .hero-actions{display:flex;gap:14px;flex-wrap:wrap;align-items:center;}
-  .hero-note{font-size:.85rem;color:var(--ink-soft);margin-top:10px;}
+
+  .stat-strip{display:flex;align-items:center;gap:22px;margin-top:34px;flex-wrap:wrap;}
+  .stat-item{display:flex;flex-direction:column;}
+  .stat-num{font-family:var(--font-mono);font-weight:700;font-size:2rem;color:var(--lime);text-shadow:0 0 20px rgba(215,255,62,.4);line-height:1;font-variant-numeric:tabular-nums;}
+  .stat-label{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-top:6px;}
+  .stat-div{width:1px;height:36px;background:linear-gradient(180deg,transparent,var(--violet),transparent);opacity:.7;}
 
   .hero-visual{
     aspect-ratio:4/5;
     border-radius:var(--radius);
-    background:linear-gradient(160deg,#efe6d8,#f8f3ea);
+    background:
+      radial-gradient(ellipse at 50% 38%, rgba(255,47,143,.22), transparent 55%),
+      radial-gradient(ellipse at 60% 75%, rgba(155,92,255,.2), transparent 55%),
+      var(--bg-card);
+    border:1px solid var(--line);
     display:flex;align-items:center;justify-content:center;
     text-align:center;color:var(--ink-soft);font-size:.9rem;padding:24px;
     overflow:hidden;
@@ -119,71 +145,87 @@
 
   .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
   .gallery figure{
-    margin:0;background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--radius);
+    margin:0;
+    background:radial-gradient(ellipse at 50% 30%, rgba(155,92,255,.14), transparent 60%), var(--bg-card);
+    border:1px solid var(--line);border-radius:var(--radius);
     padding:18px;text-align:center;
   }
   .gallery img{width:100%;height:280px;object-fit:contain;}
-  .gallery figcaption{margin-top:10px;font-size:.85rem;color:var(--ink-soft);}
+  .gallery figcaption{margin-top:10px;font-family:var(--font-mono);font-size:.78rem;letter-spacing:.03em;color:var(--ink-faint);}
 
   section{padding:56px 0;}
   section.alt{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-  h2{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 10px;}
+  h2{font-size:clamp(1.5rem,3vw,2rem);margin:0 0 10px;font-weight:700;}
   .section-lead{color:var(--ink-soft);max-width:60ch;margin:0 0 36px;}
 
   .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .card{
-    background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--radius);
-    padding:26px;
+    background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:28px;transition:transform .18s ease, border-color .18s ease;
   }
-  section.alt .card{background:var(--bg);}
-  .card .icon{font-size:1.6rem;margin-bottom:12px;}
-  .card h3{margin:0 0 8px;font-size:1.05rem;}
-  .card p{margin:0;color:var(--ink-soft);font-size:.95rem;}
+  .card:hover{transform:translateY(-4px);border-color:var(--violet);}
+  .icon-badge{
+    width:50px;height:50px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;margin-bottom:18px;
+    background:rgba(255,47,143,.1);border:1px solid rgba(255,47,143,.35);
+  }
+  .icon-badge.lime{background:rgba(215,255,62,.08);border-color:rgba(215,255,62,.35);}
+  .icon-badge.violet{background:rgba(155,92,255,.12);border-color:rgba(155,92,255,.4);}
+  .card h3{margin:0 0 8px;font-size:1.02rem;font-weight:600;}
+  .card p{margin:0;color:var(--ink-soft);font-size:.94rem;}
 
   .about{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;align-items:center;}
   .about-photo{
     aspect-ratio:1;border-radius:var(--radius);
-    background:linear-gradient(160deg,#efe6d8,#f8f3ea);
+    background:var(--bg-card);
+    box-shadow:0 0 0 4px rgba(155,92,255,.14), 0 30px 60px -25px rgba(255,47,143,.35);
     display:flex;align-items:center;justify-content:center;
     color:var(--ink-soft);font-size:.85rem;text-align:center;padding:16px;
     overflow:hidden;
   }
   .about-photo img{width:100%;height:100%;object-fit:cover;object-position:center 25%;}
   .stats{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap;}
-  .stat b{display:block;font-size:1.4rem;color:var(--accent-dark);}
-  .stat span{font-size:.85rem;color:var(--ink-soft);}
+  .stat b{display:block;font-family:var(--font-mono);font-size:1.3rem;color:var(--lime);text-shadow:0 0 16px rgba(215,255,62,.35);}
+  .stat span{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);}
 
   .pricing{
     max-width:560px;margin:0 auto;text-align:center;
-    background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--radius);
+    background:linear-gradient(160deg,var(--bg-card),#1c1330);
+    border:1px solid var(--violet);border-radius:var(--radius);
+    box-shadow:0 0 70px -22px rgba(155,92,255,.55);
     padding:44px 36px;
   }
-  .price{font-size:3rem;font-weight:700;margin:10px 0 4px;}
-  .price small{font-size:1rem;font-weight:400;color:var(--ink-soft);}
-  .price-old{color:var(--ink-soft);text-decoration:line-through;font-size:1.1rem;}
+  .price{font-family:var(--font-display);font-weight:700;font-size:2.8rem;margin:10px 0 4px;
+    background:linear-gradient(90deg,var(--lime),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .price small{font-family:var(--font-body);font-size:1rem;font-weight:400;color:var(--ink-soft);-webkit-text-fill-color:var(--ink-soft);}
+  .price-old{color:var(--ink-faint);text-decoration:line-through;font-size:1.05rem;}
   .pricing ul{list-style:none;padding:0;margin:24px 0;text-align:left;display:inline-block;}
   .pricing li{margin:10px 0;padding-left:26px;position:relative;color:var(--ink-soft);}
-  .pricing li::before{content:"✓";position:absolute;left:0;color:var(--accent-dark);font-weight:700;}
+  .pricing li::before{content:"✓";position:absolute;left:0;color:var(--lime);font-weight:700;font-family:var(--font-mono);}
   .pricing .btn{width:100%;padding:15px;font-size:1.05rem;}
   .soon-badge{
-    display:inline-block;background:#f1e6d3;color:var(--accent-dark);
-    padding:5px 14px;border-radius:999px;font-size:.78rem;font-weight:700;
-    letter-spacing:.03em;text-transform:uppercase;margin-bottom:18px;
+    display:inline-block;background:rgba(215,255,62,.1);color:var(--lime);
+    border:1px solid rgba(215,255,62,.4);
+    padding:5px 14px;border-radius:999px;font-family:var(--font-mono);font-size:.74rem;font-weight:600;
+    letter-spacing:.05em;text-transform:uppercase;margin-bottom:18px;
   }
 
   .faq details{
-    border-bottom:1px solid var(--line);padding:18px 0;
+    background:var(--bg-card);border:1px solid var(--line);border-radius:12px;
+    padding:18px 20px;margin-bottom:12px;transition:border-color .15s ease;
   }
+  .faq details[open]{border-color:var(--pink);}
   .faq summary{
-    cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;
+    cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px;
   }
   .faq summary::-webkit-details-marker{display:none;}
-  .faq summary::after{content:"+";font-weight:400;color:var(--accent-dark);}
-  .faq details[open] summary::after{content:"–";}
+  .faq summary::after{content:"+";font-family:var(--font-mono);font-weight:400;color:var(--lime);flex-shrink:0;}
+  .faq details[open] summary::after{content:"–";color:var(--pink);}
   .faq p{color:var(--ink-soft);margin:12px 0 0;}
 
-  footer{padding:40px 0;text-align:center;color:var(--ink-soft);font-size:.9rem;}
-  footer a{color:var(--accent-dark);text-decoration:none;font-weight:600;}
+  footer{padding:40px 0;text-align:center;color:var(--ink-faint);font-size:.88rem;border-top:1px solid var(--line);}
+  footer a{color:var(--lime);text-decoration:none;font-weight:600;}
+  footer a:hover{color:var(--pink);}
   .footer-links{margin-bottom:14px;}
   .footer-links a{margin:0 10px;}
 
@@ -223,7 +265,13 @@
           <a class="btn" href="#preco">Garantir o meu</a>
           <a class="btn ghost" href="https://www.instagram.com/joelcoveero/" target="_blank" rel="noopener">Ver no Instagram</a>
         </div>
-        <p class="hero-note">27 modelos · 77 arquivos · digital ou papel</p>
+        <div class="stat-strip">
+          <div class="stat-item"><span class="stat-num">27</span><span class="stat-label">Modelos</span></div>
+          <div class="stat-div"></div>
+          <div class="stat-item"><span class="stat-num">77</span><span class="stat-label">Arquivos</span></div>
+          <div class="stat-div"></div>
+          <div class="stat-item"><span class="stat-num">2</span><span class="stat-label">Formatos</span></div>
+        </div>
       </div>
       <div class="hero-visual">
         <img src="assets/hero-croqui.png" alt="Croqui de moda com corpo renderizado, vestido de festa com pérolas — ilustração de Joel Coveero">
@@ -237,17 +285,23 @@
       <p class="section-lead">A maioria dos pacotes entrega só o contorno do corpo. O Fashion Croqui PRO entrega uma base com aparência profissional — é como começar sua ilustração com 50% do trabalho já concluído.</p>
       <div class="grid-3">
         <div class="card">
-          <div class="icon">✨</div>
+          <div class="icon-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--pink)"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2L12 2z"/><path d="M19 3l.7 2.1L22 6l-2.3.9L19 9l-.7-2.1L16 6l2.3-.9L19 3z"/></svg>
+          </div>
           <h3>Corpo já renderizado</h3>
           <p>Pele com luz, sombra e volume prontos. Importe e foque só em ilustrar a peça, sem construir anatomia do zero.</p>
         </div>
         <div class="card">
-          <div class="icon">🖊️</div>
+          <div class="icon-badge lime">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="10.5" width="14" height="10" rx="2"/><rect x="6" y="6.5" width="14" height="10" rx="2" fill="var(--bg-card)"/><rect x="8" y="2.5" width="14" height="10" rx="2" fill="var(--bg-card)"/></svg>
+          </div>
           <h3>27 modelos, 77 arquivos</h3>
           <p>Feminino, masculino, plus size e manequim técnico — cada um em lineart, corpo renderizado e um segundo tom de pele.</p>
         </div>
         <div class="card">
-          <div class="icon">📐</div>
+          <div class="icon-badge violet">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5"/><path d="M15 4h5v5"/><path d="M20 15v5h-5"/><path d="M9 20H4v-5"/></svg>
+          </div>
           <h3>Alta resolução</h3>
           <p>Arquivos organizados e prontos para impressão ou uso digital, sem perda de qualidade.</p>
         </div>
@@ -261,12 +315,16 @@
       <p class="section-lead">O pack foi pensado para caber no seu fluxo de trabalho, seja ele digital ou tradicional.</p>
       <div class="grid-3" style="grid-template-columns:repeat(2,1fr);">
         <div class="card">
-          <div class="icon">💻</div>
+          <div class="icon-badge">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="14" height="20" rx="2"/><circle cx="10" cy="18.4" r=".6" fill="var(--pink)" stroke="none"/><path d="M17 6l4 4-8 8H9v-4l8-8z" fill="var(--bg-card)"/></svg>
+          </div>
           <h3>Desenho digital</h3>
           <p>Importe o croqui renderizado para Procreate, Photoshop, Clip Studio Paint, Illustrator ou o software de sua preferência e comece a ilustrar a peça na hora — sem perder tempo com anatomia ou renderização de pele.</p>
         </div>
         <div class="card">
-          <div class="icon">✏️</div>
+          <div class="icon-badge lime">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1z"/><path d="M14 7l3 3"/></svg>
+          </div>
           <h3>Desenho tradicional</h3>
           <p>Imprima a versão lineart e desenhe normalmente com lápis, caneta, marcadores ou aquarela no papel.</p>
         </div>
