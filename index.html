@@ -80,12 +80,19 @@
     aspect-ratio:4/5;
     border-radius:var(--radius);
     background:linear-gradient(160deg,#efe6d8,#f8f3ea);
-    border:1px dashed #cdbfa4;
     display:flex;align-items:center;justify-content:center;
     text-align:center;color:var(--ink-soft);font-size:.9rem;padding:24px;
     overflow:hidden;
   }
-  .hero-visual img{width:100%;height:100%;object-fit:cover;}
+  .hero-visual img{width:100%;height:100%;object-fit:contain;}
+
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
+  .gallery figure{
+    margin:0;background:var(--bg-alt);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;text-align:center;
+  }
+  .gallery img{width:100%;height:280px;object-fit:contain;}
+  .gallery figcaption{margin-top:10px;font-size:.85rem;color:var(--ink-soft);}
 
   section{padding:56px 0;}
   section.alt{background:var(--bg-alt);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
@@ -106,12 +113,11 @@
   .about-photo{
     aspect-ratio:1;border-radius:var(--radius);
     background:linear-gradient(160deg,#efe6d8,#f8f3ea);
-    border:1px dashed #cdbfa4;
     display:flex;align-items:center;justify-content:center;
     color:var(--ink-soft);font-size:.85rem;text-align:center;padding:16px;
     overflow:hidden;
   }
-  .about-photo img{width:100%;height:100%;object-fit:cover;}
+  .about-photo img{width:100%;height:100%;object-fit:cover;object-position:center 25%;}
   .stats{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap;}
   .stat b{display:block;font-size:1.4rem;color:var(--accent-dark);}
   .stat span{font-size:.85rem;color:var(--ink-soft);}
@@ -189,8 +195,7 @@
         <p class="hero-note">Pagamento via Pix ou cartão · entrega automática no e-mail</p>
       </div>
       <div class="hero-visual">
-        <!-- TODO(Joel): trocar por uma imagem real de croqui (ex: pasta CROQUIS/PNG do Drive) -->
-        <span>[ imagem de destaque do pack de croquis aqui ]</span>
+        <img src="assets/hero-croqui.png" alt="Croqui ilustrado por Joel Coveero, vestido rosa com pérolas">
       </div>
     </div>
   </section>
@@ -219,11 +224,27 @@
     </div>
   </section>
 
+  <section id="traco">
+    <div class="wrap">
+      <h2>O traço do Joel</h2>
+      <p class="section-lead">Uma amostra do nível de acabamento que você pode esperar — peças do portfólio pessoal do Joel (@joelcoveero).</p>
+      <div class="gallery">
+        <figure>
+          <img src="assets/galeria-1.png" alt="Croqui de vestido com capa floral, ilustrado por Joel Coveero">
+          <figcaption>Alta-costura — capa e vestido bordado</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/galeria-2.png" alt="Croqui de conjunto praia com apliques, frente e costas, ilustrado por Joel Coveero">
+          <figcaption>Praia/verão — frente e costas</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
   <section id="joel">
     <div class="wrap about">
       <div class="about-photo">
-        <!-- TODO(Joel): trocar por foto de perfil (pasta JOEL FOTOS do Drive) -->
-        <span>[ foto do Joel aqui ]</span>
+        <img src="assets/joel-foto.jpg" alt="Joel Pinheiro (@joelcoveero)">
       </div>
       <div>
         <div class="eyebrow">Quem assina o pack</div>

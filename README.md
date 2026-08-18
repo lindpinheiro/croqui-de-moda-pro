@@ -11,16 +11,19 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 
 ## O que falta preencher antes de divulgar
 
-Procure por `TODO(Joel...)` dentro do `index.html`:
-
-1. **Imagem de destaque do hero** (seção `.hero-visual`) — usar uma arte da
-   pasta `CROQUIS/PNG` ou `CROQUIS/JPEG` do Drive.
-2. **Foto do Joel** (seção `#joel`) — usar uma foto da pasta `JOEL FOTOS` do Drive.
-3. **Botão de compra** (seção `#preco`, `id="checkout-btn"`) — hoje ele abre o
+1. **Foto do Joel** (seção `#joel`) — usei `assets/joel-foto.jpg`, uma selfie
+   solo puxada da pasta `JOEL FOTOS` do Drive porque era a única com uma
+   pessoa só (as outras fotos têm mais gente e eu não tinha como confirmar
+   quem era quem). Confirmem com o Joel se é essa a foto que ele quer usar
+   publicamente, ou troquem pela que preferirem.
+2. **Botão de compra** (seção `#preco`, `id="checkout-btn"`) — hoje ele abre o
    WhatsApp para lista de espera. Quando o pack estiver pronto e cadastrado
    numa plataforma de checkout, troque o `href` pelo link real de pagamento.
-4. Revisar preço, texto do pack e da bio do Joel — o texto atual foi montado
+3. Revisar preço, texto do pack e da bio do Joel — o texto atual foi montado
    a partir do Instagram público, confirme os detalhes com ele.
+4. As imagens de croqui (hero e galeria) são peças do portfólio pessoal do
+   Joel puxadas da pasta `CROQUIS/PNG` do Drive — troque por artes oficiais
+   do pack assim que ele estiver fechado.
 
 ## Recomendação de checkout (produto digital, público brasileiro)
 
