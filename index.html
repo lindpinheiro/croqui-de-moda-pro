@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Croqui de Moda PRO – Croquis Profissionais Prontos para Ilustrar</title>
-<meta name="description" content="Croqui de moda pronto, com corpo totalmente renderizado ou lineart em alta qualidade. Ideal para estudantes de moda, TCC, portfólio e fashion designers que querem desenhar mais rápido.">
+<meta name="description" content="Croqui de moda pronto, com base totalmente renderizada ou lineart em alta qualidade. Ideal para estudantes de moda, TCC, portfólio e fashion designers que querem desenhar mais rápido.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="Joel Pinheiro (@joelcoveero)">
 <meta name="theme-color" content="#0a0710">
@@ -14,13 +14,13 @@
 <meta property="og:locale" content="pt_BR">
 <meta property="og:site_name" content="Croqui de Moda PRO">
 <meta property="og:title" content="Croqui de Moda PRO – Croquis Profissionais Prontos para Ilustrar">
-<meta property="og:description" content="O único pacote de croqui de moda com corpo totalmente renderizado (luz, sombra e volume) e lineart em alta qualidade. Pronto para digital ou papel.">
+<meta property="og:description" content="O único pacote de croqui de moda com base totalmente renderizada (luz, sombra e volume) e lineart em alta qualidade. Pronto para digital ou papel.">
 <meta property="og:image" content="https://croquidemodapro.com.br/assets/hero-croqui.png">
 <meta property="og:url" content="https://croquidemodapro.com.br/">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Croqui de Moda PRO – Croquis Profissionais Prontos para Ilustrar">
-<meta name="twitter:description" content="27 modelos, 77 arquivos, corpos já renderizados com luz e sombra. Pronto para digital ou papel.">
+<meta name="twitter:description" content="27 modelos, 77 arquivos, bases já renderizadas com luz e sombra. Pronto para digital ou papel.">
 <meta name="twitter:image" content="https://croquidemodapro.com.br/assets/hero-croqui.png">
 
 <link rel="icon" href="data:,">
@@ -33,7 +33,7 @@
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "Croqui de Moda PRO",
-  "description": "Pacote com 77 arquivos de croqui de moda profissional: 27 modelos (femininos, masculinos, plus size e manequim técnico), cada um em versão lineart, corpo renderizado e segundo tom de pele. Inclui mini curso em vídeo, com módulo de criação de estampas com IA.",
+  "description": "Pacote com 77 arquivos de croqui de moda profissional: 27 modelos (femininos, masculinos, plus size e manequim técnico), cada um em versão lineart, base renderizada e segundo tom de pele. Inclui mini curso em vídeo, com módulo de criação de estampas com IA.",
   "brand": { "@type": "Person", "name": "Joel Pinheiro" },
   "offers": {
     "@type": "Offer",
@@ -59,8 +59,8 @@
     },
     {
       "@type": "Question",
-      "name": "Qual a diferença entre lineart e corpo renderizado?",
-      "acceptedAnswer": { "@type": "Answer", "text": "O lineart é só o contorno do corpo, ideal para quem vai imprimir e desenhar à mão. O corpo renderizado já vem com pele, luz e sombra prontas — você importa no software e foca só em ilustrar a roupa." }
+      "name": "Qual a diferença entre lineart e base renderizada?",
+      "acceptedAnswer": { "@type": "Answer", "text": "O lineart é só o contorno do croqui, ideal para quem vai imprimir e desenhar à mão. A base renderizada já vem com pele, luz e sombra prontas — você importa no software e foca só em ilustrar a roupa." }
     },
     {
       "@type": "Question",
@@ -80,7 +80,7 @@
     {
       "@type": "Question",
       "name": "Preciso saber desenhar bem pra usar o pack?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Não. O corpo já vem pronto e renderizado — você só complementa com a roupa por cima. Funciona até pra quem não é ilustrador, como costureiras e estilistas freelancers que precisam mostrar uma ideia pro cliente com qualidade antes de executar a peça." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Não. A base já vem pronta e renderizada — você só complementa com a roupa por cima. Funciona até pra quem não é ilustrador, como costureiras e estilistas freelancers que precisam mostrar uma ideia pro cliente com qualidade antes de executar a peça." }
     },
     {
       "@type": "Question",
@@ -224,7 +224,7 @@
   .video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;justify-items:center;}
   .video-grid > blockquote{margin:0 !important;}
 
-  .tut-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .tut-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
   .tut-card{
     background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
     overflow:hidden;transition:transform .18s ease, border-color .18s ease;
@@ -292,6 +292,14 @@
   .stat b{display:block;font-family:var(--font-mono);font-size:1.3rem;color:var(--lime);text-shadow:0 0 16px rgba(215,255,62,.35);}
   .stat span{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);}
 
+  .audience-eyebrow{margin-top:28px;}
+  .audience-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px;}
+  .audience-tags .tag{
+    font-family:var(--font-mono);font-size:.78rem;color:var(--ink);
+    background:rgba(155,92,255,.12);border:1px solid rgba(155,92,255,.4);
+    padding:7px 14px;border-radius:999px;
+  }
+
   .pricing{
     max-width:560px;margin:0 auto;text-align:center;
     background:linear-gradient(160deg,var(--bg-card),#1c1330);
@@ -338,6 +346,7 @@
     .hero-visual{order:-1;aspect-ratio:16/10;}
     .grid-3{grid-template-columns:1fr;}
     .trust-grid{grid-template-columns:1fr;}
+    .tut-grid{grid-template-columns:1fr;}
     .about{grid-template-columns:1fr;}
     nav.site{display:none;}
   }
@@ -363,7 +372,7 @@
   <section class="hero">
     <div class="wrap">
       <div>
-        <div class="eyebrow">Croqui de moda com corpo totalmente renderizado</div>
+        <div class="eyebrow">Croqui de moda com base totalmente renderizada</div>
         <h1>Croqui de moda pronto para você não perder horas desenhando a base. Foque no que realmente importa: criar suas peças.</h1>
         <p class="lead">O Croqui de Moda PRO traz croquis com luz, sombra e volume já prontos — ideal para TCC, portfólio e trabalhos da faculdade. Abra no seu software favorito e comece a ilustrar na hora, ou use a versão lineart para desenhar no papel.</p>
         <div class="hero-actions">
@@ -379,7 +388,7 @@
         </div>
       </div>
       <div class="hero-visual">
-        <img src="assets/hero-croqui.png" alt="Croqui de moda com corpo renderizado, vestido de festa com pérolas — ilustração de Joel Coveero">
+        <img src="assets/hero-croqui.png" alt="Croqui de moda com base renderizada, vestido de festa com pérolas — ilustração de Joel Coveero">
       </div>
     </div>
   </section>
@@ -387,13 +396,13 @@
   <section class="alt" id="pack">
     <div class="wrap">
       <h2>O que vem no Croqui de Moda PRO</h2>
-      <p class="section-lead">A maioria dos pacotes entrega só o contorno do corpo. O Croqui de Moda PRO entrega uma base com aparência profissional — é como começar sua ilustração com 50% do trabalho já concluído.</p>
+      <p class="section-lead">A maioria dos pacotes entrega só o contorno do croqui. O Croqui de Moda PRO entrega uma base com aparência profissional — é como começar sua ilustração com 50% do trabalho já concluído.</p>
       <div class="grid-3">
         <div class="card">
           <div class="icon-badge">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--pink)"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2L12 2z"/><path d="M19 3l.7 2.1L22 6l-2.3.9L19 9l-.7-2.1L16 6l2.3-.9L19 3z"/></svg>
           </div>
-          <h3>Corpo já renderizado</h3>
+          <h3>Base já renderizada</h3>
           <p>Pele com luz, sombra e volume prontos. Importe e foque só em ilustrar a peça, sem construir anatomia do zero.</p>
         </div>
         <div class="card">
@@ -401,7 +410,7 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="10.5" width="14" height="10" rx="2"/><rect x="6" y="6.5" width="14" height="10" rx="2" fill="var(--bg-card)"/><rect x="8" y="2.5" width="14" height="10" rx="2" fill="var(--bg-card)"/></svg>
           </div>
           <h3>27 modelos, 77 arquivos</h3>
-          <p>Feminino, masculino, plus size e manequim técnico — cada um em lineart, corpo renderizado e um segundo tom de pele.</p>
+          <p>Feminino, masculino, plus size e manequim técnico — cada um em lineart, base renderizada e um segundo tom de pele.</p>
         </div>
         <div class="card">
           <div class="icon-badge violet">
@@ -410,6 +419,15 @@
           <h3>Alta resolução</h3>
           <p>Arquivos organizados e prontos para impressão ou uso digital, sem perda de qualidade.</p>
         </div>
+      </div>
+      <div class="eyebrow audience-eyebrow">Ideal para</div>
+      <div class="audience-tags">
+        <span class="tag">Estudantes de moda</span>
+        <span class="tag">Fashion designers</span>
+        <span class="tag">Ilustradores de moda</span>
+        <span class="tag">Profissionais de ateliê</span>
+        <span class="tag">Criadores de coleções</span>
+        <span class="tag">Costureiras &amp; freelancers</span>
       </div>
     </div>
   </section>
@@ -431,6 +449,18 @@
           <div class="tut-body">
             <h3>Estampas com IA sobre a base</h3>
             <p>Passo a passo pra gerar texturas e estampas com IA e aplicar em cima do croqui já renderizado — pra criar peças com cara profissional em minutos.</p>
+          </div>
+        </div>
+        <div class="tut-card featured">
+          <div class="tut-thumb">
+            <span class="tut-badge">Mini curso incluso</span>
+            <div class="tut-play">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--ink)"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <div class="tut-body">
+            <h3>Criando coleções consistentes com IA</h3>
+            <p>Como manter o mesmo universo visual — paleta, estampas e silhuetas — em várias peças da sua coleção, usando IA sem perder a identidade entre uma peça e outra.</p>
           </div>
         </div>
         <div class="tut-card">
@@ -504,7 +534,7 @@
           <p>Imagem solta da internet: você não sabe a resolução real, se pode usar comercialmente, nem quantas outras pessoas já usaram a mesma. As bases do pack são traço original do Joel, já aprovado por marcas e artistas como Ludmilla e KATSEYE, com licença de uso comercial garantida.</p>
         </div>
       </div>
-      <p class="section-lead" style="margin:28px 0 0;">Você não está pagando por "um desenho de corpo" — está pagando por uma base com qualidade testada em produções reais, pronta pra sustentar o seu traço ou o da IA sem parecer amadora.</p>
+      <p class="section-lead" style="margin:28px 0 0;">Você não está pagando por "um desenho qualquer" — está pagando por uma base com qualidade testada em produções reais, pronta pra sustentar o seu traço ou o da IA sem parecer amadora.</p>
     </div>
   </section>
 
@@ -582,9 +612,6 @@
           <div class="stat"><b>3,2 mil+</b><span>seguidores no Instagram</span></div>
           <div class="stat"><b>Marcas &amp; estilistas</b><span>atendidos em projetos de coleção</span></div>
         </div>
-        <p class="section-lead" style="margin:22px 0 0;">
-          <strong style="color:var(--ink);">Ideal para:</strong> estudantes de moda, fashion designers, ilustradores de moda, profissionais de ateliê, criadores de coleções — e também costureiras e estilistas freelancers que precisam apresentar uma ideia com qualidade pro cliente antes de executar a peça.
-        </p>
       </div>
     </div>
   </section>
@@ -617,7 +644,7 @@
         <p class="price-old">de R$ 139</p>
         <ul>
           <li>27 modelos: feminino, masculino, plus size e manequim técnico</li>
-          <li>77 arquivos: lineart + corpo renderizado + segundo tom de pele</li>
+          <li>77 arquivos: lineart + base renderizada + segundo tom de pele</li>
           <li>Mini curso: como usar, imprimir e criar estampas com IA</li>
           <li>Licença para uso comercial dos seus próprios croquis</li>
           <li>Entrega automática por e-mail</li>
@@ -649,8 +676,8 @@
         <p>Em qualquer software que abra imagem, como Procreate, Photoshop, Clip Studio Paint ou Illustrator. A versão lineart também pode ser impressa para desenhar no papel com lápis, caneta ou aquarela.</p>
       </details>
       <details>
-        <summary>Qual a diferença entre lineart e corpo renderizado?</summary>
-        <p>O lineart é só o contorno do corpo, ideal para quem vai imprimir e desenhar à mão. O corpo renderizado já vem com pele, luz e sombra prontas — você importa no software e foca só em ilustrar a roupa.</p>
+        <summary>Qual a diferença entre lineart e base renderizada?</summary>
+        <p>O lineart é só o contorno do croqui, ideal para quem vai imprimir e desenhar à mão. A base renderizada já vem com pele, luz e sombra prontas — você importa no software e foca só em ilustrar a roupa.</p>
       </details>
       <details>
         <summary>Posso usar os croquis em projetos comerciais?</summary>
@@ -666,7 +693,7 @@
       </details>
       <details>
         <summary>Preciso saber desenhar bem pra usar o pack?</summary>
-        <p>Não. O corpo já vem pronto e renderizado — você só complementa com a roupa por cima. Funciona até pra quem não é ilustrador, como costureiras e estilistas freelancers que precisam mostrar uma ideia pro cliente com qualidade antes de executar a peça.</p>
+        <p>Não. A base já vem pronta e renderizada — você só complementa com a roupa por cima. Funciona até pra quem não é ilustrador, como costureiras e estilistas freelancers que precisam mostrar uma ideia pro cliente com qualidade antes de executar a peça.</p>
       </details>
       <details>
         <summary>Vou usar só uma vez, vale a pena pagar?</summary>
