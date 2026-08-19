@@ -34,7 +34,7 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
    pra usar num site comercial; se quiserem trocar por fotos/logos reais,
    é só substituir o conteúdo de `.trust-avatar` em cada card.
 7. **Vídeos do Instagram** (`#videos`) — carrossel automático (troca a cada
-   20s, clique num card lateral pra trazê-lo pra frente) com 3 posts reais
+   5s, clique num card lateral pra trazê-lo pra frente) com 3 posts reais
    do Joel usando o pack (`DQ4XvT-jpb1`, `DYZqfMhjV5a`, `DUvudSEDnxR`). Se
    quiserem trocar os posts, me mandem os links de `instagram.com/p/...` ou
    `/reel/...`.
