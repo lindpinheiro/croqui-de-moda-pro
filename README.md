@@ -11,39 +11,39 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 
 ## O que falta preencher antes de divulgar
 
-0. **Seção "Do traço ao croqui pronto"** (`#processo`) — as 5 imagens
-   (`assets/process-1.jpg` a `process-5.jpg`) são recortes de uma arte de
-   carrossel do Instagram que o Lindberg enviou (imagem "asdasd.jpg" no
-   Drive), mostrando um croqui de exemplo evoluindo até a peça final. Os
-   recortes têm um pouco de "sangria" das legendas vizinhas nas bordas
-   (inevitável, o arquivo original já tinha os slides colados lado a lado)
-   — se incomodar, me mandem os slides originais separados que eu troco.
-1. **Foto do Joel** (seção `#joel`) — usei `assets/joel-foto.jpg`, uma selfie
-   solo puxada da pasta `JOEL FOTOS` do Drive porque era a única com uma
-   pessoa só (as outras fotos têm mais gente e eu não tinha como confirmar
-   quem era quem). Confirmem com o Joel se é essa a foto que ele quer usar
-   publicamente, ou troquem pela que preferirem.
-2. **Botão de compra** (seção `#preco`, `id="checkout-btn"`) — hoje ele abre o
+1. **Seção "Do traço ao croqui pronto"** (`#processo`) — refeita com 5 fotos
+   isoladas (sem legenda) que o Lindberg enviou pra pasta "passo a passo" do
+   Drive (`assets/process-1.png` a `process-5.png`, fundo branco removido via
+   chroma-key). Cards com setas conectando os passos, revelando um a um
+   conforme rola a página.
+2. **Foto do Joel** (seção `#joel`) — trocada para `assets/joel-foto.jpg`,
+   a foto confirmada pelo Lindberg (com o Sonic, na pasta `JOEL FOTOS` do
+   Drive, arquivo `IMG_0911.JPG`).
+3. **"Texturas de papel"** (card na seção `#pack` e item no `#preco`) — copy
+   nova descrevendo texturas de papel/tecido incluídas no pack. Ainda não
+   recebi os arquivos de exemplo, então confirmem se esse conteúdo já existe
+   e bate com a descrição antes de divulgar.
+4. **Botão de compra** (seção `#preco`, `id="checkout-btn"`) — hoje ele abre o
    WhatsApp para lista de espera. Quando o pack estiver pronto e cadastrado
    numa plataforma de checkout, troque o `href` pelo link real de pagamento.
-3. Revisar preço, texto do pack e da bio do Joel — o texto atual foi montado
+5. Revisar preço, texto do pack e da bio do Joel — o texto atual foi montado
    a partir do Instagram público, confirme os detalhes com ele.
-4. **Imagens do hero** (`#hero-carousel`) — carrossel com crossfade automático
+6. **Imagens do hero** (`#hero-carousel`) — carrossel com crossfade automático
    (troca a cada 3,5s) usando 5 bases reais do pack (`assets/hero-base-1.png`
    a `hero-base-5.png`), enviadas pelo Lindberg pra pasta
    `1e2M9CP5kKTX14Oie5VWbsuBtau1I6_As` do Drive. As imagens da galeria
    (`#traco`) continuam sendo peças do portfólio pessoal do Joel, puxadas da
    pasta `CROQUIS/PNG` — troque por artes oficiais do pack quando ele fechar.
-5. **Domínio no `<head>`** — `canonical`, `og:url` e `og:image` estão
+7. **Domínio no `<head>`** — `canonical`, `og:url` e `og:image` estão
    apontando para `https://croquidemodapro.com.br/`, um domínio placeholder
    que ainda não existe. Troque pelas URLs reais assim que vocês registrarem
    o domínio e definirem onde o site vai ficar publicado.
-6. **Seção "Trusted By"** (`#confianca`) — os avatares de Ludmilla, KATSEYE e
+8. **Seção "Trusted By"** (`#confianca`) — os avatares de Ludmilla, KATSEYE e
    ssjheni são só as iniciais (L/K/S) coloridas, não as fotos reais deles.
    Preferi não puxar as fotos de perfil de terceiros sem autorização deles
    pra usar num site comercial; se quiserem trocar por fotos/logos reais,
    é só substituir o conteúdo de `.trust-avatar` em cada card.
-7. **Vídeos do Instagram** (`#videos`) — carrossel automático (troca a cada
+9. **Vídeos do Instagram** (`#videos`) — carrossel automático (troca a cada
    5s, clique num card lateral pra trazê-lo pra frente) com 3 posts reais
    do Joel usando o pack (`DQ4XvT-jpb1`, `DYZqfMhjV5a`, `DUvudSEDnxR`). Se
    quiserem trocar os posts, me mandem os links de `instagram.com/p/...` ou
@@ -128,6 +128,12 @@ renderizar a animação — mais previsível e mais fácil de debugar.
 Rede de segurança: se o CDN falhar, o script mostra tudo imediatamente (não
 deixa conteúdo invisível numa página de vendas). Quem usa "reduzir
 movimento" no sistema não recebe a animação — o conteúdo já aparece visível.
+
+Segunda rede de segurança: além da Motion, o script também checa a posição
+de cada elemento "na mão" (sem depender do `IntersectionObserver`) toda vez
+que a página rola — cobre navegadores/extensões que atrasam ou suspendem o
+observer, e garante que o que já está na tela no carregamento aparece na
+hora, mesmo se a Motion demorar pra responder.
 
 ## Dependência externa: embeds do Instagram
 
