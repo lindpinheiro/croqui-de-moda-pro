@@ -122,12 +122,35 @@ com segurança), use uma plataforma pronta de produto digital:
 
 ## Componentes do React Bits portados para JS puro
 
-Três componentes do [React Bits](https://reactbits.dev) estão em uso:
-**AccordionGallery** (`#processo`), **DriftWall** (`#traco`) e **SplitText**
-(todos os títulos de seção). Os originais são React, e este site é
-HTML/CSS/JS estático sem build; adotar React só por causa deles significaria
-reescrever o site inteiro. Então os três foram portados para JS puro,
-mantendo comportamento, estrutura de classes e parâmetros dos originais.
+Seis componentes do [React Bits](https://reactbits.dev) estão em uso:
+
+| Componente | Onde |
+|---|---|
+| **AccordionGallery** | `#processo` — etapas do processo |
+| **DriftWall** | `#traco` — mural 3D de trabalhos |
+| **SplitText** | todos os títulos de seção (`<h2>`) |
+| **Strands** | fundo animado do `#preco` |
+| **SpecularButton** | botões primários (`.btn`, exceto os `.ghost`) |
+| **StarBorder** | moldura do card de preço |
+
+Os originais são React, e este site é HTML/CSS/JS estático sem build; adotar
+React só por causa deles significaria reescrever o site inteiro. Então todos
+foram portados para JS puro, mantendo comportamento, estrutura de classes e
+parâmetros dos originais.
+
+O **Strands** e o **SpecularButton** rodam em WebGL e usam a biblioteca
+[ogl](https://github.com/oframe/ogl), carregada via CDN. Os shaders são os
+mesmos dos componentes originais. Ambos degradam em silêncio: sem WebGL2 ou
+sem CDN, o fundo do preço fica vazio e os botões seguem com o gradiente
+normal — nada quebra. Os dois também param de renderizar quando saem da
+tela, pra não gastar GPU à toa.
+
+No **SpecularButton**, o gradiente rosa→violeta dos botões foi mantido: o
+canvas só desenha o realce que corre pela borda, por cima do fundo atual.
+
+O **StarBorder** não usa biblioteca nenhuma — é só CSS. Envolve o card de
+preço e faz dois brilhos (violeta em cima, rosa embaixo) correrem pelas
+bordas. Parâmetros no `style` inline dos `.border-gradient-*`.
 
 O **SplitText** quebra cada `<h2>` (ou seja, todo título depois do hero) em
 caracteres que sobem e aparecem um após o outro quando o título entra na

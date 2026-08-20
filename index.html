@@ -177,6 +177,13 @@
     transition:box-shadow .18s ease, transform .18s ease;
   }
   .btn:hover{box-shadow:0 10px 32px -8px rgba(255,47,143,.8);transform:translateY(-1px);}
+  /* SpecularButton — brilho especular que corre pela borda dos botoes
+     primarios. O fundo em gradiente do .btn e mantido; o canvas so
+     desenha o realce por cima. */
+  .btn.has-specular{position:relative;}
+  .btn__fx{position:absolute;inset:-20px;pointer-events:none;z-index:1;}
+  .btn__fx canvas{display:block;width:100%;height:100%;}
+  .btn__label{position:relative;z-index:2;}
   .btn.ghost{
     background:transparent;border:1.5px solid var(--violet);color:var(--ink);box-shadow:none;
   }
@@ -554,7 +561,52 @@
     padding:7px 14px;border-radius:999px;
   }
 
+  /* Strands — fundo animado em WebGL atras do card de preco */
+  #preco{position:relative;isolation:isolate;}
+  #preco > .wrap{position:relative;z-index:1;}
+  .strands-container{
+    position:absolute;inset:0;z-index:0;
+    background:transparent;pointer-events:none;
+    opacity:0;transition:opacity 1.2s ease;
+  }
+  .strands-container.is-ready{opacity:1;}
+  .strands-container canvas{display:block;width:100%;height:100%;}
+
+  /* StarBorder — dois brilhos correm pelas bordas de cima e de baixo do card */
+  .star-border-container{
+    display:block;position:relative;max-width:560px;margin:0 auto;
+    border-radius:var(--radius);overflow:hidden;padding:2px 0;
+  }
+  .border-gradient-bottom,
+  .border-gradient-top{
+    position:absolute;width:300%;height:50%;opacity:.7;
+    border-radius:50%;z-index:0;pointer-events:none;
+    animation:star-movement linear infinite alternate;
+  }
+  .border-gradient-bottom{
+    bottom:-12px;right:-250%;
+    background:radial-gradient(circle, var(--pink), transparent 10%);
+    animation-name:star-movement-bottom;
+  }
+  .border-gradient-top{
+    top:-12px;left:-250%;
+    background:radial-gradient(circle, var(--violet), transparent 10%);
+    animation-name:star-movement-top;
+  }
+  @keyframes star-movement-bottom{
+    0%{transform:translate(0%, 0%);opacity:1;}
+    100%{transform:translate(-100%, 0%);opacity:0;}
+  }
+  @keyframes star-movement-top{
+    0%{transform:translate(0%, 0%);opacity:1;}
+    100%{transform:translate(100%, 0%);opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .border-gradient-bottom, .border-gradient-top{animation:none;opacity:.35;}
+  }
+
   .pricing{
+    position:relative;z-index:1;
     max-width:560px;margin:0 auto;text-align:center;
     background:linear-gradient(160deg,var(--bg-card),#1c1330);
     border:1px solid var(--violet);border-radius:var(--radius);
@@ -1017,10 +1069,14 @@
   </section>
 
   <section class="alt" id="preco">
+    <div class="strands-container" id="strands" aria-hidden="true"></div>
     <div class="wrap">
       <h2 style="text-align:center;">Garanta o seu</h2>
       <p class="section-lead" style="margin-left:auto;margin-right:auto;text-align:center;">Lançamento em breve — entre na lista e seja avisado assim que abrir.</p>
-      <div class="pricing reveal">
+      <div class="star-border-container reveal">
+        <div class="border-gradient-bottom" style="animation-duration:6s;" aria-hidden="true"></div>
+        <div class="border-gradient-top" style="animation-duration:6s;" aria-hidden="true"></div>
+        <div class="pricing">
         <span class="soon-badge">Em breve</span>
         <div class="price">R$ 97,50</div>
         <p class="price-note">pagamento único</p>
@@ -1044,6 +1100,7 @@
            target="_blank" rel="noopener">
           Entrar na lista de espera
         </a>
+        </div>
       </div>
     </div>
   </section>
@@ -1220,6 +1277,415 @@
       var allTrimmed = slides.every(function (s) { return s.dataset.trimmed === "1"; });
       if (allTrimmed || trimAttempts > 20) clearInterval(trimInterval);
     }, 350);
+  })();
+</script>
+
+<script type="module">
+  // SpecularButton — vanilla port of the React Bits component (reactbits.dev).
+  // Draws a specular highlight that runs along the button's edge and steers
+  // toward the pointer. The button keeps its own gradient background; this
+  // only adds the rim highlight on top, on a small transparent canvas.
+  //
+  // Degrades quietly: without WebGL2 or the CDN the buttons stay exactly as
+  // they are today.
+  (function () {
+    var buttons = Array.prototype.slice.call(document.querySelectorAll(".btn:not(.ghost)"));
+    if (!buttons.length) return;
+
+    var PAD = 20;
+
+    var VERT =
+      "#version 300 es\n" +
+      "in vec2 position;\n" +
+      "void main() { gl_Position = vec4(position, 0.0, 1.0); }\n";
+
+    var FRAG =
+      "#version 300 es\n" +
+      "precision highp float;\n" +
+      "uniform vec2 uCenter;\n" +
+      "uniform vec2 uHalfSize;\n" +
+      "uniform float uRadius;\n" +
+      "uniform float uAngle;\n" +
+      "uniform float uPx;\n" +
+      "uniform vec3 uLineColor;\n" +
+      "uniform vec3 uBaseColor;\n" +
+      "uniform float uIntensity;\n" +
+      "uniform float uShineSize;\n" +
+      "uniform float uShineFade;\n" +
+      "uniform float uThickness;\n" +
+      "uniform float uBaseWidth;\n" +
+      "out vec4 fragColor;\n" +
+      "float sdRoundedRect(vec2 p, vec2 b, float r) {\n" +
+      "  vec2 q = abs(p) - b + r;\n" +
+      "  return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;\n" +
+      "}\n" +
+      "float shapeSDF(vec2 p) { return sdRoundedRect(p, uHalfSize, uRadius); }\n" +
+      "float gaussianLine(float d, float sigma) {\n" +
+      "  float x = d / (sigma + 1e-6);\n" +
+      "  float k = mix(1.0, 1.6, smoothstep(0.0, 1.5, x));\n" +
+      "  return exp(-k * x * x);\n" +
+      "}\n" +
+      "void main() {\n" +
+      "  vec2 p = gl_FragCoord.xy - uCenter;\n" +
+      "  float d = shapeSDF(p);\n" +
+      "  vec2 L = vec2(cos(uAngle), sin(uAngle));\n" +
+      "  float base = (1.0 - smoothstep(0.0, uBaseWidth, abs(d))) * 0.45;\n" +
+      "  vec2 nEll = normalize(p / (uHalfSize * uHalfSize) + 1e-6);\n" +
+      "  float phi = acos(clamp(abs(dot(nEll, L)), 0.0, 1.0));\n" +
+      "  float rim = 1.0 - smoothstep(uShineSize - uShineFade, uShineSize + uShineFade + 1e-4, phi);\n" +
+      "  float line = gaussianLine(d, uThickness);\n" +
+      "  float edgeClamp = 1.0 - smoothstep(0.5 * uPx, 3.0 * uPx, abs(d));\n" +
+      "  float hi = line * rim * edgeClamp * uIntensity;\n" +
+      "  vec3 col = uBaseColor * base + uLineColor * hi;\n" +
+      "  float a = clamp(base + hi, 0.0, 1.0);\n" +
+      "  fragColor = vec4(col, a);\n" +
+      "}\n";
+
+    var OPTS = {
+      lineColor: "#ffffff",
+      baseColor: "#2b2140",
+      intensity: 1,
+      shineSize: 10,
+      shineFade: 40,
+      thickness: 1,
+      speed: 0.35,
+      proximity: 260,
+      autoAnimate: true
+    };
+
+    import("https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm")
+      .then(function (ogl) {
+        var dpr = window.devicePixelRatio || 1;
+        var instances = [];
+
+        buttons.forEach(function (btn) {
+          var renderer = new ogl.Renderer({
+            alpha: true, premultipliedAlpha: true, antialias: true, dpr: dpr
+          });
+          var gl = renderer.gl;
+          if (typeof WebGL2RenderingContext === "undefined" || !(gl instanceof WebGL2RenderingContext)) return;
+
+          gl.clearColor(0, 0, 0, 0);
+          gl.enable(gl.BLEND);
+          gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+
+          var geometry = new ogl.Triangle(gl);
+          if (geometry.attributes.uv) delete geometry.attributes.uv;
+
+          var lineC = new ogl.Color(OPTS.lineColor);
+          var baseC = new ogl.Color(OPTS.baseColor);
+
+          var program = new ogl.Program(gl, {
+            vertex: VERT,
+            fragment: FRAG,
+            uniforms: {
+              uCenter: { value: [0, 0] },
+              uHalfSize: { value: [1, 1] },
+              uRadius: { value: 0 },
+              uAngle: { value: 2.4 },
+              uPx: { value: dpr },
+              uLineColor: { value: [lineC.r, lineC.g, lineC.b] },
+              uBaseColor: { value: [baseC.r, baseC.g, baseC.b] },
+              uIntensity: { value: 0 },
+              uShineSize: { value: (OPTS.shineSize * Math.PI) / 180 },
+              uShineFade: { value: (OPTS.shineFade * Math.PI) / 180 },
+              uThickness: { value: OPTS.thickness * dpr },
+              uBaseWidth: { value: dpr }
+            }
+          });
+          var mesh = new ogl.Mesh(gl, { geometry: geometry, program: program });
+
+          // Wrap the existing label so it paints above the canvas.
+          var label = document.createElement("span");
+          label.className = "btn__label";
+          while (btn.firstChild) label.appendChild(btn.firstChild);
+          var fx = document.createElement("span");
+          fx.className = "btn__fx";
+          fx.setAttribute("aria-hidden", "true");
+          fx.appendChild(gl.canvas);
+          btn.appendChild(fx);
+          btn.appendChild(label);
+          btn.classList.add("has-specular");
+
+          var inst = {
+            btn: btn, renderer: renderer, program: program, mesh: mesh,
+            w: 1, h: 1, angle: 2.4, idleAngle: 2.4, bright: 0,
+            pointerAngle: null, proximityT: 0, visible: true
+          };
+
+          function resize() {
+            var rect = btn.getBoundingClientRect();
+            if (!rect.width || !rect.height) return;
+            inst.w = rect.width;
+            inst.h = rect.height;
+            renderer.setSize(rect.width + PAD * 2, rect.height + PAD * 2);
+            program.uniforms.uCenter.value = [(PAD + rect.width / 2) * dpr, (PAD + rect.height / 2) * dpr];
+            program.uniforms.uHalfSize.value = [(rect.width / 2) * dpr, (rect.height / 2) * dpr];
+          }
+          if ("ResizeObserver" in window) new ResizeObserver(resize).observe(btn);
+          resize();
+
+          if ("IntersectionObserver" in window) {
+            inst.visible = false;
+            new IntersectionObserver(function (entries) {
+              inst.visible = entries[0].isIntersecting;
+            }).observe(btn);
+          }
+
+          instances.push(inst);
+        });
+
+        if (!instances.length) return;
+
+        window.addEventListener("pointermove", function (e) {
+          instances.forEach(function (inst) {
+            var rect = inst.btn.getBoundingClientRect();
+            var cx = rect.left + rect.width / 2;
+            var cy = rect.top + rect.height / 2;
+            var dx = Math.max(rect.left - e.clientX, 0, e.clientX - rect.right);
+            var dy = Math.max(rect.top - e.clientY, 0, e.clientY - rect.bottom);
+            var dist = Math.hypot(dx, dy);
+            if (dist === 0) {
+              var nx = (e.clientX - cx) / (rect.width / 2);
+              var ny = (cy - e.clientY) / (rect.height / 2);
+              inst.pointerAngle = Math.atan2(2 / rect.height, -2 / rect.width) + nx * 0.3 + ny * 0.15;
+            } else {
+              inst.pointerAngle = Math.atan2(cy - e.clientY, e.clientX - cx);
+            }
+            var t = Math.max(0, 1 - dist / Math.max(OPTS.proximity, 1));
+            inst.proximityT = t * t * (3 - 2 * t);
+          });
+        }, { passive: true });
+
+        // One shared loop drives every button, instead of one rAF each.
+        var last = performance.now();
+        function frame(now) {
+          requestAnimationFrame(frame);
+          var dt = Math.min((now - last) / 1000, 0.05);
+          last = now;
+
+          instances.forEach(function (inst) {
+            if (!inst.visible) return;
+            inst.idleAngle += OPTS.speed * dt;
+            var steer = inst.pointerAngle != null && (!OPTS.autoAnimate || inst.proximityT > 0);
+            var target = steer ? inst.pointerAngle : inst.idleAngle;
+            var diff = ((target - inst.angle + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+            inst.angle += diff * (1 - Math.exp(-dt * 7));
+
+            var brightTarget = OPTS.autoAnimate ? 1 : inst.proximityT;
+            inst.bright += (brightTarget - inst.bright) * (1 - Math.exp(-dt * 8));
+
+            inst.program.uniforms.uAngle.value = inst.angle;
+            inst.program.uniforms.uRadius.value = Math.min(inst.w, inst.h) / 2 * dpr;
+            inst.program.uniforms.uIntensity.value = OPTS.intensity * inst.bright;
+            inst.renderer.render({ scene: inst.mesh });
+          });
+        }
+        requestAnimationFrame(frame);
+      })
+      .catch(function () {
+        // CDN unavailable — buttons keep their normal gradient look.
+      });
+  })();
+</script>
+
+<script type="module">
+  // Strands — vanilla port of the React Bits component (reactbits.dev).
+  // Animated WebGL background behind the pricing card. Uses the same shaders
+  // as the original; only the React wrapper was rewritten, since this site
+  // has no build step. The `ogl` library comes from a CDN as an ES module.
+  //
+  // Degrades quietly: if WebGL2 or the CDN is unavailable the container just
+  // stays empty and transparent, and the section looks exactly as before.
+  (function () {
+    var ctn = document.getElementById("strands");
+    if (!ctn) return;
+
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // Tuned to the site palette (pink / violet / lime) and kept subtle so the
+    // pricing card stays the focus.
+    var OPTS = {
+      colors: ["#ff2f8f", "#9b5cff", "#d7ff3e"],
+      count: 4,
+      speed: 0.3,
+      amplitude: 0.9,
+      waviness: 1.6,
+      thickness: 0.55,
+      glow: 2.2,
+      taper: 2.4,
+      spread: 1.8,
+      hueShift: 0,
+      intensity: 0.55,
+      saturation: 1.3,
+      opacity: 0.55,
+      scale: 1.8
+    };
+
+    var MAX_STRANDS = 12;
+    var MAX_COLORS = 8;
+
+    var VERT =
+      "#version 300 es\n" +
+      "in vec2 position;\n" +
+      "void main() { gl_Position = vec4(position, 0.0, 1.0); }\n";
+
+    var FRAG =
+      "#version 300 es\n" +
+      "precision highp float;\n" +
+      "uniform float uTime;\n" +
+      "uniform vec2 uResolution;\n" +
+      "uniform vec3 uColors[" + MAX_COLORS + "];\n" +
+      "uniform int uColorCount;\n" +
+      "uniform int uStrandCount;\n" +
+      "uniform float uSpeed;\n" +
+      "uniform float uAmplitude;\n" +
+      "uniform float uWaviness;\n" +
+      "uniform float uThickness;\n" +
+      "uniform float uGlow;\n" +
+      "uniform float uTaper;\n" +
+      "uniform float uSpread;\n" +
+      "uniform float uHueShift;\n" +
+      "uniform float uIntensity;\n" +
+      "uniform float uOpacity;\n" +
+      "uniform float uScale;\n" +
+      "uniform float uSaturation;\n" +
+      "out vec4 fragColor;\n" +
+      "const float PI = 3.14159265;\n" +
+      "vec3 spectrum(float t) { return 0.5 + 0.5 * cos(2.0 * PI * (t + vec3(0.00, 0.33, 0.67))); }\n" +
+      "vec3 samplePalette(float t) {\n" +
+      "  t = fract(t);\n" +
+      "  float scaled = t * float(uColorCount);\n" +
+      "  int idx = int(floor(scaled));\n" +
+      "  float blend = fract(scaled);\n" +
+      "  int nextIdx = idx + 1;\n" +
+      "  if (nextIdx >= uColorCount) nextIdx = 0;\n" +
+      "  return mix(uColors[idx], uColors[nextIdx], blend);\n" +
+      "}\n" +
+      "vec3 strandColor(float t) {\n" +
+      "  if (uColorCount > 0) return samplePalette(t);\n" +
+      "  return spectrum(t);\n" +
+      "}\n" +
+      "void main() {\n" +
+      "  vec2 uv = (gl_FragCoord.xy - 0.5 * uResolution) / uResolution.y;\n" +
+      "  uv /= max(uScale, 0.0001);\n" +
+      "  float e = 0.06 + uIntensity * 0.94;\n" +
+      "  float env = pow(max(cos(uv.x * PI * 1.3), 0.0), uTaper);\n" +
+      "  vec3 col = vec3(0.0);\n" +
+      "  for (int i = 0; i < " + MAX_STRANDS + "; i++) {\n" +
+      "    if (i >= uStrandCount) break;\n" +
+      "    float fi = float(i);\n" +
+      "    float ph = fi * 1.7 * uSpread;\n" +
+      "    float freq = (2.0 + fi * 0.35) * uWaviness;\n" +
+      "    float spd = 1.4 + fi * 1.2;\n" +
+      "    float tt = uTime * uSpeed;\n" +
+      "    float w = sin(uv.x * freq + tt * spd + ph) * 0.60\n" +
+      "            + sin(uv.x * freq * 1.1 - tt * spd * 0.7 + ph * 1.7) * 0.40;\n" +
+      "    float amp = (0.1 + 0.02 * e) * env * uAmplitude;\n" +
+      "    float y = w * amp;\n" +
+      "    float d = abs(uv.y - y);\n" +
+      "    float thick = (0.001 + 0.05 * e) * (0.35 + env) * uThickness;\n" +
+      "    float g = thick / (d + thick * 0.45);\n" +
+      "    g = g * g;\n" +
+      "    float h = fi / float(uStrandCount) + uv.x * 0.30 + uTime * 0.04 + uHueShift;\n" +
+      "    col += strandColor(h) * g * env;\n" +
+      "  }\n" +
+      "  col *= 0.45 + 0.7 * e;\n" +
+      "  col = 1.0 - exp(-col * uGlow);\n" +
+      "  float gray = dot(col, vec3(0.2126, 0.7152, 0.0722));\n" +
+      "  col = max(mix(vec3(gray), col, uSaturation), 0.0);\n" +
+      "  float lum = max(max(col.r, col.g), col.b);\n" +
+      "  float alpha = clamp(lum, 0.0, 1.0) * uOpacity;\n" +
+      "  fragColor = vec4(col * uOpacity, alpha);\n" +
+      "}\n";
+
+    import("https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm")
+      .then(function (ogl) {
+        var renderer = new ogl.Renderer({ alpha: true, premultipliedAlpha: true, antialias: true });
+        var gl = renderer.gl;
+
+        // The shaders are GLSL ES 3.00, which needs a WebGL2 context.
+        if (typeof WebGL2RenderingContext === "undefined" || !(gl instanceof WebGL2RenderingContext)) return;
+
+        gl.clearColor(0, 0, 0, 0);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+        gl.canvas.style.backgroundColor = "transparent";
+
+        var geometry = new ogl.Triangle(gl);
+        if (geometry.attributes.uv) delete geometry.attributes.uv;
+
+        function buildPalette(list) {
+          var src = list && list.length ? list : ["#ffffff"];
+          var out = [];
+          for (var i = 0; i < MAX_COLORS; i++) {
+            var c = new ogl.Color(src[i] !== undefined ? src[i] : src[src.length - 1]);
+            out.push([c.r, c.g, c.b]);
+          }
+          return out;
+        }
+
+        var program = new ogl.Program(gl, {
+          vertex: VERT,
+          fragment: FRAG,
+          uniforms: {
+            uTime: { value: 0 },
+            uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
+            uColors: { value: buildPalette(OPTS.colors) },
+            uColorCount: { value: Math.min(OPTS.colors.length, MAX_COLORS) },
+            uStrandCount: { value: Math.min(OPTS.count, MAX_STRANDS) },
+            uSpeed: { value: OPTS.speed },
+            uAmplitude: { value: OPTS.amplitude },
+            uWaviness: { value: OPTS.waviness },
+            uThickness: { value: OPTS.thickness },
+            uGlow: { value: OPTS.glow },
+            uTaper: { value: OPTS.taper },
+            uSpread: { value: OPTS.spread },
+            uHueShift: { value: OPTS.hueShift },
+            uIntensity: { value: OPTS.intensity },
+            uOpacity: { value: OPTS.opacity },
+            uScale: { value: OPTS.scale },
+            uSaturation: { value: OPTS.saturation }
+          }
+        });
+
+        var mesh = new ogl.Mesh(gl, { geometry: geometry, program: program });
+        ctn.appendChild(gl.canvas);
+
+        function resize() {
+          var w = ctn.offsetWidth;
+          var h = ctn.offsetHeight;
+          if (!w || !h) return;
+          renderer.setSize(w, h);
+          program.uniforms.uResolution.value = [w, h];
+        }
+        window.addEventListener("resize", resize);
+        resize();
+
+        // Only run the shader while the section is on screen — no point
+        // burning GPU on a background nobody is looking at.
+        var visible = true;
+        if ("IntersectionObserver" in window) {
+          visible = false;
+          new IntersectionObserver(function (entries) {
+            visible = entries[0].isIntersecting;
+          }).observe(ctn);
+        }
+
+        var raf = 0;
+        function frame(t) {
+          raf = requestAnimationFrame(frame);
+          if (!visible) return;
+          program.uniforms.uTime.value = reduced ? 0 : t * 0.001;
+          renderer.render({ scene: mesh });
+        }
+        raf = requestAnimationFrame(frame);
+
+        ctn.classList.add("is-ready");
+      })
+      .catch(function () {
+        // CDN unavailable — leave the background empty, section is unaffected.
+      });
   })();
 </script>
 
