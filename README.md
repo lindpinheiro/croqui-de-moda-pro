@@ -33,19 +33,24 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 6. **Imagens do hero** (`#hero-carousel`) — carrossel com crossfade automático
    (troca a cada 3,5s) usando 5 bases reais do pack (`assets/hero-base-1.png`
    a `hero-base-5.png`), enviadas pelo Lindberg pra pasta
-   `1e2M9CP5kKTX14Oie5VWbsuBtau1I6_As` do Drive. As imagens da galeria
-   (`#traco`) continuam sendo peças do portfólio pessoal do Joel, puxadas da
-   pasta `CROQUIS/PNG` — troque por artes oficiais do pack quando ele fechar.
-7. **Domínio no `<head>`** — `canonical`, `og:url` e `og:image` estão
+   `1e2M9CP5kKTX14Oie5VWbsuBtau1I6_As` do Drive.
+7. **Seção "O traço do Joel"** (`#traco`) — virou um mural 3D em movimento
+   (DriftWall) com 16 imagens da pasta `1msNQdJ4eAAyXe42uZWKG7Bu8AEwN9K_g`
+   do Drive, em `assets/wall/wall-01.jpg` a `wall-16.jpg` (redimensionadas
+   pra 700px, ~930 KB no total). A pasta tinha 3 vídeos `.MOV` que ignorei —
+   o componente é só de imagens. Pra trocar/adicionar imagens, coloque os
+   arquivos em `assets/wall/` e atualize a lista `IMAGES` no script do
+   DriftWall, no fim do `index.html`.
+8. **Domínio no `<head>`** — `canonical`, `og:url` e `og:image` estão
    apontando para `https://croquidemodapro.com.br/`, um domínio placeholder
    que ainda não existe. Troque pelas URLs reais assim que vocês registrarem
    o domínio e definirem onde o site vai ficar publicado.
-8. **Seção "Trusted By"** (`#confianca`) — os avatares de Ludmilla, KATSEYE e
+9. **Seção "Trusted By"** (`#confianca`) — os avatares de Ludmilla, KATSEYE e
    ssjheni são só as iniciais (L/K/S) coloridas, não as fotos reais deles.
    Preferi não puxar as fotos de perfil de terceiros sem autorização deles
    pra usar num site comercial; se quiserem trocar por fotos/logos reais,
    é só substituir o conteúdo de `.trust-avatar` em cada card.
-9. **Vídeos do Instagram** (`#videos`) — carrossel automático (troca a cada
+10. **Vídeos do Instagram** (`#videos`) — carrossel automático (troca a cada
    5s, clique num card lateral pra trazê-lo pra frente) com 3 posts reais
    do Joel usando o pack (`DQ4XvT-jpb1`, `DYZqfMhjV5a`, `DUvudSEDnxR`). Se
    quiserem trocar os posts, me mandem os links de `instagram.com/p/...` ou
@@ -68,7 +73,7 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
      de foto sozinho — só com clique manual nas setinhas. Isso é controlado
      inteiramente pelo iframe do Instagram (outro domínio), não temos como
      automatizar isso pelo nosso lado.
-8. **Seção "Tutoriais"** (`#tutoriais`) — os 4 cards (estampas com IA,
+11. **Seção "Tutoriais"** (`#tutoriais`) — os 4 cards (estampas com IA,
    coleções consistentes com IA, como importar/usar, como imprimir) ainda são
    só capa + "em breve"/"mini curso incluso", sem vídeo de verdade (procurem
    o comentário `TODO` no `index.html`). Quando gravarem,
@@ -114,6 +119,23 @@ com segurança), use uma plataforma pronta de produto digital:
 - Passo a passo: criar conta na plataforma escolhida → cadastrar o "Croqui
   PRO" como produto digital → subir o arquivo final do pack → copiar o link
   de checkout → colar no `href` do botão `#checkout-btn` no `index.html`.
+
+## Componentes do React Bits portados para JS puro
+
+Duas seções usam componentes do [React Bits](https://reactbits.dev) —
+**AccordionGallery** (`#processo`) e **DriftWall** (`#traco`). Os originais
+são React, e este site é HTML/CSS/JS estático sem build; adotar React só
+por causa deles significaria reescrever o site inteiro. Então os dois foram
+portados para JS puro, mantendo comportamento, estrutura de classes e
+parâmetros dos originais.
+
+O **DriftWall** (mural 3D em movimento, no fim do `index.html`) não precisa
+de biblioteca nenhuma — roda em `requestAnimationFrame` + CSS. As colunas
+sobem/descem em velocidades levemente diferentes, o mural inclina seguindo
+o mouse, e passar o cursor num quadro o traz pra frente, devolve a cor e
+pausa a coluna dele. Parâmetros no topo do script (`COLUMNS`, `SPEED`,
+`TILT`, `TURN`, `PARALLAX`, etc.). Quem usa "reduzir movimento" no sistema
+vê o mural parado.
 
 ## Dependência externa: GSAP (galeria em acordeão)
 

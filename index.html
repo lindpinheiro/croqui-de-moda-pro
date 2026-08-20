@@ -212,15 +212,72 @@
     .hero-visual img.far-next{opacity:0;}
   }
 
-  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
-  .gallery figure{
-    margin:0;
-    background:radial-gradient(ellipse at 50% 30%, rgba(155,92,255,.14), transparent 60%), var(--bg-card);
-    border:1px solid var(--line);border-radius:var(--radius);
-    padding:18px;text-align:center;
+  /* DriftWall (porte em JS puro do componente React Bits) */
+  .drift-wall{
+    position:relative;width:100%;height:640px;overflow:hidden;
+    perspective:var(--dw-perspective,1200px);perspective-origin:50% 50%;
+    --dw-tile-w:200px;--dw-tile-h:132px;--dw-gap:18px;--dw-radius:14px;
+    --dw-lift:64px;--dw-dim:.55;--dw-gray:0;--dw-overlay:#060010;--dw-edge:40%;
+    -webkit-mask-image:
+      radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+      linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-image:
+      radial-gradient(ellipse 78% 82% at 50% 46%, #000 var(--dw-edge), transparent 100%),
+      linear-gradient(to top, #000 var(--dw-edge), transparent 100%);
+    mask-composite:intersect;
   }
-  .gallery img{width:100%;height:280px;object-fit:contain;}
-  .gallery figcaption{margin-top:10px;font-family:var(--font-mono);font-size:.78rem;letter-spacing:.03em;color:var(--ink-faint);}
+  .drift-wall__plane{
+    position:absolute;top:50%;left:50%;
+    display:flex;flex-direction:row;
+    transform-style:preserve-3d;cursor:pointer;
+    transform-origin:50% 50%;will-change:transform;
+  }
+  .drift-wall__col{position:relative;width:calc(var(--dw-tile-w) + var(--dw-gap));transform-style:preserve-3d;}
+  .drift-wall__track{display:flex;flex-direction:column;will-change:transform;transform-style:preserve-3d;}
+  .drift-wall__tile{
+    position:relative;display:block;width:100%;
+    height:calc(var(--dw-tile-h) + var(--dw-gap));
+    flex:0 0 auto;outline:none;transform-style:preserve-3d;
+  }
+  .drift-wall__inner{
+    position:absolute;inset:calc(var(--dw-gap) / 2);
+    display:block;border-radius:var(--dw-radius);overflow:hidden;
+    background:#0b0b12;opacity:var(--dw-dim);
+    transform:translateZ(0);pointer-events:none;
+    transition:transform .42s cubic-bezier(.22,1,.36,1),
+      opacity .42s cubic-bezier(.22,1,.36,1),
+      box-shadow .42s cubic-bezier(.22,1,.36,1);
+  }
+  .drift-wall__tile img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    filter:grayscale(var(--dw-gray)) saturate(.92);
+    transition:filter .42s cubic-bezier(.22,1,.36,1);
+    user-select:none;-webkit-user-drag:none;
+  }
+  .drift-wall__overlay{
+    position:absolute;inset:0;background:var(--dw-overlay);
+    opacity:.42;pointer-events:none;
+    transition:opacity .42s cubic-bezier(.22,1,.36,1);
+  }
+  .drift-wall__tile.is-active .drift-wall__inner,
+  .drift-wall__tile:focus-visible .drift-wall__inner{
+    opacity:1;transform:translateZ(var(--dw-lift));
+    box-shadow:0 24px 60px -18px rgba(0,0,0,.7);
+  }
+  .drift-wall__tile.is-active img,
+  .drift-wall__tile:focus-visible img{filter:grayscale(0) saturate(1.05);}
+  .drift-wall__tile.is-active .drift-wall__overlay,
+  .drift-wall__tile:focus-visible .drift-wall__overlay{opacity:0;}
+  .drift-wall__tile:focus-visible .drift-wall__inner{
+    box-shadow:0 24px 60px -18px rgba(0,0,0,.7), 0 0 0 2px var(--pink);
+  }
+  @media (max-width:820px){
+    .drift-wall{height:460px;--dw-tile-w:150px;--dw-tile-h:100px;--dw-gap:12px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .drift-wall__plane, .drift-wall__track{will-change:auto;}
+  }
 
   .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .trust-card{
@@ -242,6 +299,9 @@
   .trust-handle{display:block;font-family:var(--font-mono);font-size:.74rem;color:var(--ink-faint);margin:2px 0 8px;}
   .trust-quote{color:var(--ink-soft);font-size:.88rem;margin:0;}
 
+  /* overflow-x hidden: os slides laterais do coverflow ficam parcialmente
+     fora do container e criavam rolagem horizontal na pagina no mobile. */
+  #videos{overflow-x:hidden;}
   .ig-carousel{position:relative;height:560px;max-width:100%;margin:0 auto;transition:height .4s ease;}
   .ig-slide{
     position:absolute;top:0;left:50%;
@@ -932,17 +992,10 @@
   <section id="traco">
     <div class="wrap">
       <h2>O traço do Joel</h2>
-      <p class="section-lead">Uma amostra do nível de acabamento que você pode esperar — peças do portfólio pessoal do Joel (@joelcoveero).</p>
-      <div class="gallery">
-        <figure class="reveal">
-          <img src="assets/galeria-1.png" alt="Croqui de vestido com capa floral, ilustrado por Joel Coveero">
-          <figcaption>Alta-costura — capa e vestido bordado</figcaption>
-        </figure>
-        <figure class="reveal">
-          <img src="assets/galeria-2.png" alt="Croqui de conjunto praia com apliques, frente e costas, ilustrado por Joel Coveero">
-          <figcaption>Praia/verão — frente e costas</figcaption>
-        </figure>
-      </div>
+      <p class="section-lead">Uma amostra do nível de acabamento que você pode esperar — peças e bastidores do portfólio pessoal do Joel (@joelcoveero).</p>
+    </div>
+    <div class="drift-wall" id="drift-wall" role="group" aria-label="Mural de trabalhos do Joel">
+      <div class="drift-wall__plane" id="drift-plane"></div>
     </div>
   </section>
 
@@ -1150,6 +1203,196 @@
       var allTrimmed = slides.every(function (s) { return s.dataset.trimmed === "1"; });
       if (allTrimmed || trimAttempts > 20) clearInterval(trimInterval);
     }, 350);
+  })();
+</script>
+
+<script>
+  // DriftWall — vanilla port of the React Bits component (reactbits.dev).
+  // Rewritten without React because this is a plain static site with no
+  // build step. Same behaviour: columns of tiles drift at slightly
+  // different speeds, the wall tilts toward the pointer, and hovering a
+  // tile lifts it forward, restores its colour and pauses its column.
+  (function () {
+    var wall = document.getElementById("drift-wall");
+    var plane = document.getElementById("drift-plane");
+    if (!wall || !plane) return;
+
+    var IMAGES = [
+      "assets/wall/wall-01.jpg", "assets/wall/wall-02.jpg", "assets/wall/wall-03.jpg",
+      "assets/wall/wall-04.jpg", "assets/wall/wall-05.jpg", "assets/wall/wall-06.jpg",
+      "assets/wall/wall-07.jpg", "assets/wall/wall-08.jpg", "assets/wall/wall-09.jpg",
+      "assets/wall/wall-10.jpg", "assets/wall/wall-11.jpg", "assets/wall/wall-12.jpg",
+      "assets/wall/wall-13.jpg", "assets/wall/wall-14.jpg", "assets/wall/wall-15.jpg",
+      "assets/wall/wall-16.jpg"
+    ];
+
+    var COLUMNS = window.innerWidth <= 820 ? 4 : 6;
+    var TILT = 16, TURN = -14, ROLL = 0, DEPTH = 120;
+    var SPEED = 42, VARIANCE = 0.45, PARALLAX = 0.6;
+    var DIRECTION_UP = true;
+
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function columnFactor(index) {
+      var pseudo = ((index * 0.6180339887 + 0.35) % 1) * 2 - 1;
+      return 1 + VARIANCE * pseudo;
+    }
+
+    // Split images across columns, then repeat each column enough times to
+    // fill the viewport twice over so the loop never shows a gap.
+    var columnItems = [];
+    for (var c = 0; c < COLUMNS; c++) columnItems.push([]);
+    IMAGES.forEach(function (src, i) {
+      columnItems[i % COLUMNS].push(src);
+    });
+
+    var tracks = [];
+    var offsets = [];
+    var velocities = [];
+    var copyHeights = [];
+    var hoveredCol = -1;
+
+    function tileHeightPx() {
+      var cs = getComputedStyle(wall);
+      return parseFloat(cs.getPropertyValue("--dw-tile-h")) + parseFloat(cs.getPropertyValue("--dw-gap"));
+    }
+
+    function build() {
+      plane.innerHTML = "";
+      tracks = [];
+      offsets = [];
+      velocities = [];
+      copyHeights = [];
+
+      var unit = tileHeightPx();
+      var wallH = wall.getBoundingClientRect().height || 640;
+
+      columnItems.forEach(function (col, ci) {
+        var colEl = document.createElement("div");
+        colEl.className = "drift-wall__col";
+        var track = document.createElement("div");
+        track.className = "drift-wall__track";
+
+        var copyHeight = Math.max(unit, col.length * unit);
+        var copies = Math.max(2, Math.ceil((wallH * 1.6) / copyHeight) + 1);
+
+        for (var k = 0; k < copies; k++) {
+          col.forEach(function (src, ii) {
+            var tile = document.createElement("div");
+            tile.className = "drift-wall__tile";
+            tile.setAttribute("data-col", ci);
+            tile.setAttribute("tabindex", "0");
+            tile.setAttribute("role", "img");
+            tile.setAttribute("aria-label", "Trabalho de Joel Coveero");
+            tile.innerHTML =
+              '<span class="drift-wall__inner">' +
+              '<img src="' + src + '" alt="" loading="lazy" decoding="async" draggable="false">' +
+              '<span class="drift-wall__overlay" aria-hidden="true"></span>' +
+              "</span>";
+            track.appendChild(tile);
+          });
+        }
+
+        colEl.appendChild(track);
+        plane.appendChild(colEl);
+        tracks.push(track);
+        copyHeights.push(copyHeight);
+        offsets.push(copyHeight * ((ci * 0.37) % 1));
+        velocities.push(0);
+      });
+    }
+
+    var pointer = { x: 0, y: 0 };
+    var damped = { x: 0, y: 0 };
+    var lastTs = null;
+    var activeTile = null;
+
+    function applyPlane(px, py) {
+      plane.style.transform =
+        "translate(-50%, -50%) scale(1.18) rotateX(" + (TILT + py) + "deg) rotateY(" +
+        (TURN + px) + "deg) rotateZ(" + ROLL + "deg) translateZ(" + -DEPTH + "px)";
+    }
+
+    function baseVelocity(c) {
+      var dirSign = DIRECTION_UP ? 1 : -1;
+      var altSign = c % 2 === 0 ? 1 : -1;
+      return SPEED * columnFactor(c) * dirSign * altSign;
+    }
+
+    function frame(ts) {
+      if (lastTs === null) lastTs = ts;
+      var dt = Math.min(0.05, Math.max(0, ts - lastTs) / 1000);
+      lastTs = ts;
+
+      var maxTilt = PARALLAX * 8;
+      var targetX = pointer.x * maxTilt;
+      var targetY = -pointer.y * maxTilt;
+      var damp = 1 - Math.exp(-dt / 0.12);
+      damped.x += (targetX - damped.x) * damp;
+      damped.y += (targetY - damped.y) * damp;
+      applyPlane(damped.x, damped.y);
+
+      if (!reduced) {
+        for (var c = 0; c < tracks.length; c++) {
+          var target = baseVelocity(c) * (hoveredCol === c ? 0 : 1);
+          var ease = 1 - Math.exp(-dt / (target === 0 ? 0.16 : 0.28));
+          velocities[c] += (target - velocities[c]) * ease;
+          var next = offsets[c] + velocities[c] * dt;
+          next = ((next % copyHeights[c]) + copyHeights[c]) % copyHeights[c];
+          offsets[c] = next;
+          tracks[c].style.transform = "translate3d(0, " + -next + "px, 0)";
+        }
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    wall.addEventListener("pointermove", function (e) {
+      var rect = wall.getBoundingClientRect();
+      if (PARALLAX > 0 && !reduced) {
+        pointer.x = (e.clientX - rect.left) / rect.width - 0.5;
+        pointer.y = (e.clientY - rect.top) / rect.height - 0.5;
+      }
+      var hit = document.elementFromPoint(e.clientX, e.clientY);
+      var tile = hit && hit.closest ? hit.closest(".drift-wall__tile") : null;
+      if (tile === activeTile) return;
+      if (activeTile) activeTile.classList.remove("is-active");
+      activeTile = tile;
+      if (tile) {
+        tile.classList.add("is-active");
+        hoveredCol = Number(tile.getAttribute("data-col"));
+      } else {
+        hoveredCol = -1;
+      }
+    });
+
+    wall.addEventListener("pointerleave", function () {
+      pointer.x = 0;
+      pointer.y = 0;
+      if (activeTile) activeTile.classList.remove("is-active");
+      activeTile = null;
+      hoveredCol = -1;
+    });
+
+    build();
+    requestAnimationFrame(frame);
+
+    var rebuildTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(rebuildTimer);
+      rebuildTimer = setTimeout(function () {
+        var cols = window.innerWidth <= 820 ? 4 : 6;
+        if (cols !== COLUMNS) {
+          COLUMNS = cols;
+          columnItems = [];
+          for (var c = 0; c < COLUMNS; c++) columnItems.push([]);
+          IMAGES.forEach(function (src, i) {
+            columnItems[i % COLUMNS].push(src);
+          });
+        }
+        build();
+      }, 200);
+    });
   })();
 </script>
 
