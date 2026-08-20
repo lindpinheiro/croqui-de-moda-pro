@@ -11,6 +11,13 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 
 ## O que falta preencher antes de divulgar
 
+0. **Seção "Do traço ao croqui pronto"** (`#processo`) — as 5 imagens
+   (`assets/process-1.jpg` a `process-5.jpg`) são recortes de uma arte de
+   carrossel do Instagram que o Lindberg enviou (imagem "asdasd.jpg" no
+   Drive), mostrando um croqui de exemplo evoluindo até a peça final. Os
+   recortes têm um pouco de "sangria" das legendas vizinhas nas bordas
+   (inevitável, o arquivo original já tinha os slides colados lado a lado)
+   — se incomodar, me mandem os slides originais separados que eu troco.
 1. **Foto do Joel** (seção `#joel`) — usei `assets/joel-foto.jpg`, uma selfie
    solo puxada da pasta `JOEL FOTOS` do Drive porque era a única com uma
    pessoa só (as outras fotos têm mais gente e eu não tinha como confirmar

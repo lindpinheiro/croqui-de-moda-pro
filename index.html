@@ -277,6 +277,25 @@
     .ig-media{height:340px;}
   }
 
+  .process-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
+  .process-card{
+    background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px;text-align:center;transition:transform .18s ease, border-color .18s ease;
+  }
+  .process-card:hover{transform:translateY(-4px);border-color:var(--violet);}
+  .process-num{
+    font-family:var(--font-mono);font-weight:700;font-size:.8rem;color:var(--lime);
+    background:rgba(215,255,62,.1);border:1px solid rgba(215,255,62,.35);
+    display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:50%;margin-bottom:10px;
+  }
+  .process-card img{width:100%;height:220px;object-fit:contain;border-radius:10px;background:var(--bg-alt);margin-bottom:10px;}
+  .process-card span{display:block;font-family:var(--font-mono);font-size:.74rem;color:var(--ink-soft);letter-spacing:.02em;}
+  @media (max-width:820px){
+    .process-grid{display:flex;overflow-x:auto;gap:14px;scroll-snap-type:x mandatory;margin:0 -24px;padding:0 24px 8px;}
+    .process-card{flex:0 0 62%;scroll-snap-align:center;}
+  }
+
   .tut-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
   .tut-card{
     background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
@@ -486,6 +505,40 @@
         <span class="tag">Profissionais de ateliê</span>
         <span class="tag">Criadores de coleções</span>
         <span class="tag">Costureiras &amp; freelancers</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="processo">
+    <div class="wrap">
+      <h2>Do traço ao croqui pronto</h2>
+      <p class="section-lead">Veja como uma base evolui até virar peça finalizada — 50% desse caminho já sai pronto no pack.</p>
+      <div class="process-grid">
+        <div class="process-card">
+          <span class="process-num">01</span>
+          <img src="assets/process-1.jpg" alt="Passo 1: base pronta, croqui em lineart">
+          <span>Base pronta</span>
+        </div>
+        <div class="process-card">
+          <span class="process-num">02</span>
+          <img src="assets/process-2.jpg" alt="Passo 2: lineart da peça desenhado sobre a base">
+          <span>Lineart da peça</span>
+        </div>
+        <div class="process-card">
+          <span class="process-num">03</span>
+          <img src="assets/process-3.jpg" alt="Passo 3: render do corpo pronto, pele com luz e sombra">
+          <span>Render do corpo pronto</span>
+        </div>
+        <div class="process-card">
+          <span class="process-num">04</span>
+          <img src="assets/process-4.jpg" alt="Passo 4: blocagem de cor da peça">
+          <span>Blocagem de cor</span>
+        </div>
+        <div class="process-card">
+          <span class="process-num">05</span>
+          <img src="assets/process-5.jpg" alt="Passo 5: croqui final finalizado">
+          <span>Croqui final</span>
+        </div>
       </div>
     </div>
   </section>
