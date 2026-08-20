@@ -113,6 +113,22 @@ com segurança), use uma plataforma pronta de produto digital:
   PRO" como produto digital → subir o arquivo final do pack → copiar o link
   de checkout → colar no `href` do botão `#checkout-btn` no `index.html`.
 
+## Dependência externa: animações com Motion
+
+Os elementos com `class="reveal"` (cards, seções, o hero) fazem um fade +
+leve deslize pra cima quando entram na tela, usando a biblioteca
+[Motion](https://motion.dev), carregada via CDN (`jsdelivr`) num `<script
+type="module">` no fim do `index.html` — sem build, sem instalar nada.
+
+A animação em si roda em CSS puro (transição na classe `.reveal` /
+`.reveal.is-visible`, no `<style>`); a Motion só é usada pro `inView()`
+detectar quando cada elemento entra na tela. Isso evita depender de JS pra
+renderizar a animação — mais previsível e mais fácil de debugar.
+
+Rede de segurança: se o CDN falhar, o script mostra tudo imediatamente (não
+deixa conteúdo invisível numa página de vendas). Quem usa "reduzir
+movimento" no sistema não recebe a animação — o conteúdo já aparece visível.
+
 ## Dependência externa: embeds do Instagram
 
 A seção `#videos` usa o widget oficial de embed do Instagram

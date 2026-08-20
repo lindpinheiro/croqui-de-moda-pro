@@ -121,6 +121,11 @@
     line-height:1.6;
   }
   img{max-width:100%;display:block;}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1);}
+  .reveal.is-visible{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .reveal.is-visible{opacity:1 !important;transform:none !important;transition:none !important;}
+  }
   a{color:inherit;}
   h1,h2,h3{font-family:var(--font-display);text-wrap:balance;}
   .wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
@@ -443,7 +448,7 @@
 
   <section class="hero">
     <div class="wrap">
-      <div>
+      <div class="reveal">
         <div class="eyebrow">Croqui de moda com base totalmente renderizada</div>
         <h1>Croqui de moda com qualidade de mercado, sem precisar saber desenhar do zero.</h1>
         <p class="hero-subtitle">A base do croqui pronta. A criação, toda sua.</p>
@@ -460,7 +465,7 @@
           <div class="stat-item"><span class="stat-num">2</span><span class="stat-label">Formatos</span></div>
         </div>
       </div>
-      <div class="hero-visual" id="hero-carousel">
+      <div class="hero-visual reveal" id="hero-carousel">
         <img class="active" src="assets/hero-base-1.png" alt="Base de croqui renderizada, pose de frente com as mãos na cintura">
         <img src="assets/hero-base-2.png" alt="Base de croqui renderizada, pose de frente com a mão no quadril">
         <img src="assets/hero-base-3.png" alt="Base de croqui renderizada, pose caminhando de frente">
@@ -475,21 +480,21 @@
       <h2>O que vem no Croqui de Moda PRO</h2>
       <p class="section-lead">A maioria dos pacotes entrega só o contorno do croqui. O Croqui de Moda PRO entrega uma base com aparência profissional — é como começar sua ilustração com 50% do trabalho já concluído.</p>
       <div class="grid-3">
-        <div class="card">
+        <div class="card reveal">
           <div class="icon-badge">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--pink)"><path d="M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2L12 2z"/><path d="M19 3l.7 2.1L22 6l-2.3.9L19 9l-.7-2.1L16 6l2.3-.9L19 3z"/></svg>
           </div>
           <h3>Base já renderizada</h3>
           <p>Pele com luz, sombra e volume prontos. Importe e foque só em ilustrar a peça, sem construir anatomia do zero.</p>
         </div>
-        <div class="card">
+        <div class="card reveal">
           <div class="icon-badge lime">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="10.5" width="14" height="10" rx="2"/><rect x="6" y="6.5" width="14" height="10" rx="2" fill="var(--bg-card)"/><rect x="8" y="2.5" width="14" height="10" rx="2" fill="var(--bg-card)"/></svg>
           </div>
           <h3>27 modelos, 77 arquivos</h3>
           <p>Feminino, masculino, plus size e manequim técnico — cada um em lineart, base renderizada e um segundo tom de pele.</p>
         </div>
-        <div class="card">
+        <div class="card reveal">
           <div class="icon-badge violet">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5"/><path d="M15 4h5v5"/><path d="M20 15v5h-5"/><path d="M9 20H4v-5"/></svg>
           </div>
@@ -514,27 +519,27 @@
       <h2>Do traço ao croqui pronto</h2>
       <p class="section-lead">Veja como uma base evolui até virar peça finalizada — 50% desse caminho já sai pronto no pack.</p>
       <div class="process-grid">
-        <div class="process-card">
+        <div class="process-card reveal">
           <span class="process-num">01</span>
           <img src="assets/process-1.jpg" alt="Passo 1: base pronta, croqui em lineart">
           <span>Base pronta</span>
         </div>
-        <div class="process-card">
+        <div class="process-card reveal">
           <span class="process-num">02</span>
           <img src="assets/process-2.jpg" alt="Passo 2: lineart da peça desenhado sobre a base">
           <span>Lineart da peça</span>
         </div>
-        <div class="process-card">
+        <div class="process-card reveal">
           <span class="process-num">03</span>
           <img src="assets/process-3.jpg" alt="Passo 3: render do corpo pronto, pele com luz e sombra">
           <span>Render do corpo pronto</span>
         </div>
-        <div class="process-card">
+        <div class="process-card reveal">
           <span class="process-num">04</span>
           <img src="assets/process-4.jpg" alt="Passo 4: blocagem de cor da peça">
           <span>Blocagem de cor</span>
         </div>
-        <div class="process-card">
+        <div class="process-card reveal">
           <span class="process-num">05</span>
           <img src="assets/process-5.jpg" alt="Passo 5: croqui final finalizado">
           <span>Croqui final</span>
@@ -550,7 +555,7 @@
       <p class="section-lead">Além dos 77 arquivos, o Croqui de Moda PRO vem com um mini curso em vídeo — incluindo um módulo mostrando como usar IA para criar estampas e texturas profissionais em cima da sua base, sem substituir o seu traço.</p>
       <div class="tut-grid">
         <!-- TODO(Joel/Lindberg): quando os vídeos estiverem prontos, subir no YouTube (não listado, se quiser) e trocar o .tut-thumb pelo iframe de embed. Ver README. -->
-        <div class="tut-card featured">
+        <div class="tut-card featured reveal">
           <div class="tut-thumb">
             <span class="tut-badge">Mini curso incluso</span>
             <div class="tut-play">
@@ -562,7 +567,7 @@
             <p>Passo a passo pra gerar texturas e estampas com IA e aplicar em cima do croqui já renderizado — pra criar peças com cara profissional em minutos.</p>
           </div>
         </div>
-        <div class="tut-card featured">
+        <div class="tut-card featured reveal">
           <div class="tut-thumb">
             <span class="tut-badge">Mini curso incluso</span>
             <div class="tut-play">
@@ -574,7 +579,7 @@
             <p>Como manter o mesmo universo visual — paleta, estampas e silhuetas — em várias peças da sua coleção, usando IA sem perder a identidade entre uma peça e outra.</p>
           </div>
         </div>
-        <div class="tut-card">
+        <div class="tut-card reveal">
           <div class="tut-thumb">
             <span class="tut-badge">Em breve</span>
             <div class="tut-play">
@@ -586,7 +591,7 @@
             <p>Como abrir os arquivos no Procreate, Photoshop ou Clip Studio Paint e organizar as camadas antes de começar a ilustrar.</p>
           </div>
         </div>
-        <div class="tut-card">
+        <div class="tut-card reveal">
           <div class="tut-thumb">
             <span class="tut-badge">Em breve</span>
             <div class="tut-play">
@@ -607,14 +612,14 @@
       <h2>Trabalhe do seu jeito</h2>
       <p class="section-lead">O pack foi pensado para caber no seu fluxo de trabalho, seja ele digital ou tradicional.</p>
       <div class="grid-3" style="grid-template-columns:repeat(2,1fr);">
-        <div class="card">
+        <div class="card reveal">
           <div class="icon-badge">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="2" width="14" height="20" rx="2"/><circle cx="10" cy="18.4" r=".6" fill="var(--pink)" stroke="none"/><path d="M17 6l4 4-8 8H9v-4l8-8z" fill="var(--bg-card)"/></svg>
           </div>
           <h3>Desenho digital</h3>
           <p>Importe o croqui renderizado para Procreate, Photoshop, Clip Studio Paint, Illustrator ou o software de sua preferência e comece a ilustrar a peça na hora — sem perder tempo com anatomia ou renderização de pele.</p>
         </div>
-        <div class="card">
+        <div class="card reveal">
           <div class="icon-badge lime">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4L16 5l3 3L8 19l-4 1z"/><path d="M14 7l3 3"/></svg>
           </div>
@@ -630,14 +635,14 @@
       <h2>Por que não uma IA qualquer ou o Pinterest?</h2>
       <p class="section-lead">Dá pra tentar. Mas tem dois problemas que ninguém conta.</p>
       <div class="grid-3" style="grid-template-columns:repeat(2,1fr);">
-        <div class="card">
+        <div class="card reveal">
           <div class="icon-badge">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2L12 3z"/><line x1="12" y1="9" x2="12" y2="14"/><circle cx="12" cy="17.1" r=".6" fill="var(--pink)" stroke="none"/></svg>
           </div>
           <h3>IA sem base = resultado inconsistente</h3>
           <p>Gerar uma peça do zero, sem uma referência sólida, costuma sair com anatomia estranha e um resultado diferente a cada tentativa. Dando uma base profissional como ponto de partida, a IA erra muito menos — e o resultado sai consistente, tentativa após tentativa.</p>
         </div>
-        <div class="card">
+        <div class="card reveal">
           <div class="icon-badge lime">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="5.5" y1="18.5" x2="18.5" y2="5.5"/></svg>
           </div>
@@ -658,7 +663,7 @@
       <h2>Confiado por quem faz a cultura pop acontecer</h2>
       <p class="section-lead">Meu traço já deu forma a conceitos para ícones da cultura pop e marcas de vanguarda. Atuar nos bastidores de grandes produções me deu o repertório necessário para entender o tempo e a exigência do mercado de luxo e do entretenimento.</p>
       <div class="trust-grid">
-        <div class="trust-card">
+        <div class="trust-card reveal">
           <div class="trust-avatar pink">L</div>
           <div class="trust-body">
             <a class="trust-name" href="https://www.instagram.com/ludmilla/" target="_blank" rel="noopener">Ludmilla</a>
@@ -666,7 +671,7 @@
             <p class="trust-quote">Arte para o single "Fragmentos".</p>
           </div>
         </div>
-        <div class="trust-card">
+        <div class="trust-card reveal">
           <div class="trust-avatar violet">K</div>
           <div class="trust-body">
             <a class="trust-name" href="https://www.instagram.com/katseyeworld/" target="_blank" rel="noopener">KATSEYE</a>
@@ -674,7 +679,7 @@
             <p class="trust-quote">Welcome to KATSEYE world — WILD out now.</p>
           </div>
         </div>
-        <div class="trust-card">
+        <div class="trust-card reveal">
           <div class="trust-avatar lime">S</div>
           <div class="trust-body">
             <a class="trust-name" href="https://www.instagram.com/ssjheni/" target="_blank" rel="noopener">ssjheni</a>
@@ -766,10 +771,10 @@
 
   <section id="joel">
     <div class="wrap about">
-      <div class="about-photo">
+      <div class="about-photo reveal">
         <img src="assets/joel-foto.jpg" alt="Joel Pinheiro (@joelcoveero)">
       </div>
-      <div>
+      <div class="reveal">
         <div class="eyebrow">Quem assina o pack</div>
         <h2>Joel Pinheiro (@joelcoveero)</h2>
         <p>Croquis &amp; desenvolvimento de coleções — Joel transforma ideias em looks de passarela e atende marcas e estilistas que precisam tirar um figurino do papel com agilidade e qualidade.</p>
@@ -785,11 +790,11 @@
       <h2>O traço do Joel</h2>
       <p class="section-lead">Uma amostra do nível de acabamento que você pode esperar — peças do portfólio pessoal do Joel (@joelcoveero).</p>
       <div class="gallery">
-        <figure>
+        <figure class="reveal">
           <img src="assets/galeria-1.png" alt="Croqui de vestido com capa floral, ilustrado por Joel Coveero">
           <figcaption>Alta-costura — capa e vestido bordado</figcaption>
         </figure>
-        <figure>
+        <figure class="reveal">
           <img src="assets/galeria-2.png" alt="Croqui de conjunto praia com apliques, frente e costas, ilustrado por Joel Coveero">
           <figcaption>Praia/verão — frente e costas</figcaption>
         </figure>
@@ -801,7 +806,7 @@
     <div class="wrap">
       <h2 style="text-align:center;">Garanta o seu</h2>
       <p class="section-lead" style="margin-left:auto;margin-right:auto;text-align:center;">Lançamento em breve — entre na lista e seja avisado assim que abrir.</p>
-      <div class="pricing">
+      <div class="pricing reveal">
         <span class="soon-badge">Em breve</span>
         <div class="price">R$ 97,50</div>
         <p class="price-note">pagamento único</p>
@@ -831,39 +836,39 @@
   <section id="faq" class="faq">
     <div class="wrap">
       <h2>Dúvidas frequentes</h2>
-      <details>
+      <details class="reveal">
         <summary>Como recebo o pack depois de comprar?</summary>
         <p>O arquivo é enviado automaticamente por e-mail assim que o pagamento é aprovado, direto pela plataforma de checkout.</p>
       </details>
-      <details>
+      <details class="reveal">
         <summary>Em quais programas eu uso os croquis?</summary>
         <p>Em qualquer software que abra imagem, como Procreate, Photoshop, Clip Studio Paint ou Illustrator. A versão lineart também pode ser impressa para desenhar no papel com lápis, caneta ou aquarela.</p>
       </details>
-      <details>
+      <details class="reveal">
         <summary>Qual a diferença entre lineart e base renderizada?</summary>
         <p>O lineart é só o contorno do croqui, ideal para quem vai imprimir e desenhar à mão. A base renderizada já vem com pele, luz e sombra prontas — você importa no software e foca só em ilustrar a roupa.</p>
       </details>
-      <details>
+      <details class="reveal">
         <summary>Posso usar os croquis em projetos comerciais?</summary>
         <p>Sim, a licença inclui uso comercial para os seus próprios croquis e coleções.</p>
       </details>
-      <details>
+      <details class="reveal">
         <summary>Quais formas de pagamento são aceitas?</summary>
         <p>Pix, cartão de crédito e boleto, conforme a plataforma de checkout escolhida.</p>
       </details>
-      <details>
+      <details class="reveal">
         <summary>Por que não gero direto numa IA ou pego uma imagem no Pinterest?</summary>
         <p>Sem uma base de referência sólida, a IA costuma errar anatomia e proporção, e o resultado varia a cada tentativa. E imagem solta de Pinterest não tem licença de uso comercial nem garantia de resolução. As bases do pack são traço original do Joel, com qualidade testada em produções reais — servem tanto pra desenhar à mão quanto como referência pra IA, com resultado muito mais consistente.</p>
       </details>
-      <details>
+      <details class="reveal">
         <summary>Preciso saber desenhar bem pra usar o pack?</summary>
         <p>Não. A base já vem pronta e renderizada — você só complementa com a roupa por cima. Funciona até pra quem não é ilustrador, como costureiras e estilistas freelancers que precisam mostrar uma ideia pro cliente com qualidade antes de executar a peça.</p>
       </details>
-      <details>
+      <details class="reveal">
         <summary>Vou usar só uma vez, vale a pena pagar?</summary>
         <p>Os 27 modelos são seus pra sempre — reutilize em quantos projetos e clientes quiser, sem pagar de novo. Sai muito mais barato do que contratar um ilustrador toda vez que precisar apresentar uma ideia.</p>
       </details>
-      <details>
+      <details class="reveal">
         <summary>Ainda tenho dúvidas, como falo com o Joel?</summary>
         <p>Chama no WhatsApp ou no Instagram <a href="https://www.instagram.com/joelcoveero/" target="_blank" rel="noopener">@joelcoveero</a>.</p>
       </details>
@@ -1001,6 +1006,41 @@
       if (allTrimmed || trimAttempts > 20) clearInterval(trimInterval);
     }, 350);
   })();
+</script>
+
+<script type="module">
+  // Motion (motion.dev) — used here just for its inView() viewport detector;
+  // the actual animation runs on plain CSS transitions (see .reveal in the
+  // <style> above), which is more predictable than animating through JS.
+  // Loaded from a CDN since this is a plain static site with no build step.
+  var revealed = false;
+  function revealAll() {
+    if (revealed) return;
+    revealed = true;
+    document.querySelectorAll(".reveal:not(.is-visible)").forEach(function (el) {
+      el.classList.add("is-visible");
+    });
+  }
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    revealAll();
+  } else {
+    import("https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm")
+      .then(function (motion) {
+        motion.inView(
+          ".reveal",
+          function (info) {
+            info.target.classList.add("is-visible");
+          },
+          { margin: "0px 0px -10% 0px" }
+        );
+      })
+      .catch(function () {
+        // CDN unreachable: fall back to showing everything immediately
+        // rather than leaving content invisible on a sales page.
+        revealAll();
+      });
+  }
 </script>
 
 </body>
