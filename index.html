@@ -188,14 +188,21 @@
       var(--bg-card);
     border:1px solid var(--line);
     text-align:center;color:var(--ink-soft);font-size:.9rem;padding:24px;
-    overflow:hidden;
+    overflow:visible;
   }
   .hero-visual img{
-    position:absolute;top:24px;left:24px;right:24px;bottom:24px;
-    width:calc(100% - 48px);height:calc(100% - 48px);object-fit:contain;
-    opacity:0;transition:opacity 1s ease;
+    position:absolute;top:24px;bottom:24px;left:50%;
+    width:calc(100% - 48px);object-fit:contain;
+    opacity:0;transition:opacity .6s ease, transform .6s ease;
+    transform:translateX(-50%) scale(.5);
+    z-index:1;
+    pointer-events:none;
   }
-  .hero-visual img.active{opacity:1;}
+  .hero-visual img.active{opacity:1;transform:translateX(-50%) scale(1);z-index:5;}
+  .hero-visual img.near-prev{opacity:.5;transform:translateX(calc(-50% - 42px)) scale(.8);z-index:4;}
+  .hero-visual img.near-next{opacity:.5;transform:translateX(calc(-50% + 42px)) scale(.8);z-index:4;}
+  .hero-visual img.far-prev{opacity:.25;transform:translateX(calc(-50% - 72px)) scale(.6);z-index:3;}
+  .hero-visual img.far-next{opacity:.25;transform:translateX(calc(-50% + 72px)) scale(.6);z-index:3;}
   @media (prefers-reduced-motion: reduce){ .hero-visual img{transition:none;} }
 
   .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
@@ -829,12 +836,26 @@
     var hero = document.getElementById("hero-carousel");
     if (!hero) return;
     var imgs = Array.prototype.slice.call(hero.querySelectorAll("img"));
-    if (imgs.length < 2) return;
+    var n = imgs.length;
+    if (n < 2) return;
     var active = 0;
+
+    function render() {
+      imgs.forEach(function (img, i) {
+        img.classList.remove("active", "near-prev", "near-next", "far-prev", "far-next");
+        var offset = (i - active + n) % n;
+        if (offset === 0) img.classList.add("active");
+        else if (offset === 1) img.classList.add("near-next");
+        else if (offset === n - 1) img.classList.add("near-prev");
+        else if (offset === 2) img.classList.add("far-next");
+        else img.classList.add("far-prev");
+      });
+    }
+
+    render();
     setInterval(function () {
-      imgs[active].classList.remove("active");
-      active = (active + 1) % imgs.length;
-      imgs[active].classList.add("active");
+      active = (active + 1) % n;
+      render();
     }, 3500);
   })();
 </script>
