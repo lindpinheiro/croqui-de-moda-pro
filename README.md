@@ -11,12 +11,13 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 
 ## O que falta preencher antes de divulgar
 
-1. **Seção "Do traço ao croqui pronto"** (`#processo`) — carrossel horizontal
+1. **Seção "Do traço ao croqui pronto"** (`#processo`) — galeria em acordeão
    com as 5 fotos isoladas (sem legenda) que o Lindberg enviou pra pasta
    "passo a passo" do Drive (`assets/process-1.png` a `process-5.png`, fundo
-   branco removido via chroma-key). Mostra 3 passos por vez (1 no mobile),
-   com setas de navegação, indicadores (dots) e revelação escalonada: cada
-   card entra deslizando conforme o carrossel avança.
+   branco removido via chroma-key). Passe o mouse (ou toque) numa etapa e
+   ela expande, ganha cor e mostra a legenda; as outras ficam estreitas,
+   em preto e branco e levemente inclinadas em 3D. No mobile vira um
+   acordeão vertical. Ver seção "Dependência externa: GSAP" abaixo.
 2. **Foto do Joel** (seção `#joel`) — trocada para `assets/joel-foto.jpg`,
    a foto confirmada pelo Lindberg (com o Sonic, na pasta `JOEL FOTOS` do
    Drive, arquivo `IMG_0911.JPG`).
@@ -113,6 +114,24 @@ com segurança), use uma plataforma pronta de produto digital:
 - Passo a passo: criar conta na plataforma escolhida → cadastrar o "Croqui
   PRO" como produto digital → subir o arquivo final do pack → copiar o link
   de checkout → colar no `href` do botão `#checkout-btn` no `index.html`.
+
+## Dependência externa: GSAP (galeria em acordeão)
+
+A seção `#processo` usa o componente **AccordionGallery** do
+[React Bits](https://reactbits.dev), mas **portado para JS puro**: o
+componente original é React, e este site é HTML/CSS/JS estático sem build
+— adotar React só por causa dele significaria reescrever o site inteiro.
+O comportamento, a estrutura de classes (`.accordion-gallery`, `.ag-panel`,
+`.ag-panel__media`…) e os parâmetros (`expandRatio`, `tilt`, `parallax`,
+`stagger`…) seguem os mesmos do original.
+
+A biblioteca [GSAP](https://gsap.com) é carregada via CDN (`jsdelivr`) e
+faz as transições. Se o CDN falhar, o script marca a galeria com a classe
+`no-gsap` e as transições passam a rodar em CSS puro — a galeria continua
+funcionando, só com um movimento mais simples.
+
+Para ajustar o comportamento, os parâmetros estão no topo do script no fim
+do `index.html` (`DEFAULT_INDEX`, `EXPAND_RATIO`, `DURATION`, `TILT`, etc.).
 
 ## Dependência externa: animações com Motion
 

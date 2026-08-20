@@ -283,57 +283,86 @@
     .ig-media{height:340px;}
   }
 
-  .process-track-wrap{position:relative;}
-  .process-track{
-    display:flex;gap:20px;
-    overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;
-    padding:6px 4px 10px;margin:0 -4px;
-    scrollbar-width:none;
+  /* Accordion gallery (porte em JS puro do componente React Bits) */
+  .accordion-gallery{
+    --ag-accent:var(--pink);
+    --ag-overlay:#060010;
+    --ag-text:var(--ink);
+    --ag-gap:10px;
+    --ag-radius:var(--radius);
+    --ag-media-size:320px;
+    display:flex;flex-direction:row;gap:var(--ag-gap);
+    width:100%;max-width:100%;height:520px;
+    perspective:1400px;perspective-origin:50% 50%;
   }
-  .process-track::-webkit-scrollbar{display:none;}
-  .process-card{
-    flex:0 0 calc(33.333% - 14px);scroll-snap-align:start;
-    position:relative;
-    background:radial-gradient(ellipse at 50% 12%, rgba(255,47,143,.16), transparent 60%), var(--bg-card);
-    border:1px solid var(--line);border-radius:var(--radius);
-    padding:22px 20px 26px;text-align:center;
-    opacity:0;transform:translateX(50px) scale(.94);
-    transition:opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1),
-      border-color .18s ease, box-shadow .18s ease;
+  .ag-panel{
+    position:relative;flex:1 1 0;min-width:0;min-height:0;
+    overflow:hidden;border-radius:var(--ag-radius);cursor:pointer;
+    display:block;text-decoration:none;outline:none;
+    transform-style:preserve-3d;transform-origin:center center;
+    background:radial-gradient(ellipse at 50% 15%, rgba(255,47,143,.14), transparent 62%), var(--bg-card);
+    border:1px solid var(--line);
+    box-shadow:0 10px 30px -18px rgba(0,0,0,.8);
+    will-change:flex-grow, transform;
+    -webkit-tap-highlight-color:transparent;
   }
-  .process-card.in-view{opacity:1;transform:translateX(0) scale(1);}
-  .process-card:nth-child(1){transition-delay:0s;}
-  .process-card:nth-child(2){transition-delay:.12s;}
-  .process-card:nth-child(3){transition-delay:.24s;}
-  .process-card:nth-child(4){transition-delay:.36s;}
-  .process-card:nth-child(5){transition-delay:.48s;}
-  .process-card:hover{border-color:var(--pink);box-shadow:0 20px 40px -18px rgba(255,47,143,.5);}
-  .process-num{
-    font-family:var(--font-mono);font-weight:700;font-size:.82rem;color:var(--lime);
-    background:rgba(215,255,62,.1);border:1px solid rgba(215,255,62,.35);
-    display:inline-flex;align-items:center;justify-content:center;
-    width:28px;height:28px;border-radius:50%;margin-bottom:14px;
+  .ag-panel--active{border-color:rgba(255,47,143,.5);}
+  .ag-panel:focus-visible{box-shadow:0 0 0 2px var(--ag-accent), 0 10px 30px -18px rgba(0,0,0,.8);}
+  .accordion-gallery.no-gsap .ag-panel{transition:flex-grow .6s cubic-bezier(.22,1,.36,1), transform .6s cubic-bezier(.22,1,.36,1);}
+  .accordion-gallery.no-gsap .ag-panel__media{transition:transform .6s cubic-bezier(.22,1,.36,1), filter .6s ease;}
+  .accordion-gallery.no-gsap .ag-panel__bar,
+  .accordion-gallery.no-gsap .ag-panel__text{transition:opacity .6s ease, transform .6s ease;}
+
+  .ag-panel__frame{position:absolute;inset:0;overflow:hidden;border-radius:inherit;}
+  .ag-panel__media{
+    --ag-gray:1;--ag-dim:.35;
+    position:absolute;top:50%;left:50%;
+    width:var(--ag-media-size);height:100%;
+    transform:translate(-50%,-50%);
+    filter:grayscale(var(--ag-gray));
+    will-change:transform, filter;
   }
-  .process-card img{width:100%;height:400px;object-fit:contain;margin-bottom:12px;}
-  .process-card span.process-label{display:block;font-family:var(--font-mono);font-size:.82rem;color:var(--ink);letter-spacing:.02em;}
-  .process-nav{
-    position:absolute;top:44%;transform:translateY(-50%);
-    width:44px;height:44px;border-radius:50%;flex-shrink:0;
-    background:var(--bg-card);border:1px solid var(--violet);color:var(--violet);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;
-    z-index:5;transition:background .15s ease, color .15s ease, opacity .15s ease;
+  .ag-panel__media img{width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;}
+  .ag-panel__overlay{
+    position:absolute;inset:0;pointer-events:none;
+    background:
+      linear-gradient(180deg, transparent 45%, rgba(6,0,16,.78) 100%),
+      rgba(6,0,16,calc(var(--ag-dim, .35)));
   }
-  .process-nav:hover{background:var(--violet);color:#fff;}
-  .process-nav.prev{left:-14px;}
-  .process-nav.next{right:-14px;}
-  .process-nav[disabled]{opacity:.25;pointer-events:none;}
-  .process-dots{display:flex;justify-content:center;gap:8px;margin-top:20px;}
-  .process-dot{width:8px;height:8px;border-radius:50%;background:var(--line);border:none;padding:0;cursor:pointer;transition:background .2s ease, width .2s ease;}
-  .process-dot.active{background:var(--pink);width:24px;border-radius:4px;}
+  .ag-panel__num{
+    position:absolute;top:16px;left:16px;z-index:3;
+    font-family:var(--font-mono);font-weight:700;font-size:.8rem;color:var(--lime);
+    background:rgba(10,7,16,.7);border:1px solid rgba(215,255,62,.4);
+    display:flex;align-items:center;justify-content:center;
+    width:30px;height:30px;border-radius:50%;
+  }
+  .ag-panel__label{
+    position:absolute;left:20px;bottom:20px;right:20px;
+    display:flex;align-items:center;gap:12px;pointer-events:none;z-index:2;
+  }
+  .ag-panel__bar{
+    flex:0 0 auto;width:3px;height:26px;border-radius:3px;
+    background:var(--ag-accent);opacity:0;
+    box-shadow:0 0 12px rgba(255,47,143,.6);
+  }
+  .ag-panel__text{
+    color:var(--ag-text);font-family:var(--font-body);font-weight:600;
+    font-size:clamp(.95rem,1.3vw,1.25rem);letter-spacing:.01em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    opacity:0;text-shadow:0 2px 14px rgba(0,0,0,.55);
+  }
+  .process-hint{
+    display:block;text-align:center;margin-top:18px;
+    font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--ink-faint);
+  }
   @media (max-width:820px){
-    .process-card{flex:0 0 80%;}
-    .process-card img{height:320px;}
-    .process-nav{display:none;}
+    .accordion-gallery{flex-direction:column;height:600px;perspective:none;}
+    .ag-panel{transform:none !important;}
+    .ag-panel__media{width:100%;height:var(--ag-media-size);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ag-panel, .ag-panel__media{will-change:auto;}
   }
 
   .flow-split{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--bg-card);}
@@ -589,42 +618,74 @@
     <div class="wrap">
       <h2>Do traço ao croqui pronto</h2>
       <p class="section-lead">Veja como uma base evolui até virar peça finalizada — 50% desse caminho já sai pronto no pack.</p>
-      <div class="process-track-wrap">
-        <button class="process-nav prev" id="process-prev" type="button" aria-label="Passo anterior" disabled>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
-        </button>
-        <div class="process-track" id="process-track">
-          <div class="process-card">
-            <span class="process-num">01</span>
-            <img src="assets/process-1.png" alt="Passo 1: base pronta, croqui em lineart">
-            <span class="process-label">Base pronta</span>
-          </div>
-          <div class="process-card">
-            <span class="process-num">02</span>
-            <img src="assets/process-2.png" alt="Passo 2: lineart da peça desenhado sobre a base">
-            <span class="process-label">Lineart da peça</span>
-          </div>
-          <div class="process-card">
-            <span class="process-num">03</span>
-            <img src="assets/process-3.png" alt="Passo 3: render do corpo pronto, pele com luz e sombra">
-            <span class="process-label">Render do corpo pronto</span>
-          </div>
-          <div class="process-card">
-            <span class="process-num">04</span>
-            <img src="assets/process-4.png" alt="Passo 4: blocagem de cor da peça">
-            <span class="process-label">Blocagem de cor</span>
-          </div>
-          <div class="process-card">
-            <span class="process-num">05</span>
-            <img src="assets/process-5.png" alt="Passo 5: croqui final finalizado">
-            <span class="process-label">Croqui final</span>
-          </div>
+      <div class="accordion-gallery" id="process-accordion" role="list" aria-label="Etapas do processo, do traço ao croqui pronto">
+        <div class="ag-panel" role="listitem" tabindex="0" aria-label="Passo 1: base pronta">
+          <span class="ag-panel__frame">
+            <span class="ag-panel__media">
+              <img src="assets/process-1.png" alt="Passo 1: base pronta, croqui em lineart" draggable="false">
+            </span>
+            <span class="ag-panel__overlay" aria-hidden="true"></span>
+          </span>
+          <span class="ag-panel__num" aria-hidden="true">01</span>
+          <span class="ag-panel__label" aria-hidden="true">
+            <span class="ag-panel__bar"></span>
+            <span class="ag-panel__text">Base pronta</span>
+          </span>
         </div>
-        <button class="process-nav next" id="process-next" type="button" aria-label="Próximo passo">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
-        </button>
+        <div class="ag-panel" role="listitem" tabindex="0" aria-label="Passo 2: lineart da peça">
+          <span class="ag-panel__frame">
+            <span class="ag-panel__media">
+              <img src="assets/process-2.png" alt="Passo 2: lineart da peça desenhado sobre a base" draggable="false">
+            </span>
+            <span class="ag-panel__overlay" aria-hidden="true"></span>
+          </span>
+          <span class="ag-panel__num" aria-hidden="true">02</span>
+          <span class="ag-panel__label" aria-hidden="true">
+            <span class="ag-panel__bar"></span>
+            <span class="ag-panel__text">Lineart da peça</span>
+          </span>
+        </div>
+        <div class="ag-panel" role="listitem" tabindex="0" aria-label="Passo 3: render do corpo pronto">
+          <span class="ag-panel__frame">
+            <span class="ag-panel__media">
+              <img src="assets/process-3.png" alt="Passo 3: render do corpo pronto, pele com luz e sombra" draggable="false">
+            </span>
+            <span class="ag-panel__overlay" aria-hidden="true"></span>
+          </span>
+          <span class="ag-panel__num" aria-hidden="true">03</span>
+          <span class="ag-panel__label" aria-hidden="true">
+            <span class="ag-panel__bar"></span>
+            <span class="ag-panel__text">Render do corpo pronto</span>
+          </span>
+        </div>
+        <div class="ag-panel" role="listitem" tabindex="0" aria-label="Passo 4: blocagem de cor">
+          <span class="ag-panel__frame">
+            <span class="ag-panel__media">
+              <img src="assets/process-4.png" alt="Passo 4: blocagem de cor da peça" draggable="false">
+            </span>
+            <span class="ag-panel__overlay" aria-hidden="true"></span>
+          </span>
+          <span class="ag-panel__num" aria-hidden="true">04</span>
+          <span class="ag-panel__label" aria-hidden="true">
+            <span class="ag-panel__bar"></span>
+            <span class="ag-panel__text">Blocagem de cor</span>
+          </span>
+        </div>
+        <div class="ag-panel" role="listitem" tabindex="0" aria-label="Passo 5: croqui final">
+          <span class="ag-panel__frame">
+            <span class="ag-panel__media">
+              <img src="assets/process-5.png" alt="Passo 5: croqui final finalizado" draggable="false">
+            </span>
+            <span class="ag-panel__overlay" aria-hidden="true"></span>
+          </span>
+          <span class="ag-panel__num" aria-hidden="true">05</span>
+          <span class="ag-panel__label" aria-hidden="true">
+            <span class="ag-panel__bar"></span>
+            <span class="ag-panel__text">Croqui final</span>
+          </span>
+        </div>
       </div>
-      <div class="process-dots" id="process-dots"></div>
+      <span class="process-hint">Passe o mouse ou toque em cada etapa</span>
     </div>
   </section>
 
@@ -1092,85 +1153,158 @@
   })();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script>
+  // AccordionGallery — vanilla port of the React Bits component (reactbits.dev).
+  // Same behaviour and markup contract; rewritten without React because this
+  // is a plain static site with no build step. GSAP drives the transitions
+  // when available, with a CSS-transition fallback if the CDN is blocked.
   (function () {
-    var track = document.getElementById("process-track");
-    if (!track) return;
-    var cards = Array.prototype.slice.call(track.querySelectorAll(".process-card"));
-    var prevBtn = document.getElementById("process-prev");
-    var nextBtn = document.getElementById("process-next");
-    var dotsWrap = document.getElementById("process-dots");
+    var root = document.getElementById("process-accordion");
+    if (!root) return;
+    var panels = Array.prototype.slice.call(root.querySelectorAll(".ag-panel"));
+    var count = panels.length;
+    if (!count) return;
 
-    cards.forEach(function (_, i) {
-      var dot = document.createElement("button");
-      dot.type = "button";
-      dot.className = "process-dot" + (i === 0 ? " active" : "");
-      dot.setAttribute("aria-label", "Ir para o passo " + (i + 1));
-      dot.addEventListener("click", function () {
-        track.scrollTo({ left: cards[i].offsetLeft - track.offsetLeft, behavior: "smooth" });
-      });
-      dotsWrap.appendChild(dot);
-    });
-    var dots = Array.prototype.slice.call(dotsWrap.children);
+    var DEFAULT_INDEX = 2;
+    var EXPAND_RATIO = 0.52;
+    var DURATION = 0.6;
+    var EASE = "power3.out";
+    var PARALLAX = 0.5;
+    var TILT = 8;
+    var STAGGER = 0.06;
 
-    function step() {
-      return cards[1] ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth;
-    }
-    prevBtn.addEventListener("click", function () {
-      track.scrollBy({ left: -step(), behavior: "smooth" });
-    });
-    nextBtn.addEventListener("click", function () {
-      track.scrollBy({ left: step(), behavior: "smooth" });
-    });
+    var active = Math.min(Math.max(DEFAULT_INDEX, 0), count - 1);
+    var mediaSize = 320;
+    var timeline = null;
+    var firstRun = true;
+    var hasGsap = typeof window.gsap !== "undefined";
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    // Reveal each card as it scrolls into the track's own viewport — starts
-    // with just the first step or two visible, the rest fade/slide in as
-    // the user scrolls the strip (see the transition-delay stagger in CSS).
-    if ("IntersectionObserver" in window) {
-      var io = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) entry.target.classList.add("in-view");
-          });
-        },
-        { root: track, threshold: 0.4 }
-      );
-      cards.forEach(function (c) {
-        io.observe(c);
-      });
-    } else {
-      cards.forEach(function (c) {
-        c.classList.add("in-view");
-      });
+    if (!hasGsap) root.classList.add("no-gsap");
+
+    function isVertical() {
+      return window.innerWidth <= 820;
     }
 
-    var scrollTimer;
-    function updateNav() {
-      var center = track.scrollLeft + track.clientWidth / 2;
-      var closest = 0;
-      var closestDist = Infinity;
-      cards.forEach(function (c, i) {
-        var dist = Math.abs(c.offsetLeft + c.offsetWidth / 2 - center);
-        if (dist < closestDist) {
-          closestDist = dist;
-          closest = i;
+    function applyLayout(animate) {
+      var vertical = isVertical();
+      var r = Math.min(Math.max(EXPAND_RATIO, 0.2), 0.9);
+      var grow = count > 1 ? (r * (count - 1)) / (1 - r) : 1;
+      var dur = animate && !reduced ? DURATION : 0;
+
+      if (hasGsap) {
+        if (timeline) timeline.kill();
+        timeline = window.gsap.timeline();
+      }
+
+      panels.forEach(function (panel, i) {
+        var isActive = i === active;
+        var media = panel.querySelector(".ag-panel__media");
+        var bar = panel.querySelector(".ag-panel__bar");
+        var text = panel.querySelector(".ag-panel__text");
+
+        panel.classList.toggle("ag-panel--active", isActive);
+        panel.setAttribute("aria-current", isActive ? "true" : "false");
+
+        var rot = isActive ? 0 : i < active ? TILT : -TILT;
+        var drift = Math.max(-1.5, Math.min(1.5, active - i));
+        var shift = drift * PARALLAX * mediaSize * 0.06;
+        var gray = isActive ? 0 : 1;
+        var dim = isActive ? 0 : 0.35;
+
+        if (hasGsap) {
+          var panelProps = { flexGrow: isActive ? grow : 1, duration: dur, ease: EASE };
+          if (vertical) panelProps.rotateX = -rot;
+          else panelProps.rotateY = rot;
+          timeline.to(panel, panelProps, 0);
+
+          timeline.to(
+            media,
+            {
+              xPercent: -50,
+              yPercent: -50,
+              x: vertical ? 0 : isActive ? 0 : shift,
+              y: vertical ? (isActive ? 0 : shift) : 0,
+              "--ag-gray": gray,
+              "--ag-dim": dim,
+              duration: dur,
+              ease: EASE
+            },
+            0
+          );
+
+          if (isActive) {
+            timeline.to([bar, text], { opacity: 1, x: 0, duration: dur, ease: EASE, stagger: reduced ? 0 : STAGGER }, 0);
+          } else {
+            timeline.to([bar, text], { opacity: 0, x: -14, duration: dur * 0.6, ease: EASE }, 0);
+          }
+        } else {
+          panel.style.flexGrow = isActive ? grow : 1;
+          panel.style.transform = vertical ? "" : "rotateY(" + rot + "deg)";
+          media.style.transform =
+            "translate(-50%, -50%) translate(" +
+            (vertical ? 0 : isActive ? 0 : shift) +
+            "px, " +
+            (vertical ? (isActive ? 0 : shift) : 0) +
+            "px)";
+          media.style.setProperty("--ag-gray", gray);
+          media.style.setProperty("--ag-dim", dim);
+          bar.style.opacity = isActive ? 1 : 0;
+          text.style.opacity = isActive ? 1 : 0;
+          bar.style.transform = text.style.transform = isActive ? "translateX(0)" : "translateX(-14px)";
         }
       });
-      dots.forEach(function (d, i) {
-        d.classList.toggle("active", i === closest);
-      });
-      prevBtn.disabled = track.scrollLeft <= 4;
-      nextBtn.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 4;
     }
-    track.addEventListener(
-      "scroll",
-      function () {
-        clearTimeout(scrollTimer);
-        scrollTimer = setTimeout(updateNav, 80);
-      },
-      { passive: true }
-    );
-    updateNav();
+
+    function measure() {
+      var rect = root.getBoundingClientRect();
+      var vertical = isVertical();
+      var gap = 10;
+      var total = vertical ? rect.height : rect.width;
+      var usable = Math.max(total - gap * (count - 1), 120);
+      mediaSize = Math.max(140, usable * Math.min(Math.max(EXPAND_RATIO, 0.2), 0.9) * 1.22);
+      root.style.setProperty("--ag-media-size", mediaSize + "px");
+      applyLayout(!firstRun);
+      firstRun = false;
+    }
+
+    panels.forEach(function (panel, i) {
+      panel.addEventListener("mouseenter", function () {
+        if (window.matchMedia("(hover: hover)").matches && i !== active) {
+          active = i;
+          applyLayout(true);
+        }
+      });
+      panel.addEventListener("click", function () {
+        if (i !== active) {
+          active = i;
+          applyLayout(true);
+        }
+      });
+      panel.addEventListener("focus", function () {
+        if (i !== active) {
+          active = i;
+          applyLayout(true);
+        }
+      });
+      panel.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          e.preventDefault();
+          panels[(i + 1) % count].focus();
+        } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          panels[(i - 1 + count) % count].focus();
+        }
+      });
+    });
+
+    measure();
+    if ("ResizeObserver" in window) {
+      new ResizeObserver(measure).observe(root);
+    } else {
+      window.addEventListener("resize", measure);
+    }
   })();
 </script>
 
