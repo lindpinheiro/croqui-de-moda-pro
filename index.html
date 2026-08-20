@@ -127,6 +127,23 @@
   @media (prefers-reduced-motion: reduce){
     .reveal, .reveal.is-visible{opacity:1 !important;transform:none !important;transition:none !important;}
   }
+
+  /* SplitText — cada caractere do titulo entra separadamente ao entrar na tela.
+     O overflow:hidden mascara os caracteres antes de subirem, e sai depois da
+     animacao pra nunca cortar acentos/descidas de letra no estado final. */
+  .split-parent{white-space:normal;word-wrap:break-word;}
+  .split-parent.is-split{overflow:hidden;}
+  .split-parent.is-done{overflow:visible;}
+  .split-char{display:inline-block;will-change:transform,opacity;}
+  .split-parent.is-split .split-char{opacity:0;transform:translateY(40px);}
+  .split-parent.is-split.is-animating .split-char{
+    opacity:1;transform:translateY(0);
+    transition:opacity 1.25s cubic-bezier(.22,1,.36,1), transform 1.25s cubic-bezier(.22,1,.36,1);
+  }
+  .split-parent.is-done .split-char{will-change:auto;}
+  @media (prefers-reduced-motion: reduce){
+    .split-parent.is-split .split-char{opacity:1 !important;transform:none !important;transition:none !important;}
+  }
   a{color:inherit;}
   h1,h2,h3{font-family:var(--font-display);text-wrap:balance;}
   .wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
@@ -1203,6 +1220,133 @@
       var allTrimmed = slides.every(function (s) { return s.dataset.trimmed === "1"; });
       if (allTrimmed || trimAttempts > 20) clearInterval(trimInterval);
     }, 350);
+  })();
+</script>
+
+<script>
+  // SplitText — vanilla port of the React Bits component (reactbits.dev).
+  // Splits every section heading (all <h2>, i.e. everything after the hero)
+  // into characters that fade/slide in one after another once the heading
+  // scrolls into view. The original uses GSAP's SplitText plugin (paid);
+  // here the split is done by hand and the motion runs on CSS transitions.
+  (function () {
+    var DELAY = 30;          // ms between each character
+    var THRESHOLD = 0.1;     // fraction of the heading visible to trigger
+    var ROOT_MARGIN = "-80px";
+
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var headings = Array.prototype.slice.call(document.querySelectorAll("h2"));
+    if (!headings.length) return;
+
+    function split(el) {
+      if (el.dataset.split === "1") return;
+      var text = el.textContent;
+      el.textContent = "";
+      // Wrap each word so lines never break mid-word, then each character
+      // inside it gets its own span to animate.
+      text.split(/(\s+)/).forEach(function (chunk) {
+        if (/^\s+$/.test(chunk)) {
+          el.appendChild(document.createTextNode(chunk));
+          return;
+        }
+        var word = document.createElement("span");
+        word.className = "split-word";
+        word.style.display = "inline-block";
+        word.style.whiteSpace = "nowrap";
+        chunk.split("").forEach(function (ch) {
+          var span = document.createElement("span");
+          span.className = "split-char";
+          span.textContent = ch;
+          word.appendChild(span);
+        });
+        el.appendChild(word);
+      });
+      el.classList.add("split-parent", "is-split");
+      el.dataset.split = "1";
+    }
+
+    function finish(el) {
+      el.classList.add("is-done");
+    }
+
+    function animate(el) {
+      if (el.dataset.animated === "1") return;
+      el.dataset.animated = "1";
+      var chars = el.querySelectorAll(".split-char");
+      chars.forEach(function (c, i) {
+        c.style.transitionDelay = (i * DELAY) / 1000 + "s";
+      });
+      // Next frame so the initial (hidden) state is painted before the
+      // transition to the visible state kicks in.
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          el.classList.add("is-animating");
+        });
+      });
+      // Drop the masking overflow once the last character has landed.
+      setTimeout(function () {
+        finish(el);
+      }, chars.length * DELAY + 1400);
+    }
+
+    function start() {
+      headings.forEach(split);
+
+      if (reduced || !("IntersectionObserver" in window)) {
+        headings.forEach(function (el) {
+          el.classList.add("is-animating");
+          el.dataset.animated = "1";
+          finish(el);
+        });
+        return;
+      }
+
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              animate(entry.target);
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: THRESHOLD, rootMargin: ROOT_MARGIN }
+      );
+      headings.forEach(function (el) {
+        io.observe(el);
+      });
+
+      // Safety net: if the observer is ever throttled or suspended (some
+      // privacy extensions, background tabs), a heading could stay hidden.
+      // This plain viewport check runs on scroll and covers that case.
+      var queued = false;
+      function checkViewport() {
+        queued = false;
+        var vh = window.innerHeight;
+        headings.forEach(function (el) {
+          if (el.dataset.animated === "1") return;
+          var r = el.getBoundingClientRect();
+          if (r.top < vh && r.bottom > 0) animate(el);
+        });
+      }
+      window.addEventListener(
+        "scroll",
+        function () {
+          if (queued) return;
+          queued = true;
+          setTimeout(checkViewport, 60);
+        },
+        { passive: true }
+      );
+      checkViewport();
+    }
+
+    // Wait for webfonts so the split doesn't measure fallback metrics.
+    if (document.fonts && document.fonts.status !== "loaded") {
+      document.fonts.ready.then(start).catch(start);
+    } else {
+      start();
+    }
   })();
 </script>
 

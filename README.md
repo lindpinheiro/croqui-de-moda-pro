@@ -122,12 +122,25 @@ com segurança), use uma plataforma pronta de produto digital:
 
 ## Componentes do React Bits portados para JS puro
 
-Duas seções usam componentes do [React Bits](https://reactbits.dev) —
-**AccordionGallery** (`#processo`) e **DriftWall** (`#traco`). Os originais
-são React, e este site é HTML/CSS/JS estático sem build; adotar React só
-por causa deles significaria reescrever o site inteiro. Então os dois foram
-portados para JS puro, mantendo comportamento, estrutura de classes e
-parâmetros dos originais.
+Três componentes do [React Bits](https://reactbits.dev) estão em uso:
+**AccordionGallery** (`#processo`), **DriftWall** (`#traco`) e **SplitText**
+(todos os títulos de seção). Os originais são React, e este site é
+HTML/CSS/JS estático sem build; adotar React só por causa deles significaria
+reescrever o site inteiro. Então os três foram portados para JS puro,
+mantendo comportamento, estrutura de classes e parâmetros dos originais.
+
+O **SplitText** quebra cada `<h2>` (ou seja, todo título depois do hero) em
+caracteres que sobem e aparecem um após o outro quando o título entra na
+tela. O componente original usa o plugin SplitText do GSAP, que é pago —
+aqui a quebra é feita na mão e o movimento roda em transição CSS, sem
+plugin nenhum. Parâmetros no topo do script (`DELAY` entre caracteres,
+`THRESHOLD` e `ROOT_MARGIN` do gatilho de scroll).
+
+Dois cuidados no port: o `overflow:hidden` que mascara os caracteres antes
+de subirem é removido ao fim da animação, pra nunca cortar acento ou descida
+de letra no estado final; e há uma verificação de scroll como rede de
+segurança, caso o `IntersectionObserver` seja suspenso e algum título fique
+invisível. Quem usa "reduzir movimento" vê os títulos já prontos.
 
 O **DriftWall** (mural 3D em movimento, no fim do `index.html`) não precisa
 de biblioteca nenhuma — roda em `requestAnimationFrame` + CSS. As colunas
