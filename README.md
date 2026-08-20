@@ -21,9 +21,12 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
    numa plataforma de checkout, troque o `href` pelo link real de pagamento.
 3. Revisar preço, texto do pack e da bio do Joel — o texto atual foi montado
    a partir do Instagram público, confirme os detalhes com ele.
-4. As imagens de croqui (hero e galeria) são peças do portfólio pessoal do
-   Joel puxadas da pasta `CROQUIS/PNG` do Drive — troque por artes oficiais
-   do pack assim que ele estiver fechado.
+4. **Imagens do hero** (`#hero-carousel`) — carrossel com crossfade automático
+   (troca a cada 3,5s) usando 5 bases reais do pack (`assets/hero-base-1.png`
+   a `hero-base-5.png`), enviadas pelo Lindberg pra pasta
+   `1e2M9CP5kKTX14Oie5VWbsuBtau1I6_As` do Drive. As imagens da galeria
+   (`#traco`) continuam sendo peças do portfólio pessoal do Joel, puxadas da
+   pasta `CROQUIS/PNG` — troque por artes oficiais do pack quando ele fechar.
 5. **Domínio no `<head>`** — `canonical`, `og:url` e `og:image` estão
    apontando para `https://croquidemodapro.com.br/`, um domínio placeholder
    que ainda não existe. Troque pelas URLs reais assim que vocês registrarem

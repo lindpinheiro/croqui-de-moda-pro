@@ -179,6 +179,7 @@
   .stat-div{width:1px;height:36px;background:linear-gradient(180deg,transparent,var(--violet),transparent);opacity:.7;}
 
   .hero-visual{
+    position:relative;
     aspect-ratio:4/5;
     border-radius:var(--radius);
     background:
@@ -186,11 +187,16 @@
       radial-gradient(ellipse at 60% 75%, rgba(155,92,255,.2), transparent 55%),
       var(--bg-card);
     border:1px solid var(--line);
-    display:flex;align-items:center;justify-content:center;
     text-align:center;color:var(--ink-soft);font-size:.9rem;padding:24px;
     overflow:hidden;
   }
-  .hero-visual img{width:100%;height:100%;object-fit:contain;}
+  .hero-visual img{
+    position:absolute;top:24px;left:24px;right:24px;bottom:24px;
+    width:calc(100% - 48px);height:calc(100% - 48px);object-fit:contain;
+    opacity:0;transition:opacity 1s ease;
+  }
+  .hero-visual img.active{opacity:1;}
+  @media (prefers-reduced-motion: reduce){ .hero-visual img{transition:none;} }
 
   .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;}
   .gallery figure{
@@ -427,8 +433,12 @@
           <div class="stat-item"><span class="stat-num">2</span><span class="stat-label">Formatos</span></div>
         </div>
       </div>
-      <div class="hero-visual">
-        <img src="assets/hero-croqui.png" alt="Croqui de moda com base renderizada, vestido de festa com pérolas — ilustração de Joel Coveero">
+      <div class="hero-visual" id="hero-carousel">
+        <img class="active" src="assets/hero-base-1.png" alt="Base de croqui renderizada, pose de frente com as mãos na cintura">
+        <img src="assets/hero-base-2.png" alt="Base de croqui renderizada, pose de frente com a mão no quadril">
+        <img src="assets/hero-base-3.png" alt="Base de croqui renderizada, pose caminhando de frente">
+        <img src="assets/hero-base-4.png" alt="Base de croqui renderizada, pose caminhando de perfil">
+        <img src="assets/hero-base-5.png" alt="Base de croqui renderizada, vista de costas">
       </div>
     </div>
   </section>
@@ -813,6 +823,20 @@
 
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+<script>
+  (function () {
+    var hero = document.getElementById("hero-carousel");
+    if (!hero) return;
+    var imgs = Array.prototype.slice.call(hero.querySelectorAll("img"));
+    if (imgs.length < 2) return;
+    var active = 0;
+    setInterval(function () {
+      imgs[active].classList.remove("active");
+      active = (active + 1) % imgs.length;
+      imgs[active].classList.add("active");
+    }, 3500);
+  })();
 </script>
 <script async src="//www.instagram.com/embed.js"></script>
 <script>
