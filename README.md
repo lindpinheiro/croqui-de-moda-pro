@@ -11,11 +11,12 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 
 ## O que falta preencher antes de divulgar
 
-1. **Seção "Do traço ao croqui pronto"** (`#processo`) — refeita com 5 fotos
-   isoladas (sem legenda) que o Lindberg enviou pra pasta "passo a passo" do
-   Drive (`assets/process-1.png` a `process-5.png`, fundo branco removido via
-   chroma-key). Cards com setas conectando os passos, revelando um a um
-   conforme rola a página.
+1. **Seção "Do traço ao croqui pronto"** (`#processo`) — carrossel horizontal
+   com as 5 fotos isoladas (sem legenda) que o Lindberg enviou pra pasta
+   "passo a passo" do Drive (`assets/process-1.png` a `process-5.png`, fundo
+   branco removido via chroma-key). Mostra 3 passos por vez (1 no mobile),
+   com setas de navegação, indicadores (dots) e revelação escalonada: cada
+   card entra deslizando conforme o carrossel avança.
 2. **Foto do Joel** (seção `#joel`) — trocada para `assets/joel-foto.jpg`,
    a foto confirmada pelo Lindberg (com o Sonic, na pasta `JOEL FOTOS` do
    Drive, arquivo `IMG_0911.JPG`).
