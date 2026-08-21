@@ -1711,7 +1711,19 @@
         var fov = (camera.fov * Math.PI) / 180;
         var height = 2 * Math.tan(fov / 2) * camera.position.z;
         viewport = { width: height * camera.aspect, height: height };
-        if (medias) medias.forEach(function (m) { m.onResize({ screen: screen, viewport: viewport }); });
+        if (medias) {
+          // A largura de cada item muda com o viewport; sem reescalar o scroll
+          // na mesma proporcao a galeria daria um salto a cada redimensionamento.
+          var oldWidth = medias[0].width;
+          medias.forEach(function (m) { m.onResize({ screen: screen, viewport: viewport }); });
+          if (oldWidth) {
+            var factor = medias[0].width / oldWidth;
+            scroll.current *= factor;
+            scroll.target *= factor;
+            scroll.last *= factor;
+            startScroll *= factor;
+          }
+        }
       }
       onResize();
 
@@ -1725,6 +1737,13 @@
           borderRadius: BORDER_RADIUS, font: FONT
         });
       });
+
+      // A galeria comeca no meio da fita em vez de no primeiro item: no zero o
+      // item 0 fica no centro e nao existe nada a esquerda dele ate o wrap
+      // acontecer, o que deixava metade da secao vazia na primeira olhada.
+      var startScroll = medias[0].width * (doubled.length / 2);
+      scroll.current = scroll.target = scroll.last = startScroll;
+      medias.forEach(function (m) { m.update(scroll, "right"); });
 
       function onCheck() {
         if (!medias || !medias[0]) return;
@@ -1760,7 +1779,7 @@
       mount.addEventListener("keydown", function (e) {
         if (e.key === "ArrowRight") { e.preventDefault(); scroll.target += SCROLL_SPEED * 5; onCheckDebounce(); }
         else if (e.key === "ArrowLeft") { e.preventDefault(); scroll.target -= SCROLL_SPEED * 5; onCheckDebounce(); }
-        else if (e.key === "Home") { e.preventDefault(); scroll.target = 0; onCheckDebounce(); }
+        else if (e.key === "Home") { e.preventDefault(); scroll.target = startScroll; onCheckDebounce(); }
       });
 
       var visible = true;
