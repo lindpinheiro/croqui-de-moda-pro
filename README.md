@@ -50,35 +50,29 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
    Preferi não puxar as fotos de perfil de terceiros sem autorização deles
    pra usar num site comercial; se quiserem trocar por fotos/logos reais,
    é só substituir o conteúdo de `.trust-avatar` em cada card.
-10. **Vídeos do Instagram** (`#videos`) — carrossel automático (troca a cada
-   5s, clique num card lateral pra trazê-lo pra frente) com 3 posts reais
-   do Joel usando o pack (`DQ4XvT-jpb1`, `DYZqfMhjV5a`, `DUvudSEDnxR`). Se
-   quiserem trocar os posts, me mandem os links de `instagram.com/p/...` ou
-   `/reel/...`.
-   - **Cabeçalho/rodapé em dark mode**: o Instagram não oferece um modo
-     escuro pro embed, e por ser um iframe de outro domínio não dá pra
-     restilizar o header/footer originais dele. A solução foi cortar o
-     header/footer BRANCOS do Instagram pra fora da área visível (via JS,
-     ajustando `HEADER_H`/`FOOTER_H` no script no fim do `index.html`,
-     que mostra só a mídia) e desenhar um cabeçalho/rodapé **nossos**, em
-     HTML/CSS, no tema escuro do site: avatar do Joel + "joelcoveero" +
-     selo verificado no topo, e ícones de curtir/comentar/compartilhar/
-     salvar (sem número de curtidas/comentários) embaixo — tudo decorativo,
-     não conectado à API do Instagram de verdade.
-   - O corte do `HEADER_H`/`FOOTER_H` é uma estimativa visual calibrada nos
-     3 posts atuais. Se trocarem os posts e sobrar uma tarja branca (ou
-     cortar demais a imagem), me avisem que reajusto os números.
-   - **Limitação**: quando o post embutido é do tipo carrossel (várias fotos,
-     ex. `?img_index=1`), o Instagram não deixa esse carrossel interno trocar
-     de foto sozinho — só com clique manual nas setinhas. Isso é controlado
-     inteiramente pelo iframe do Instagram (outro domínio), não temos como
-     automatizar isso pelo nosso lado.
-11. **Seção "Tutoriais"** (`#tutoriais`) — os 4 cards (estampas com IA,
-   coleções consistentes com IA, como importar/usar, como imprimir) ainda são
-   só capa + "em breve"/"mini curso incluso", sem vídeo de verdade (procurem
-   o comentário `TODO` no `index.html`). Quando gravarem,
-   subam no YouTube (pode ser "não listado") e troquem o `.tut-thumb` de cada
-   card pelo iframe de embed do YouTube — é só me mandar os links que eu faço.
+10. **Seção "Veja o pack em ação"** (`#videos`) — os embeds do Instagram
+   foram substituídos pela CircularGallery com 15 imagens da pasta
+   `1QZpiyF5W7i7i2SM3484b3EIsfsRIb8Tk` do Drive, em `assets/carrossel/`
+   (`g01.jpg` a `g15.jpg`, ~1 MB no total). Elas mostram o croqui ao lado
+   da peça já executada, que é a prova mais forte do produto.
+   - **Atenção**: dois arquivos originais (`IMG_7668.JPG` e `IMG_7946.JPG`)
+     têm resolução muito baixa (175x219 e 179x224 px, 13 KB e 20 KB) e
+     aparecem borrados na galeria. Se tiverem as versões em tamanho cheio,
+     é só substituir `g09.jpg` e `g12.jpg`.
+   - As legendas estão como "Look 01"… "Look 15" por não sabermos o nome
+     de cada peça. Se quiserem nomes reais, me mandem a lista.
+11. **Seção "Tutoriais"** (`#tutoriais`) — as 4 aulas (estampas com IA,
+   coleções consistentes com IA, como importar/usar, como imprimir) empilham
+   conforme a página rola (ScrollStack), mas ainda são só capa + "em breve"/
+   "mini curso incluso", sem vídeo de verdade (procurem o comentário `TODO`
+   no `index.html`). Quando gravarem, subam no YouTube (pode ser "não
+   listado") e troquem o `.tut-thumb` de cada card pelo iframe de embed do
+   YouTube — é só me mandar os links que eu faço.
+12. **Contadores de conteúdo** — o hero anuncia **4 aulas, 15 texturas e 20
+   brushes**, números passados pelo Lindberg. Ainda não vi esses arquivos, e
+   as aulas ainda não foram gravadas — confiram se os números batem com o
+   pack final antes de anunciar. Eles aparecem em três lugares: o
+   `stat-strip` do hero, os cards da seção `#pack` e a lista do `#preco`.
 
 ## SEO e copy
 
@@ -122,7 +116,7 @@ com segurança), use uma plataforma pronta de produto digital:
 
 ## Componentes do React Bits portados para JS puro
 
-Seis componentes do [React Bits](https://reactbits.dev) estão em uso:
+Onze componentes do [React Bits](https://reactbits.dev) estão em uso:
 
 | Componente | Onde |
 |---|---|
@@ -132,6 +126,11 @@ Seis componentes do [React Bits](https://reactbits.dev) estão em uso:
 | **Strands** | fundo animado do `#preco` |
 | **SpecularButton** | botões primários (`.btn`, exceto os `.ghost`) |
 | **StarBorder** | moldura do card de preço |
+| **CircularGallery** | `#videos` — croquis ao lado das peças reais |
+| **TiltedCard** | foto do Joel em `#joel` |
+| **CountUp** | números do hero e de seguidores |
+| **LogoLoop** | marquee das tags "Ideal para" |
+| **ScrollStack** | aulas do mini curso em `#tutoriais` |
 
 Os originais são React, e este site é HTML/CSS/JS estático sem build; adotar
 React só por causa deles significaria reescrever o site inteiro. Então todos
@@ -151,6 +150,27 @@ canvas só desenha o realce que corre pela borda, por cima do fundo atual.
 O **StarBorder** não usa biblioteca nenhuma — é só CSS. Envolve o card de
 preço e faz dois brilhos (violeta em cima, rosa embaixo) correrem pelas
 bordas. Parâmetros no `style` inline dos `.border-gradient-*`.
+
+A **CircularGallery** também roda em `ogl` (mesmo CDN). Mostra os 15 arquivos
+de `assets/carrossel/` numa curva 3D; arraste com o mouse/dedo ou use as
+setas do teclado. Ela deriva sozinha bem devagar pra deixar claro que é
+interativa. **Diferença em relação ao original:** o componente do React Bits
+captura a roda do mouse da página inteira pra girar a galeria; aqui isso foi
+removido, senão rolar a página perto dessa seção viraria "girar o carrossel"
+em vez de descer o site. Só arrasto, toque e teclado movem a galeria.
+
+**TiltedCard**, **CountUp** e **LogoLoop** não precisaram de dependência: os
+originais usam a biblioteca `motion`, e aqui a mesma sensação foi obtida com
+transição CSS (TiltedCard), uma curva de easing (CountUp) e um loop de
+`requestAnimationFrame` (LogoLoop).
+
+O **ScrollStack** empilha as aulas do mini curso conforme a página rola.
+**Diferença em relação ao original:** ele depende do Lenis, uma biblioteca de
+scroll suave que assume o controle da rolagem da página inteira — isso
+brigaria com todos os outros efeitos de scroll do site (títulos, contadores,
+mural, galeria). Então foi usado o caminho `useWindowScroll` do próprio
+componente, com o scroll nativo: mesmos cálculos de empilhamento, sem
+sequestrar a rolagem e sem dependência nova.
 
 O **SplitText** quebra cada `<h2>` (ou seja, todo título depois do hero) em
 caracteres que sobem e aparecem um após o outro quando o título entra na
