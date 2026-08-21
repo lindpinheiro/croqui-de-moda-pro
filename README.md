@@ -7,18 +7,85 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 ## Estrutura
 
 - `index.html` — página única com todo o conteúdo e estilo (sem dependências externas).
-- `assets/` — pasta para colocar as imagens reais (fotos do Joel, croquis, mockups).
+- `assets/` — imagens do site, todas em WebP (ver "Imagens em WebP" abaixo).
+- `privacidade.html`, `termos.html`, `legal.css` — páginas legais.
 
+
+## Ordem das seções e conversão
+
+A página foi reorganizada a partir da auditoria de conversão (agosto/2026).
+São 10 seções, nesta ordem:
+
+1. **Hero** — título, preço junto do botão (`.hero-price`) e a régua de números.
+2. **`#pack`** — o que vem no pack.
+3. **`#videos`** — "Veja o pack em ação". Era a oitava seção; subiu porque é a
+   prova visual mais forte e quem chega de anúncio decide antes de rolar tudo.
+4. **`#processo`** — do traço ao croqui pronto.
+5. **`#tutoriais`** — mini curso.
+6. **`#fluxo`** — trabalhe do seu jeito.
+7. **`#joel`** — quem assina o pack. Junta as três seções que antes falavam da
+   credibilidade do Joel em endereços separados (`#confianca`, `#joel` e
+   `#traco`): foto, bio, colaborações e mural do portfólio agora vivem no mesmo
+   bloco, com `h3` nos sub-blocos para manter um `h2` por seção.
+8. **`#depoimentos`** — existe como modelo comentado no HTML, logo depois do
+   `#joel`. **Descomentar só quando houver depoimento real.** A instrução de
+   como conseguir está no próprio comentário.
+9. **`#porque`** — quebra das objeções (IA e Pinterest), logo antes do preço.
+10. **`#preco` → `#faq`**.
+
+Há **4 CTAs no meio da página** (`.cta-inline`), um ao fim de cada bloco que
+acaba de vencer uma objeção: depois de `#videos`, `#tutoriais`, `#joel` e
+`#porque`. Antes existiam só dois botões no corpo inteiro — o do hero e o do
+preço — com mais de dez mil pixels de distância entre eles.
+
+O preço aparece em dois lugares além do card: junto do botão do hero e na
+linha `.price-math` do card (`R$ 3,61 por modelo`). Preço visível cedo
+qualifica: quem acha caro sai antes de consumir orçamento de anúncio.
+
+### No mobile
+
+O carrossel do hero virou uma faixa (`16/9` em vez de quadrado) e o parágrafo
+longo desceu para depois do botão, via `order` no `.hero-copy`. Com isso o CTA
+principal passou a caber na primeira tela — antes ele só aparecia 1,4 tela
+abaixo da dobra.
+
+## Imagens em WebP
+
+Todas as imagens do site são `.webp` (convertidas com `sharp`, qualidade 88
+para PNG e 80 para JPEG). O total saiu de **5,5 MB para 2,3 MB**, sem
+diferença visível — os PNG do processo caíram até 90%.
+
+A única exceção é `assets/hero-croqui.png`, mantida em PNG porque é a imagem
+usada em `og:image` / `twitter:image`: nem todo robô de preview de link lê
+WebP. Ela não é carregada pela página.
+
+Tudo que fica abaixo da dobra tem `loading="lazy"` e `decoding="async"`. Se
+precisar reconverter depois de trocar alguma imagem, o comando é
+`npx sharp-cli --input <arquivo> --output <pasta> --format webp`.
+
+## Páginas legais
+
+- `privacidade.html` — política de privacidade (LGPD).
+- `termos.html` — termos de uso, licença dos arquivos e garantia de 7 dias.
+- `legal.css` — estilo compartilhado pelas duas.
+
+**As duas têm campos em laranja para preencher** (nome/razão social, CPF ou
+CNPJ, e-mail de contato, cidade/UF). Sem isso elas não cumprem a LGPD e não
+servem para aprovar a conta de anúncios — a Meta exige política de privacidade
+acessível, e o Pixel coleta dado pessoal.
+
+A seção de licença do `termos.html` merece leitura atenta: é ela que separa
+"o cliente pode usar nos trabalhos dele" de "o cliente pode revender o pack".
 ## O que falta preencher antes de divulgar
 
 1. **Seção "Do traço ao croqui pronto"** (`#processo`) — galeria em acordeão
    com as 5 fotos isoladas (sem legenda) que o Lindberg enviou pra pasta
-   "passo a passo" do Drive (`assets/process-1.png` a `process-5.png`, fundo
+   "passo a passo" do Drive (`assets/process-1.webp` a `process-5.webp`, fundo
    branco removido via chroma-key). Passe o mouse (ou toque) numa etapa e
    ela expande, ganha cor e mostra a legenda; as outras ficam estreitas,
    em preto e branco e levemente inclinadas em 3D. No mobile vira um
    acordeão vertical. Ver seção "Dependência externa: GSAP" abaixo.
-2. **Foto do Joel** (seção `#joel`) — trocada para `assets/joel-foto.jpg`,
+2. **Foto do Joel** (seção `#joel`) — trocada para `assets/joel-foto.webp`,
    a foto confirmada pelo Lindberg (com o Sonic, na pasta `JOEL FOTOS` do
    Drive, arquivo `IMG_0911.JPG`).
 3. **"Texturas de papel"** (card na seção `#pack` e item no `#preco`) — copy
@@ -31,12 +98,12 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 5. Revisar preço, texto do pack e da bio do Joel — o texto atual foi montado
    a partir do Instagram público, confirme os detalhes com ele.
 6. **Imagens do hero** (`#hero-carousel`) — carrossel com crossfade automático
-   (troca a cada 3,5s) usando 5 bases reais do pack (`assets/hero-base-1.png`
-   a `hero-base-5.png`), enviadas pelo Lindberg pra pasta
+   (troca a cada 3,5s) usando 5 bases reais do pack (`assets/hero-base-1.webp`
+   a `hero-base-5.webp`), enviadas pelo Lindberg pra pasta
    `1e2M9CP5kKTX14Oie5VWbsuBtau1I6_As` do Drive.
 7. **Seção "O traço do Joel"** (`#traco`) — virou um mural 3D em movimento
    (DriftWall) com 16 imagens da pasta `1msNQdJ4eAAyXe42uZWKG7Bu8AEwN9K_g`
-   do Drive, em `assets/wall/wall-01.jpg` a `wall-16.jpg` (redimensionadas
+   do Drive, em `assets/wall/wall-01.webp` a `wall-16.webp` (redimensionadas
    pra 700px, ~930 KB no total). A pasta tinha 3 vídeos `.MOV` que ignorei —
    o componente é só de imagens. Pra trocar/adicionar imagens, coloque os
    arquivos em `assets/wall/` e atualize a lista `IMAGES` no script do
@@ -53,12 +120,12 @@ barato de manter (hospedagem gratuita) e fácil de atualizar.
 10. **Seção "Veja o pack em ação"** (`#videos`) — os embeds do Instagram
    foram substituídos pela CircularGallery com 15 imagens da pasta
    `1QZpiyF5W7i7i2SM3484b3EIsfsRIb8Tk` do Drive, em `assets/carrossel/`
-   (`g01.jpg` a `g15.jpg`, ~1 MB no total). Elas mostram o croqui ao lado
+   (`g01.webp` a `g15.webp`, ~660 KB no total). Elas mostram o croqui ao lado
    da peça já executada, que é a prova mais forte do produto.
    - **Atenção**: dois arquivos originais (`IMG_7668.JPG` e `IMG_7946.JPG`)
      têm resolução muito baixa (175x219 e 179x224 px, 13 KB e 20 KB) e
      aparecem borrados na galeria. Se tiverem as versões em tamanho cheio,
-     é só substituir `g09.jpg` e `g12.jpg`.
+     é só substituir `g09.webp` e `g12.webp`.
    - As legendas estão como "Look 01"… "Look 15" por não sabermos o nome
      de cada peça. Se quiserem nomes reais, me mandem a lista.
 11. **Seção "Tutoriais"** (`#tutoriais`) — as 4 aulas (estampas com IA,
