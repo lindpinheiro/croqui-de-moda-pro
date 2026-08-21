@@ -126,6 +126,15 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
   }
+  /* A pagina so rola pra cima e pra baixo. `clip` em vez de `hidden` porque
+     `hidden` transforma o elemento em contexto de rolagem e quebraria o
+     position:sticky das aulas; `clip` so corta. O `hidden` fica de reserva
+     para navegador antigo, onde ele vai para o viewport (o html continua
+     `visible`) e o sticky segue valendo. */
+  html{overflow-x:hidden;}
+  @supports (overflow-x: clip){
+    html{overflow-x:clip;}
+  }
   /* Anel de foco unico pro site inteiro: o padrao do navegador some no fundo
      escuro em varios deles. Componentes que ja tem foco proprio sobrescrevem. */
   a:focus-visible, button:focus-visible, summary:focus-visible,
@@ -501,7 +510,10 @@
 
   /* ScrollStack — as aulas empilham conforme a pagina rola */
   .scroll-stack-scroller{position:relative;width:100%;}
-  .scroll-stack-inner{padding:0 0 22rem;}
+  /* Esse respiro no fim e o que segura o baralho montado por um instante antes
+     de soltar. Com o pin em sticky ele nao precisa mais ser enorme: 22rem
+     deixavam quase uma tela inteira em branco antes da proxima secao. */
+  .scroll-stack-inner{padding:0 0 7rem;}
   .scroll-stack-end{width:100%;height:1px;}
   /* O pin e feito com position:sticky, que roda no compositor. Antes ele era
      feito no JS (translateY acompanhando o scrollY): como a rolagem acontece
@@ -558,7 +570,7 @@
     .scroll-stack-card{position:relative;top:auto;}
   }
   @media (max-width:820px){
-    .scroll-stack-inner{padding:0 0 14rem;}
+    .scroll-stack-inner{padding:0 0 4rem;}
     .tut-card{flex-direction:column;}
     .tut-thumb{flex:0 0 auto;aspect-ratio:16/9;}
     .tut-body{padding:22px;}
@@ -879,6 +891,12 @@
   .price-glow .pricing{max-width:none;border:none;box-shadow:none;}
   /* instancia: card do "Trabalhe do seu jeito" */
   .flow-glow .flow-split{border:none;background:transparent;border-radius:inherit;}
+  /* Ate ~1200px o card do #fluxo ocupa a largura toda do wrap e sobram so os
+     24px de respiro da pagina: um brilho de 40px vazava e criava rolagem
+     lateral (no tablet dava pra arrastar a pagina de lado). */
+  @media (max-width:1200px){
+    .border-glow-card{--glow-padding:18px;}
+  }
   @media (prefers-reduced-motion: reduce){
     .border-glow-card::before,.border-glow-card::after,.border-glow-card > .edge-light{transition:none;}
   }
@@ -2064,8 +2082,12 @@
         el.inert = open;
       });
       if (label) label.textContent = open ? "Fechar" : "Menu";
-      // Keep the page behind from scrolling while the panel is over it.
-      document.body.style.overflow = open ? "hidden" : "";
+      // Trava a rolagem do fundo enquanto o painel esta por cima. A trava vai
+      // no <html>, nao no <body>: como o html tem overflow-x, o overflow do
+      // body deixa de ser propagado pro viewport e o body viraria um contexto
+      // de rolagem proprio — o que quebra o sticky do header (e o botao de
+      // fechar vive nele).
+      document.documentElement.style.overflow = open ? "hidden" : "";
       if (open) {
         lastFocus = document.activeElement;
         var first = panel.querySelector("a");
