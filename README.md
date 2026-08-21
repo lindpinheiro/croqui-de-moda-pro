@@ -218,6 +218,40 @@ pausa a coluna dele. Parâmetros no topo do script (`COLUMNS`, `SPEED`,
 `TILT`, `TURN`, `PARALLAX`, etc.). Quem usa "reduzir movimento" no sistema
 vê o mural parado.
 
+
+## Acessibilidade
+
+O que já está no site:
+
+- `lang="pt-BR"`, um `<h1>` único e hierarquia de títulos em ordem.
+- Todas as imagens com `alt`; elementos decorativos (canvas de fundo, ícones
+  de play, cópias do marquee) com `aria-hidden`.
+- Link "Pular para o conteúdo", visível ao chegar pelo teclado.
+- Anel de foco próprio em todo link, botão e elemento focável — o padrão do
+  navegador some no fundo escuro em vários deles.
+- Galeria e etapas do processo navegáveis por teclado, com `aria-label`.
+- Menu sanduíche: fecha com Esc, devolve o foco pro botão e deixa o resto da
+  página `inert` enquanto está aberto.
+- `prefers-reduced-motion` respeitado em todos os componentes — inclusive o
+  scroll suave, o empilhamento das aulas e as animações WebGL.
+- Contraste: `--ink-faint` passou de `#786e93` (4,2:1) para `#8b80a8`
+  (~5,2:1), acima do mínimo AA de 4,5:1 para texto normal.
+
+O que ainda vale fazer:
+
+1. **Botão de pausar animações.** A galeria gira sozinha e o marquee das tags
+   corre continuamente. A WCAG 2.2.2 pede um jeito de parar movimento
+   automático que dure mais de 5s. Hoje o marquee para no hover e a galeria
+   para no arrasto, mas quem navega por teclado não tem como parar — um botão
+   "pausar animações" no rodapé, gravado no `localStorage`, resolveria.
+2. **Legendas e transcrição nos vídeos do mini curso.** Quando os vídeos
+   subirem, legenda é requisito (WCAG 1.2.2) e ajuda também quem assiste sem
+   som — que é a maioria no Instagram.
+3. **Teste com leitor de tela de verdade.** NVDA no Windows ou VoiceOver no
+   iPhone, percorrendo a página do topo até o checkout.
+4. **Checkout.** A plataforma escolhida (Kiwify/Hotmart/Eduzz) tem a
+   acessibilidade dela, fora do nosso controle — vale testar o fluxo de compra
+   por teclado antes de anunciar.
 ## Dependência externa: GSAP (galeria em acordeão)
 
 A seção `#processo` usa o componente **AccordionGallery** do
