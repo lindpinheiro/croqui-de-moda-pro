@@ -116,7 +116,7 @@ com segurança), use uma plataforma pronta de produto digital:
 
 ## Componentes do React Bits portados para JS puro
 
-Onze componentes do [React Bits](https://reactbits.dev) estão em uso:
+Treze componentes do [React Bits](https://reactbits.dev) estão em uso:
 
 | Componente | Onde |
 |---|---|
@@ -131,6 +131,8 @@ Onze componentes do [React Bits](https://reactbits.dev) estão em uso:
 | **CountUp** | números do hero e de seguidores |
 | **LogoLoop** | marquee das tags "Ideal para" |
 | **ScrollStack** | aulas do mini curso em `#tutoriais` |
+| **StaggeredMenu** | menu sanduíche do topo (mobile) |
+| **BorderGlow** | bordas dos cards de `#fluxo` e `#preco` |
 
 Os originais são React, e este site é HTML/CSS/JS estático sem build; adotar
 React só por causa deles significaria reescrever o site inteiro. Então todos
@@ -178,6 +180,29 @@ tela. O componente original usa o plugin SplitText do GSAP, que é pago —
 aqui a quebra é feita na mão e o movimento roda em transição CSS, sem
 plugin nenhum. Parâmetros no topo do script (`DELAY` entre caracteres,
 `THRESHOLD` e `ROOT_MARGIN` do gatilho de scroll).
+
+O **StaggeredMenu** é o menu sanduíche que aparece só no mobile (até 820px);
+no desktop o menu horizontal continua igual. O botão "Quero o meu" fica no
+topo nas duas versões — no mobile a marca e o botão encolhem e o menu vira
+só o ícone pra caberem os três na mesma linha. **Diferença em relação ao
+original:** ele anima com timelines do GSAP; aqui as mesmas entradas em
+cascata (as duas camadas coloridas, o painel e cada item subindo um depois
+do outro) são feitas com `transition-delay` em CSS, disparadas pela classe
+`.sm-open` no `<body>`. Fecha com Esc, clique fora, clique num item ou ao
+passar pra largura de desktop, e trava a rolagem do fundo enquanto aberto.
+
+O **BorderGlow** acende a borda dos cards de "Trabalhe do seu jeito" e
+"Garanta o seu" conforme o mouse chega perto das bordas: a distância até a
+borda vira `--edge-proximity` e o ângulo em volta do centro vira
+`--cursor-angle`; o resto é CSS (borda em mesh gradient, preenchimento
+interno e o brilho externo em `plus-lighter`). As cores são as do site
+(violeta, rosa e lime) e o glow é rosa, na tonalidade da marca. **Diferenças
+em relação ao original:** as props viraram custom properties na própria
+folha de estilo, o `.border-glow-inner` recorta (`overflow:hidden`) pra
+segurar os brilhos do StarBorder dentro do card de preço, e o `animated`
+(varredura de apresentação) roda na primeira vez que o card entra na tela,
+em vez de na montagem — e não roda com `prefers-reduced-motion`. Em telas de
+toque, sem cursor, o card fica no estado de repouso.
 
 Dois cuidados no port: o `overflow:hidden` que mascara os caracteres antes
 de subirem é removido ao fim da animação, pra nunca cortar acento ou descida
