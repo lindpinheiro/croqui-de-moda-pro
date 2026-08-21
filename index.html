@@ -1349,9 +1349,12 @@
       shineSize: 10,
       shineFade: 40,
       thickness: 1,
-      speed: 0.35,
+      speed: 1.0,
       proximity: 260,
-      autoAnimate: true
+      // varredura sempre girando; followMouse desligado pra ela nao travar
+      // apontando pro cursor quando ele passa perto do botao
+      autoAnimate: true,
+      followMouse: false
     };
 
     import("https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm")
@@ -1468,7 +1471,7 @@
           instances.forEach(function (inst) {
             if (!inst.visible) return;
             inst.idleAngle += OPTS.speed * dt;
-            var steer = inst.pointerAngle != null && (!OPTS.autoAnimate || inst.proximityT > 0);
+            var steer = OPTS.followMouse && inst.pointerAngle != null && (!OPTS.autoAnimate || inst.proximityT > 0);
             var target = steer ? inst.pointerAngle : inst.idleAngle;
             var diff = ((target - inst.angle + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
             inst.angle += diff * (1 - Math.exp(-dt * 7));
