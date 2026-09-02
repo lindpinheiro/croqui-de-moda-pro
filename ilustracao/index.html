@@ -296,16 +296,57 @@
   .trust-handle{display:block;font-family:var(--font-mono);font-size:.74rem;color:var(--ink-faint);margin:2px 0 8px;}
   .trust-quote{color:var(--ink-soft);font-size:.88rem;margin:0;}
 
-  .port-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
-  .port-cell{
-    aspect-ratio:3/4;border-radius:var(--radius);overflow:hidden;
-    background:var(--bg-card);border:1px solid var(--line);
-    transition:transform .18s ease, border-color .18s ease;
+  /* DepthCarousel — vanilla port do componente React Bits (reactbits.dev).
+     Mesmo comportamento e marcação, reescrito sem React porque este é um
+     site estático sem build. GSAP anima a posição quando disponível, com
+     fallback via requestAnimationFrame se o CDN for bloqueado. */
+  .depth-carousel-wrap{height:460px;position:relative;margin-top:40px;}
+  @media (max-width:820px){ .depth-carousel-wrap{height:380px;} }
+  @media (max-width:520px){ .depth-carousel-wrap{height:320px;} }
+  .depth-carousel{
+    position:relative;width:100%;height:100%;min-height:260px;
+    display:flex;align-items:center;justify-content:center;
+    perspective:var(--dc-perspective,1400px);perspective-origin:50% 50%;
+    touch-action:pan-y;outline:none;user-select:none;-webkit-user-select:none;cursor:grab;
   }
-  .port-cell:hover{transform:translateY(-4px);border-color:var(--violet);}
-  .port-cell img{width:100%;height:100%;object-fit:cover;}
-  @media (max-width:820px){ .port-grid{grid-template-columns:repeat(2,1fr);} }
-  @media (max-width:520px){ .port-grid{grid-template-columns:1fr;} }
+  .depth-carousel:active{cursor:grabbing;}
+  .depth-carousel:focus-visible{outline:2px solid rgba(255,255,255,.35);outline-offset:6px;border-radius:var(--radius);}
+  .depth-carousel__stage{position:absolute;inset:0;transform-style:preserve-3d;}
+  .depth-carousel__card{
+    position:absolute;top:50%;left:50%;transform-origin:center center;
+    overflow:hidden;background:var(--bg-card);border:1px solid var(--line);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.65), 0 8px 20px -10px rgba(0,0,0,.5);
+    will-change:transform,opacity,filter;cursor:pointer;transform:translate(-50%,-50%);
+  }
+  .depth-carousel__img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
+  .depth-carousel__tint{position:absolute;inset:0;opacity:0;pointer-events:none;mix-blend-mode:multiply;}
+  .depth-carousel__arrow{
+    position:absolute;top:50%;transform:translateY(-50%);z-index:3000;
+    width:42px;height:42px;display:grid;place-items:center;
+    border:1px solid var(--line);border-radius:999px;
+    background:rgba(18,11,28,.65);backdrop-filter:blur(8px);color:var(--ink);cursor:pointer;
+    transition:background .2s ease, border-color .2s ease, transform .2s ease;
+  }
+  .depth-carousel__arrow:hover{background:rgba(28,20,42,.9);border-color:var(--violet);}
+  .depth-carousel__arrow:active{transform:translateY(-50%) scale(.94);}
+  .depth-carousel__arrow--prev{left:8px;}
+  .depth-carousel__arrow--next{right:8px;}
+  @media (max-width:520px){
+    .depth-carousel__arrow{width:36px;height:36px;}
+    .depth-carousel__arrow--prev{left:2px;}
+    .depth-carousel__arrow--next{right:2px;}
+  }
+  .depth-carousel__counter{
+    position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:3000;
+    font-family:var(--font-mono);font-size:.76rem;letter-spacing:.06em;color:var(--ink-faint);
+    background:rgba(14,9,22,.55);backdrop-filter:blur(6px);border:1px solid var(--line);
+    padding:5px 12px;border-radius:999px;
+  }
+  .depth-carousel__counter .dc-current{color:var(--lime);font-weight:700;}
+  @media (prefers-reduced-motion: reduce){
+    .depth-carousel__card{will-change:auto;}
+    .depth-carousel__arrow{transition:none;}
+  }
 
   .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .card{
@@ -504,13 +545,41 @@
       <div class="eyebrow" data-i18n="port_eyebrow">O traço do Joel</div>
       <h2 data-i18n="port_h2">Portfólio</h2>
       <p class="section-lead" data-i18n="port_lead">Uma amostra do nível de acabamento que você pode esperar — peças e bastidores do trabalho pessoal do Joel.</p>
-      <div class="port-grid">
-        <div class="port-cell reveal"><img data-i18n-alt="port_alt" src="../assets/wall/wall-02.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"></div>
-        <div class="port-cell reveal"><img data-i18n-alt="port_alt" src="../assets/wall/wall-05.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"></div>
-        <div class="port-cell reveal"><img data-i18n-alt="port_alt" src="../assets/wall/wall-07.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"></div>
-        <div class="port-cell reveal"><img data-i18n-alt="port_alt" src="../assets/wall/wall-08.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"></div>
-        <div class="port-cell reveal"><img data-i18n-alt="port_alt" src="../assets/wall/wall-14.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"></div>
-        <div class="port-cell reveal"><img data-i18n-alt="port_alt" src="../assets/wall/wall-15.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"></div>
+    </div>
+    <div class="depth-carousel-wrap reveal">
+      <div class="depth-carousel" id="portfolio-carousel" role="group" aria-roledescription="carousel" aria-label="Portfólio" tabindex="0">
+        <div class="depth-carousel__stage">
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-01.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-02.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-03.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-04.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-05.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-06.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-07.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-08.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-09.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-10.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-11.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-12.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-13.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-14.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-15.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-16.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-17.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-18.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-19.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-20.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-21.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-22.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-23.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+        </div>
+        <button type="button" class="depth-carousel__arrow depth-carousel__arrow--prev" data-i18n-aria="port_prev_aria" aria-label="Anterior">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button type="button" class="depth-carousel__arrow depth-carousel__arrow--next" data-i18n-aria="port_next_aria" aria-label="Próximo">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="depth-carousel__counter" aria-hidden="true"><span class="dc-current">01</span> / <span class="dc-total">23</span></div>
       </div>
     </div>
   </section>
@@ -676,6 +745,266 @@
   })();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script>
+  // DepthCarousel — vanilla port of the React Bits component (reactbits.dev).
+  // Same behaviour and markup contract; rewritten without React because this
+  // is a plain static site with no build step. GSAP drives the position
+  // tween when available, with a requestAnimationFrame fallback otherwise.
+  (function () {
+    var root = document.getElementById("portfolio-carousel");
+    if (!root) return;
+    var cards = Array.prototype.slice.call(root.querySelectorAll(".depth-carousel__card"));
+    var overlays = cards.map(function (c) { return c.querySelector(".depth-carousel__tint"); });
+    var count = cards.length;
+    if (!count) return;
+
+    var cfg = {
+      cardWidth: 320,
+      cardHeight: 400,
+      depth: 190,
+      spread: 74,
+      tilt: 16,
+      tiltDirection: "right",
+      visibleCards: 4,
+      falloff: 0.22,
+      blur: 6,
+      duration: 650,
+      ease: "power3.out",
+      loop: true,
+      autoplay: true,
+      autoplayDelay: 3800
+    };
+
+    var hasGsap = typeof window.gsap !== "undefined";
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    var posRef = 0;
+    var focusRef = 0;
+    var scaleRef = 1;
+    var tweenHandle = null;
+    var dragState = null;
+    var wheelTimer = null;
+    var autoTimer = null;
+
+    var counterCurrent = root.querySelector(".dc-current");
+    var counterTotal = root.querySelector(".dc-total");
+    if (counterTotal) counterTotal.textContent = count < 10 ? "0" + count : "" + count;
+
+    cards.forEach(function (c) {
+      c.style.width = cfg.cardWidth + "px";
+      c.style.height = cfg.cardHeight + "px";
+      c.style.borderRadius = "var(--radius)";
+    });
+
+    function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+
+    function killTween() {
+      if (tweenHandle == null) return;
+      if (typeof tweenHandle === "number") cancelAnimationFrame(tweenHandle);
+      else if (tweenHandle.kill) tweenHandle.kill();
+      tweenHandle = null;
+    }
+
+    function layout(pos) {
+      var dir = cfg.tiltDirection === "left" ? -1 : 1;
+      var sc = scaleRef;
+      for (var i = 0; i < count; i++) {
+        var el = cards[i];
+        var d = i - pos;
+        if (cfg.loop && count > 1) {
+          d = ((d % count) + count) % count;
+          if (d > count / 2) d -= count;
+        }
+        var back = Math.max(0, d);
+        var az = Math.abs(d);
+        var shown = az <= cfg.visibleCards + 0.5;
+
+        var tz = -cfg.depth * d;
+        var tx = dir * cfg.spread * d;
+        var ry = dir * cfg.tilt * clamp(d, 0, 1);
+
+        var opacity = d < 0 ? Math.max(0, 1 + d) : 1;
+        if (!shown) opacity = 0;
+
+        var brightness = Math.max(0.15, 1 - back * cfg.falloff);
+        var blurPx = cfg.blur > 0 ? Math.min(cfg.blur, (back / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
+        var zi = Math.round(2000 - d * 20);
+
+        el.style.transform = "translate(-50%, -50%) scale(" + sc + ") translateX(" + tx.toFixed(2) + "px) translateZ(" + tz.toFixed(2) + "px) rotateY(" + ry.toFixed(3) + "deg)";
+        el.style.opacity = opacity.toFixed(3);
+        el.style.filter = "brightness(" + brightness.toFixed(3) + ") blur(" + blurPx.toFixed(2) + "px)";
+        el.style.zIndex = String(zi);
+        el.style.pointerEvents = shown && opacity > 0.05 ? "auto" : "none";
+
+        var ov = overlays[i];
+        if (ov) ov.style.opacity = clamp(back * cfg.falloff * 1.25, 0, 0.86).toFixed(3);
+      }
+    }
+
+    function notify(idx) {
+      cards.forEach(function (c, i) { c.setAttribute("aria-hidden", i === idx ? "false" : "true"); });
+      if (counterCurrent) counterCurrent.textContent = idx + 1 < 10 ? "0" + (idx + 1) : "" + (idx + 1);
+    }
+
+    function tweenTo(target, animate) {
+      killTween();
+      var dur = animate && !reduced ? cfg.duration / 1000 : 0;
+
+      if (dur <= 0) {
+        posRef = ((target % count) + count) % count;
+        layout(posRef);
+        return;
+      }
+
+      if (hasGsap) {
+        var proxy = { p: posRef };
+        tweenHandle = window.gsap.to(proxy, {
+          p: target,
+          duration: dur,
+          ease: cfg.ease,
+          onUpdate: function () { posRef = proxy.p; layout(posRef); },
+          onComplete: function () {
+            posRef = ((posRef % count) + count) % count;
+            layout(posRef);
+          }
+        });
+      } else {
+        var start = posRef;
+        var startTime = null;
+        var durationMs = dur * 1000;
+        var step = function (ts) {
+          if (startTime === null) startTime = ts;
+          var t = Math.min(1, (ts - startTime) / durationMs);
+          var eased = 1 - Math.pow(1 - t, 3);
+          posRef = start + (target - start) * eased;
+          layout(posRef);
+          if (t < 1) {
+            tweenHandle = requestAnimationFrame(step);
+          } else {
+            posRef = ((posRef % count) + count) % count;
+            layout(posRef);
+          }
+        };
+        tweenHandle = requestAnimationFrame(step);
+      }
+    }
+
+    function setFocus(rawIndex, animate) {
+      if (!count) return;
+      var idx = cfg.loop ? (((rawIndex % count) + count) % count) : clamp(rawIndex, 0, count - 1);
+      var delta = idx - posRef;
+      if (cfg.loop && count > 1) {
+        delta = ((delta % count) + count) % count;
+        if (delta > count / 2) delta -= count;
+      }
+      tweenTo(posRef + delta, animate !== false);
+      if (idx !== focusRef) {
+        focusRef = idx;
+        notify(idx);
+      }
+    }
+
+    function navigateBy(step) { setFocus(focusRef + step, true); }
+
+    if ("ResizeObserver" in window) {
+      var ro = new ResizeObserver(function (entries) {
+        var w = entries[0].contentRect.width;
+        var needed = cfg.cardWidth + Math.abs(cfg.spread) * 2 + 120;
+        scaleRef = clamp(w / needed, 0.4, 1);
+        layout(posRef);
+      });
+      ro.observe(root);
+    }
+
+    root.addEventListener("wheel", function (e) {
+      if (count < 2) return;
+      e.preventDefault();
+      killTween();
+      var raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      var delta = e.deltaMode === 1 ? raw * 24 : raw;
+      var step = clamp(delta / (cfg.cardWidth * 0.9), -0.6, 0.6);
+      posRef += step;
+      layout(posRef);
+      if (wheelTimer) clearTimeout(wheelTimer);
+      wheelTimer = setTimeout(function () { setFocus(Math.round(posRef), true); }, 130);
+    }, { passive: false });
+
+    root.addEventListener("pointerdown", function (e) {
+      if (count < 2) return;
+      killTween();
+      dragState = { x: e.clientX, startPos: posRef, lastX: e.clientX, lastT: performance.now(), v: 0, moved: false, id: e.pointerId };
+    });
+    root.addEventListener("pointermove", function (e) {
+      var drag = dragState;
+      if (!drag) return;
+      var stepPx = Math.max(cfg.cardWidth * 0.55 * scaleRef, 40);
+      var dx = e.clientX - drag.x;
+      if (!drag.moved && Math.abs(dx) > 4) {
+        drag.moved = true;
+        try { root.setPointerCapture(drag.id); } catch (err) {}
+      }
+      if (!drag.moved) return;
+      var now = performance.now();
+      var dt = Math.max(now - drag.lastT, 1);
+      drag.v = (e.clientX - drag.lastX) / dt;
+      drag.lastX = e.clientX;
+      drag.lastT = now;
+      posRef = drag.startPos - dx / stepPx;
+      layout(posRef);
+    });
+    function onPointerEnd() {
+      var drag = dragState;
+      if (!drag) return;
+      dragState = null;
+      if (!drag.moved) return;
+      var stepPx = Math.max(cfg.cardWidth * 0.55 * scaleRef, 40);
+      var projected = posRef - (drag.v * 180) / stepPx;
+      setFocus(Math.round(projected), true);
+    }
+    root.addEventListener("pointerup", onPointerEnd);
+    root.addEventListener("pointercancel", onPointerEnd);
+
+    root.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowLeft") { e.preventDefault(); navigateBy(-1); }
+      else if (e.key === "ArrowRight") { e.preventDefault(); navigateBy(1); }
+    });
+
+    cards.forEach(function (card, i) {
+      card.setAttribute("aria-roledescription", "slide");
+      card.setAttribute("aria-label", (i + 1) + "/" + count);
+      card.addEventListener("click", function () {
+        if (dragState && dragState.moved) return;
+        setFocus(i, true);
+      });
+    });
+
+    var prevBtn = root.querySelector(".depth-carousel__arrow--prev");
+    var nextBtn = root.querySelector(".depth-carousel__arrow--next");
+    if (prevBtn) prevBtn.addEventListener("click", function () { navigateBy(-1); });
+    if (nextBtn) nextBtn.addEventListener("click", function () { navigateBy(1); });
+
+    if (cfg.autoplay && !reduced && count > 1) {
+      var hovered = false, focused = false;
+      var stopAuto = function () { if (autoTimer) clearInterval(autoTimer); autoTimer = null; };
+      var startAuto = function () {
+        stopAuto();
+        autoTimer = window.setInterval(function () {
+          if (!hovered && !focused) navigateBy(1);
+        }, Math.max(cfg.autoplayDelay, 600));
+      };
+      root.addEventListener("mouseenter", function () { hovered = true; });
+      root.addEventListener("mouseleave", function () { hovered = false; });
+      root.addEventListener("focusin", function () { focused = true; });
+      root.addEventListener("focusout", function () { focused = false; });
+      startAuto();
+    }
+
+    notify(0);
+    layout(posRef);
+  })();
+</script>
+
 <!-- ==================== i18n: PT / EN / ES ====================
      Troca client-side, sem build e sem URLs separadas por idioma.
      data-i18n define textContent, data-i18n-html define innerHTML
@@ -725,6 +1054,8 @@
         port_h2: "Portfólio",
         port_lead: "Uma amostra do nível de acabamento que você pode esperar — peças e bastidores do trabalho pessoal do Joel.",
         port_alt: "Ilustração de moda do portfólio de Joel Coveero",
+        port_prev_aria: "Peça anterior",
+        port_next_aria: "Próxima peça",
         proc_eyebrow: "Como funciona",
         proc_h2: "Do briefing à arte final",
         proc_lead: "Três etapas, escopo e prazo combinados antes de começar.",
@@ -785,6 +1116,8 @@
         port_h2: "Portfolio",
         port_lead: "A sample of the finish level you can expect — pieces and behind-the-scenes from Joel's personal work.",
         port_alt: "Fashion illustration from Joel Coveero's portfolio",
+        port_prev_aria: "Previous piece",
+        port_next_aria: "Next piece",
         proc_eyebrow: "How it works",
         proc_h2: "From briefing to final art",
         proc_lead: "Three steps, scope and timeline agreed before starting.",
@@ -845,6 +1178,8 @@
         port_h2: "Portafolio",
         port_lead: "Una muestra del nivel de acabado que puedes esperar — piezas y detrás de cámaras del trabajo personal de Joel.",
         port_alt: "Ilustración de moda del portafolio de Joel Coveero",
+        port_prev_aria: "Pieza anterior",
+        port_next_aria: "Siguiente pieza",
         proc_eyebrow: "Cómo funciona",
         proc_h2: "Del briefing al arte final",
         proc_lead: "Tres etapas, alcance y plazo acordados antes de empezar.",
