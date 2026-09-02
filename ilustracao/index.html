@@ -417,12 +417,63 @@
     font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
     padding:7px 13px;border-radius:999px;white-space:nowrap;
   }
+  .flow-option.is-priority{position:relative;}
+  .flow-option.is-priority::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    box-shadow:inset 0 0 0 1.5px rgba(255,47,143,.4);
+  }
+  .flow-priority-badge{
+    display:inline-block;font-family:var(--font-mono);font-size:.66rem;font-weight:700;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--pink);
+    background:rgba(255,47,143,.1);border:1px solid rgba(255,47,143,.4);
+    padding:4px 10px;border-radius:999px;margin-bottom:14px;
+  }
   @media (max-width:820px){
     .hero .wrap{grid-template-columns:1fr;}
     .flow-split{flex-direction:column;}
     .flow-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--violet) 20%,var(--violet) 80%,transparent);}
     .grid-3, .trust-grid{grid-template-columns:1fr;}
     .about{grid-template-columns:1fr;}
+  }
+
+  /* Formulário de orçamento — sem backend (site estático), então o
+     submit monta uma mensagem formatada e abre o WhatsApp já
+     preenchido, em vez de enviar pra um servidor. */
+  .quote-form-card{
+    margin-top:40px;background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:36px;
+  }
+  .quote-form-card h3{margin:0 0 6px;font-size:1.2rem;font-weight:700;}
+  .quote-form-card .form-sub{color:var(--ink-soft);font-size:.92rem;margin:0 0 28px;}
+  .quote-form{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px;}
+  .form-field{display:flex;flex-direction:column;gap:7px;}
+  .form-field.full{grid-column:1/-1;}
+  .form-field label{
+    font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--ink-faint);
+  }
+  .form-field input,
+  .form-field select{
+    background:var(--bg-alt);border:1px solid var(--line);border-radius:10px;
+    padding:11px 14px;color:var(--ink);font-family:var(--font-body);font-size:.95rem;
+    outline:none;transition:border-color .15s ease;color-scheme:dark;
+  }
+  .form-field input::placeholder{color:var(--ink-faint);}
+  .form-field input:focus,
+  .form-field select:focus{border-color:var(--violet);}
+  .checkbox-group{display:flex;flex-wrap:wrap;gap:10px;}
+  .checkbox-chip{
+    position:relative;display:inline-flex;align-items:center;gap:7px;
+    border:1px solid var(--line);border-radius:999px;padding:8px 14px;
+    font-size:.86rem;color:var(--ink-soft);cursor:pointer;
+    transition:border-color .15s ease, color .15s ease, background .15s ease;
+  }
+  .checkbox-chip input{position:absolute;opacity:0;width:0;height:0;}
+  .checkbox-chip:has(input:checked){border-color:var(--pink);color:var(--ink);background:rgba(255,47,143,.1);}
+  .quote-form .btn{margin-top:6px;width:100%;text-align:center;border:none;cursor:pointer;}
+  @media (max-width:640px){
+    .quote-form{grid-template-columns:1fr;}
+    .quote-form-card{padding:26px 22px;}
   }
 
   footer{padding:40px 0;text-align:center;color:var(--ink-faint);font-size:.9rem;border-top:1px solid var(--line);}
@@ -665,14 +716,15 @@
     <div class="wrap">
       <div class="eyebrow" data-i18n="contato_eyebrow">Contato</div>
       <h2 data-i18n="contato_h2">Chame direto</h2>
-      <p class="section-lead" data-i18n="contato_lead">Sem formulário, sem intermediário.</p>
+      <p class="section-lead" data-i18n="contato_lead">Fale direto comigo ou peça um orçamento detalhado abaixo.</p>
       <div class="flow-split reveal">
-        <div class="flow-option">
+        <div class="flow-option is-priority">
+          <span class="flow-priority-badge" data-i18n="contact_priority_badge">Resposta mais rápida</span>
           <div class="icon-badge">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--pink)"><path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 3 5 6.5 5c1.9 0 3.3 1 4.5 2.5C12.2 6 13.6 5 15.5 5 19 5 21.5 8.5 21.5 12.5 19 16.65 12 21 12 21z"/></svg>
           </div>
-          <h3 data-i18n="flow_br_title">Brasil — WhatsApp</h3>
-          <p data-i18n="flow_br_p">Resposta mais rápida para quem já quer fechar um projeto.</p>
+          <h3 data-i18n="contact_whatsapp_title">WhatsApp</h3>
+          <p data-i18n="contact_whatsapp_sub">Pra quem já quer conversar e fechar um projeto agora.</p>
           <a class="btn" data-i18n="cta_whatsapp_contact" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Chamar no WhatsApp</a>
         </div>
         <div class="flow-divider"><span class="flow-or" data-i18n="flow_or">ou</span></div>
@@ -680,10 +732,69 @@
           <div class="icon-badge violet">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
           </div>
-          <h3 data-i18n="flow_intl_title">Fora do Brasil — Email</h3>
-          <p data-i18n="flow_intl_p">Para estilistas e equipes internacionais — escreva com o contexto do projeto.</p>
+          <h3 data-i18n="contact_email_title">Email</h3>
+          <p data-i18n="contact_email_sub">Pra quem prefere escrever com mais contexto do projeto.</p>
           <a class="btn ghost" href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o">joel.estilista@gmail.com</a>
         </div>
+      </div>
+
+      <div class="quote-form-card reveal">
+        <h3 data-i18n="quote_h3">Quer um orçamento? Me conta os detalhes</h3>
+        <p class="form-sub" data-i18n="quote_sub">Preencha o formulário — ele monta uma mensagem com tudo e abre no seu WhatsApp, prontinha pra enviar.</p>
+        <form class="quote-form" id="quote-form">
+          <div class="form-field">
+            <label for="qf-nome" data-i18n="quote_label_nome">Nome</label>
+            <input id="qf-nome" name="nome" type="text" required data-i18n-placeholder="quote_placeholder_nome" placeholder="Seu nome">
+          </div>
+          <div class="form-field">
+            <label for="qf-empresa" data-i18n="quote_label_empresa">Tamanho da empresa</label>
+            <select id="qf-empresa" name="empresa" required>
+              <option value="" data-i18n="quote_select_placeholder">Selecione</option>
+              <option value="Autônomo(a) / Freelancer" data-i18n="quote_empresa_opt1">Autônomo(a) / Freelancer</option>
+              <option value="Pequena empresa" data-i18n="quote_empresa_opt2">Pequena empresa</option>
+              <option value="Média empresa" data-i18n="quote_empresa_opt3">Média empresa</option>
+              <option value="Grande empresa / Marca" data-i18n="quote_empresa_opt4">Grande empresa / Marca</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="qf-telefone" data-i18n="quote_label_telefone">Telefone</label>
+            <input id="qf-telefone" name="telefone" type="tel" required data-i18n-placeholder="quote_placeholder_telefone" placeholder="(DDD) 00000-0000">
+          </div>
+          <div class="form-field">
+            <label for="qf-email" data-i18n="quote_label_email">Email</label>
+            <input id="qf-email" name="email" type="email" required data-i18n-placeholder="quote_placeholder_email" placeholder="voce@email.com">
+          </div>
+          <div class="form-field">
+            <label for="qf-pecas" data-i18n="quote_label_pecas">Número de peças</label>
+            <input id="qf-pecas" name="pecas" type="number" min="1" step="1" required data-i18n-placeholder="quote_placeholder_pecas" placeholder="Ex.: 5">
+          </div>
+          <div class="form-field">
+            <label for="qf-prazo" data-i18n="quote_label_prazo">Prazo de entrega</label>
+            <select id="qf-prazo" name="prazo" required>
+              <option value="" data-i18n="quote_select_placeholder">Selecione</option>
+              <option value="Urgente (até 1 semana)" data-i18n="quote_prazo_opt1">Urgente (até 1 semana)</option>
+              <option value="2 a 3 semanas" data-i18n="quote_prazo_opt2">2 a 3 semanas</option>
+              <option value="1 mês" data-i18n="quote_prazo_opt3">1 mês</option>
+              <option value="Sem pressa" data-i18n="quote_prazo_opt4">Sem pressa</option>
+            </select>
+          </div>
+          <div class="form-field full">
+            <label data-i18n="quote_label_tipo">Tipo de peça</label>
+            <div class="checkbox-group" id="qf-tipo-group">
+              <label class="checkbox-chip"><input type="checkbox" name="tipo" value="Apresentação"><span data-i18n="quote_tipo_opt1">Apresentação</span></label>
+              <label class="checkbox-chip"><input type="checkbox" name="tipo" value="Coleção beachwear"><span data-i18n="quote_tipo_opt2">Coleção beachwear</span></label>
+              <label class="checkbox-chip"><input type="checkbox" name="tipo" value="Evento"><span data-i18n="quote_tipo_opt3">Evento</span></label>
+              <label class="checkbox-chip"><input type="checkbox" name="tipo" value="Coleção underwear"><span data-i18n="quote_tipo_opt4">Coleção underwear</span></label>
+              <label class="checkbox-chip"><input type="checkbox" name="tipo" value="Coleção"><span data-i18n="quote_tipo_opt5">Coleção</span></label>
+              <label class="checkbox-chip"><input type="checkbox" name="tipo" value="Editorial"><span data-i18n="quote_tipo_opt6">Editorial</span></label>
+              <label class="checkbox-chip"><input type="checkbox" name="tipo" value="Campanha"><span data-i18n="quote_tipo_opt7">Campanha</span></label>
+              <label class="checkbox-chip"><input type="checkbox" name="tipo" value="Outro"><span data-i18n="quote_tipo_opt8">Outro</span></label>
+            </div>
+          </div>
+          <div class="form-field full">
+            <button type="submit" class="btn" data-i18n="quote_submit">Enviar pelo WhatsApp</button>
+          </div>
+        </form>
       </div>
     </div>
   </section>
@@ -1264,11 +1375,43 @@
   })();
 </script>
 
+<script>
+  // Formulário de orçamento — sem backend (site estático): o submit monta
+  // uma mensagem formatada (sempre em português, pro Joel, independente
+  // do idioma selecionado na página) e abre o WhatsApp com o texto já
+  // preenchido, em vez de enviar pra um servidor.
+  (function () {
+    var form = document.getElementById("quote-form");
+    if (!form) return;
+    var WHATSAPP_NUMBER = "5585999962897";
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var data = new FormData(form);
+      var tipos = data.getAll("tipo");
+      var lines = [
+        "Oi Joel! Quero um orçamento de ilustração de moda.",
+        "",
+        "Nome: " + data.get("nome"),
+        "Empresa: " + data.get("empresa"),
+        "Telefone: " + data.get("telefone"),
+        "Email: " + data.get("email"),
+        "Nº de peças: " + data.get("pecas"),
+        "Tipo de peça: " + (tipos.length ? tipos.join(", ") : "-"),
+        "Prazo desejado: " + data.get("prazo")
+      ];
+      var text = encodeURIComponent(lines.join("\n"));
+      window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + text, "_blank", "noopener");
+    });
+  })();
+</script>
+
 <!-- ==================== i18n: PT / EN / ES ====================
      Troca client-side, sem build e sem URLs separadas por idioma.
      data-i18n define textContent, data-i18n-html define innerHTML
      (pra frases com <em>/<strong> dentro), data-i18n-alt define o
-     atributo alt de imagens, data-i18n-aria define aria-label.
+     atributo alt de imagens, data-i18n-aria define aria-label,
+     data-i18n-placeholder define o placeholder de inputs.
      Preferencia salva em localStorage; padrao e sempre PT. -->
 <script>
   (function () {
@@ -1327,12 +1470,44 @@
         step3_p: "Entrega em alta resolução, pronta pra guiar a produção da peça ou pra apresentação ao cliente.",
         contato_eyebrow: "Contato",
         contato_h2: "Chame direto",
-        contato_lead: "Sem formulário, sem intermediário.",
-        flow_br_title: "Brasil — WhatsApp",
-        flow_br_p: "Resposta mais rápida para quem já quer fechar um projeto.",
+        contato_lead: "Fale direto comigo ou peça um orçamento detalhado abaixo.",
+        contact_priority_badge: "Resposta mais rápida",
+        contact_whatsapp_title: "WhatsApp",
+        contact_whatsapp_sub: "Pra quem já quer conversar e fechar um projeto agora.",
         flow_or: "ou",
-        flow_intl_title: "Fora do Brasil — Email",
-        flow_intl_p: "Para estilistas e equipes internacionais — escreva com o contexto do projeto.",
+        contact_email_title: "Email",
+        contact_email_sub: "Pra quem prefere escrever com mais contexto do projeto.",
+        quote_h3: "Quer um orçamento? Me conta os detalhes",
+        quote_sub: "Preencha o formulário — ele monta uma mensagem com tudo e abre no seu WhatsApp, prontinha pra enviar.",
+        quote_select_placeholder: "Selecione",
+        quote_label_nome: "Nome",
+        quote_placeholder_nome: "Seu nome",
+        quote_label_empresa: "Tamanho da empresa",
+        quote_empresa_opt1: "Autônomo(a) / Freelancer",
+        quote_empresa_opt2: "Pequena empresa",
+        quote_empresa_opt3: "Média empresa",
+        quote_empresa_opt4: "Grande empresa / Marca",
+        quote_label_telefone: "Telefone",
+        quote_placeholder_telefone: "(DDD) 00000-0000",
+        quote_label_email: "Email",
+        quote_placeholder_email: "voce@email.com",
+        quote_label_pecas: "Número de peças",
+        quote_placeholder_pecas: "Ex.: 5",
+        quote_label_prazo: "Prazo de entrega",
+        quote_prazo_opt1: "Urgente (até 1 semana)",
+        quote_prazo_opt2: "2 a 3 semanas",
+        quote_prazo_opt3: "1 mês",
+        quote_prazo_opt4: "Sem pressa",
+        quote_label_tipo: "Tipo de peça",
+        quote_tipo_opt1: "Apresentação",
+        quote_tipo_opt2: "Coleção beachwear",
+        quote_tipo_opt3: "Evento",
+        quote_tipo_opt4: "Coleção underwear",
+        quote_tipo_opt5: "Coleção",
+        quote_tipo_opt6: "Editorial",
+        quote_tipo_opt7: "Campanha",
+        quote_tipo_opt8: "Outro",
+        quote_submit: "Enviar pelo WhatsApp",
         footer_privacy: "Privacidade",
         footer_copy: "Joel Pinheiro — Ilustração de Moda. Todos os direitos reservados."
       },
@@ -1390,12 +1565,44 @@
         step3_p: "Delivered in high resolution, ready to guide the piece's production or for a client presentation.",
         contato_eyebrow: "Contact",
         contato_h2: "Reach out directly",
-        contato_lead: "No forms, no middleman.",
-        flow_br_title: "Brazil — WhatsApp",
-        flow_br_p: "Fastest reply for anyone ready to close a project.",
+        contato_lead: "Reach out directly or request a detailed quote below.",
+        contact_priority_badge: "Fastest response",
+        contact_whatsapp_title: "WhatsApp",
+        contact_whatsapp_sub: "For anyone ready to talk and close a project now.",
         flow_or: "or",
-        flow_intl_title: "Outside Brazil — Email",
-        flow_intl_p: "For international stylists and teams — write with the project's context.",
+        contact_email_title: "Email",
+        contact_email_sub: "For anyone who prefers writing with more project context.",
+        quote_h3: "Want a quote? Tell me the details",
+        quote_sub: "Fill in the form — it builds a message with everything and opens your WhatsApp, ready to send.",
+        quote_select_placeholder: "Select",
+        quote_label_nome: "Name",
+        quote_placeholder_nome: "Your name",
+        quote_label_empresa: "Company size",
+        quote_empresa_opt1: "Freelancer / Independent",
+        quote_empresa_opt2: "Small business",
+        quote_empresa_opt3: "Mid-size business",
+        quote_empresa_opt4: "Large company / Brand",
+        quote_label_telefone: "Phone",
+        quote_placeholder_telefone: "+1 000 000 0000",
+        quote_label_email: "Email",
+        quote_placeholder_email: "you@email.com",
+        quote_label_pecas: "Number of pieces",
+        quote_placeholder_pecas: "E.g.: 5",
+        quote_label_prazo: "Delivery deadline",
+        quote_prazo_opt1: "Urgent (within 1 week)",
+        quote_prazo_opt2: "2 to 3 weeks",
+        quote_prazo_opt3: "1 month",
+        quote_prazo_opt4: "No rush",
+        quote_label_tipo: "Piece type",
+        quote_tipo_opt1: "Presentation",
+        quote_tipo_opt2: "Beachwear collection",
+        quote_tipo_opt3: "Event",
+        quote_tipo_opt4: "Underwear collection",
+        quote_tipo_opt5: "Collection",
+        quote_tipo_opt6: "Editorial",
+        quote_tipo_opt7: "Campaign",
+        quote_tipo_opt8: "Other",
+        quote_submit: "Send via WhatsApp",
         footer_privacy: "Privacy",
         footer_copy: "Joel Pinheiro — Fashion Illustration. All rights reserved."
       },
@@ -1453,12 +1660,44 @@
         step3_p: "Entrega en alta resolución, lista para guiar la producción de la pieza o para la presentación al cliente.",
         contato_eyebrow: "Contacto",
         contato_h2: "Escríbeme directo",
-        contato_lead: "Sin formularios, sin intermediarios.",
-        flow_br_title: "Brasil — WhatsApp",
-        flow_br_p: "Respuesta más rápida para quien ya quiere cerrar un proyecto.",
+        contato_lead: "Escríbeme directo o pide un presupuesto detallado abajo.",
+        contact_priority_badge: "Respuesta más rápida",
+        contact_whatsapp_title: "WhatsApp",
+        contact_whatsapp_sub: "Para quien ya quiere conversar y cerrar un proyecto ahora.",
         flow_or: "o",
-        flow_intl_title: "Fuera de Brasil — Email",
-        flow_intl_p: "Para estilistas y equipos internacionales — escribe con el contexto del proyecto.",
+        contact_email_title: "Email",
+        contact_email_sub: "Para quien prefiere escribir con más contexto del proyecto.",
+        quote_h3: "¿Quieres un presupuesto? Cuéntame los detalles",
+        quote_sub: "Completa el formulario — arma un mensaje con todo y abre tu WhatsApp, listo para enviar.",
+        quote_select_placeholder: "Selecciona",
+        quote_label_nome: "Nombre",
+        quote_placeholder_nome: "Tu nombre",
+        quote_label_empresa: "Tamaño de la empresa",
+        quote_empresa_opt1: "Autónomo(a) / Freelance",
+        quote_empresa_opt2: "Empresa pequeña",
+        quote_empresa_opt3: "Empresa mediana",
+        quote_empresa_opt4: "Empresa grande / Marca",
+        quote_label_telefone: "Teléfono",
+        quote_placeholder_telefone: "+00 000 000 000",
+        quote_label_email: "Email",
+        quote_placeholder_email: "tu@email.com",
+        quote_label_pecas: "Número de piezas",
+        quote_placeholder_pecas: "Ej.: 5",
+        quote_label_prazo: "Plazo de entrega",
+        quote_prazo_opt1: "Urgente (hasta 1 semana)",
+        quote_prazo_opt2: "2 a 3 semanas",
+        quote_prazo_opt3: "1 mes",
+        quote_prazo_opt4: "Sin prisa",
+        quote_label_tipo: "Tipo de pieza",
+        quote_tipo_opt1: "Presentación",
+        quote_tipo_opt2: "Colección beachwear",
+        quote_tipo_opt3: "Evento",
+        quote_tipo_opt4: "Colección underwear",
+        quote_tipo_opt5: "Colección",
+        quote_tipo_opt6: "Editorial",
+        quote_tipo_opt7: "Campaña",
+        quote_tipo_opt8: "Otro",
+        quote_submit: "Enviar por WhatsApp",
         footer_privacy: "Privacidad",
         footer_copy: "Joel Pinheiro — Ilustración de Moda. Todos los derechos reservados."
       }
@@ -1493,6 +1732,10 @@
       document.querySelectorAll("[data-i18n-aria]").forEach(function (el) {
         var key = el.getAttribute("data-i18n-aria");
         if (dict[key] != null) el.setAttribute("aria-label", dict[key]);
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach(function (el) {
+        var key = el.getAttribute("data-i18n-placeholder");
+        if (dict[key] != null) el.setAttribute("placeholder", dict[key]);
       });
 
       document.documentElement.setAttribute("lang", HTML_LANG[lang] || "pt-BR");
