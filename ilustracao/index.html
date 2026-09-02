@@ -125,22 +125,46 @@
   .btn.ghost:hover{background:rgba(155,92,255,.14);box-shadow:none;}
   .btn.small{padding:8px 18px;font-size:.9rem;flex-shrink:0;}
 
-  /* Seletor de idioma — uma copia fica dentro do nav.site (some no mobile
-     junto com o resto do menu horizontal) e outra dentro do painel mobile. */
-  .lang-switch{display:inline-flex;align-items:center;gap:3px;font-family:var(--font-mono);font-size:.78rem;}
-  nav.site .lang-switch{margin-left:22px;}
-  .lang-switch button{
-    background:transparent;border:none;color:var(--ink-faint);cursor:pointer;
-    padding:4px 5px;border-radius:6px;font-family:inherit;font-size:inherit;font-weight:600;
+  /* Seletor de idioma — bandeira do idioma ativo + dropdown com os outros.
+     Uma copia fica dentro do nav.site (some no mobile junto com o resto do
+     menu horizontal) e outra dentro do painel mobile. */
+  .lang-switch{position:relative;margin-left:22px;}
+  .lang-trigger{
+    display:inline-flex;align-items:center;gap:7px;background:transparent;
+    border:1px solid var(--line);border-radius:999px;padding:6px 12px;
+    color:var(--ink-soft);cursor:pointer;font-family:var(--font-mono);
+    font-size:.82rem;font-weight:600;transition:border-color .15s ease, color .15s ease;
   }
-  .lang-switch button:hover{color:var(--ink);}
-  .lang-switch button.active{color:var(--lime);}
-  .lang-switch .sep{color:var(--line);}
+  .lang-trigger:hover{color:var(--ink);border-color:var(--violet);}
+  .lang-switch.open .lang-trigger{color:var(--lime);border-color:var(--lime);}
+  .lang-flag{font-size:1.05rem;line-height:1;}
+  .lang-caret{color:var(--ink-faint);transition:transform .15s ease;flex-shrink:0;}
+  .lang-switch.open .lang-caret{transform:rotate(180deg);}
+  .lang-menu{
+    list-style:none;margin:8px 0 0;padding:6px;position:absolute;top:100%;right:0;
+    min-width:150px;background:var(--bg-card);border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 18px 40px -14px rgba(0,0,0,.6);
+    opacity:0;visibility:hidden;transform:translateY(-6px);
+    transition:opacity .15s ease, transform .15s ease, visibility .15s;
+    z-index:40;
+  }
+  .lang-switch.open .lang-menu{opacity:1;visibility:visible;transform:translateY(0);}
+  .lang-menu button{
+    display:flex;align-items:center;gap:9px;width:100%;background:transparent;border:none;
+    color:var(--ink-soft);text-align:left;padding:9px 10px;border-radius:8px;cursor:pointer;
+    font-family:var(--font-body);font-size:.9rem;font-weight:500;
+  }
+  .lang-menu button:hover{background:rgba(255,255,255,.06);color:var(--ink);}
   .mobile-nav .lang-switch{
-    margin-top:28px;padding-top:20px;border-top:1px solid var(--line);
-    font-size:1rem;
+    margin:28px 0 0;padding-top:20px;border-top:1px solid var(--line);
   }
-  .mobile-nav .lang-switch button{padding:6px 8px;}
+  .mobile-nav .lang-trigger{width:100%;justify-content:space-between;padding:12px 14px;font-size:.95rem;}
+  .mobile-nav .lang-menu{
+    position:static;display:none;opacity:1;visibility:visible;transform:none;
+    box-shadow:none;border:none;background:transparent;margin-top:10px;padding:0;
+  }
+  .mobile-nav .lang-switch.open .lang-menu{display:block;}
+  .mobile-nav .lang-menu button{font-size:1.05rem;padding:10px 6px;}
 
   .sm-toggle{
     display:none;align-items:center;gap:8px;background:transparent;border:1px solid var(--line);
@@ -342,9 +366,17 @@
       <a href="#portfolio" data-i18n="nav_portfolio">Portfólio</a>
       <a href="#processo" data-i18n="nav_processo">Como funciona</a>
       <a href="#contato" data-i18n="nav_contato">Contato</a>
-      <span class="lang-switch" role="group" aria-label="Idioma">
-        <button type="button" data-lang="pt">PT</button><span class="sep">·</span><button type="button" data-lang="en">EN</button><span class="sep">·</span><button type="button" data-lang="es">ES</button>
-      </span>
+      <div class="lang-switch" data-lang-switch>
+        <button type="button" class="lang-trigger" aria-haspopup="true" aria-expanded="false" aria-label="Idioma">
+          <span class="lang-flag" data-flag aria-hidden="true">🇧🇷</span><span data-code>PT</span>
+          <svg class="lang-caret" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <ul class="lang-menu" role="menu">
+          <li role="none"><button type="button" role="menuitem" data-lang="pt"><span class="lang-flag" aria-hidden="true">🇧🇷</span>Português</button></li>
+          <li role="none"><button type="button" role="menuitem" data-lang="en"><span class="lang-flag" aria-hidden="true">🇺🇸</span>English</button></li>
+          <li role="none"><button type="button" role="menuitem" data-lang="es"><span class="lang-flag" aria-hidden="true">🇪🇸</span>Español</button></li>
+        </ul>
+      </div>
     </nav>
     <a class="btn small header-cta" data-i18n="cta_whatsapp_header" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Falar no WhatsApp</a>
     <button class="sm-toggle" id="sm-toggle" type="button" aria-label="Abrir menu" data-i18n-aria="mobile_menu_aria" aria-expanded="false" aria-controls="mobile-nav">
@@ -361,9 +393,17 @@
   <a href="#processo" data-i18n="nav_processo">Como funciona</a>
   <a href="#contato" data-i18n="nav_contato">Contato</a>
   <a class="btn" data-i18n="cta_whatsapp_header" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Falar no WhatsApp</a>
-  <span class="lang-switch" role="group" aria-label="Idioma">
-    <button type="button" data-lang="pt">PT</button><span class="sep">·</span><button type="button" data-lang="en">EN</button><span class="sep">·</span><button type="button" data-lang="es">ES</button>
-  </span>
+  <div class="lang-switch" data-lang-switch>
+    <button type="button" class="lang-trigger" aria-haspopup="true" aria-expanded="false" aria-label="Idioma">
+      <span class="lang-flag" data-flag aria-hidden="true">🇧🇷</span><span data-code>PT</span>
+      <svg class="lang-caret" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <ul class="lang-menu" role="menu">
+      <li role="none"><button type="button" role="menuitem" data-lang="pt"><span class="lang-flag" aria-hidden="true">🇧🇷</span>Português</button></li>
+      <li role="none"><button type="button" role="menuitem" data-lang="en"><span class="lang-flag" aria-hidden="true">🇺🇸</span>English</button></li>
+      <li role="none"><button type="button" role="menuitem" data-lang="es"><span class="lang-flag" aria-hidden="true">🇪🇸</span>Español</button></li>
+    </ul>
+  </div>
 </nav>
 
 <main id="top" tabindex="-1">
@@ -826,7 +866,15 @@
     };
 
     var HTML_LANG = { pt: "pt-BR", en: "en", es: "es" };
+    var FLAGS = { pt: "🇧🇷", en: "🇺🇸", es: "🇪🇸" };
     var STORAGE_KEY = "joel_ilustracao_lang";
+
+    function closeLangSwitches() {
+      document.querySelectorAll("[data-lang-switch].open").forEach(function (sw) {
+        sw.classList.remove("open");
+        sw.querySelector(".lang-trigger").setAttribute("aria-expanded", "false");
+      });
+    }
 
     function applyLang(lang) {
       var dict = STRINGS[lang] || STRINGS.pt;
@@ -853,17 +901,39 @@
         ? "Joel Pinheiro — " + dict.hero_eyebrow.replace(/^./, function (c) { return c.toUpperCase(); })
         : document.title;
 
-      document.querySelectorAll(".lang-switch button").forEach(function (btn) {
-        btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
+      document.querySelectorAll("[data-lang-switch]").forEach(function (sw) {
+        sw.querySelectorAll("[data-flag]").forEach(function (el) { el.textContent = FLAGS[lang] || FLAGS.pt; });
+        sw.querySelectorAll("[data-code]").forEach(function (el) { el.textContent = lang.toUpperCase(); });
+        sw.querySelectorAll(".lang-menu li").forEach(function (li) {
+          var btn = li.querySelector("button");
+          li.style.display = btn.getAttribute("data-lang") === lang ? "none" : "";
+        });
       });
 
       try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) {}
     }
 
-    document.querySelectorAll(".lang-switch button").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        applyLang(btn.getAttribute("data-lang"));
+    document.querySelectorAll("[data-lang-switch]").forEach(function (sw) {
+      var trigger = sw.querySelector(".lang-trigger");
+      trigger.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var isOpen = sw.classList.contains("open");
+        closeLangSwitches();
+        if (!isOpen) {
+          sw.classList.add("open");
+          trigger.setAttribute("aria-expanded", "true");
+        }
       });
+      sw.querySelectorAll(".lang-menu button").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          applyLang(btn.getAttribute("data-lang"));
+          closeLangSwitches();
+        });
+      });
+    });
+    document.addEventListener("click", closeLangSwitches);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeLangSwitches();
     });
 
     var saved = "pt";
