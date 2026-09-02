@@ -173,8 +173,10 @@
      visiveis, girando nas pontas); no mobile as 5 aparecem. */
   .showcase-carousel{position:relative;height:420px;max-width:100%;margin:40px auto 0;}
   .showcase-carousel img{
-    position:absolute;top:0;bottom:0;left:50%;
-    width:100%;object-fit:contain;border-radius:var(--radius);
+    /* height:100% e nao top/bottom:0 — imagens sao elementos substituidos e
+       ignoram o "esticar" entre top e bottom, ficando na altura intrinseca. */
+    position:absolute;top:0;left:50%;
+    width:100%;height:100%;object-fit:contain;border-radius:var(--radius);
     opacity:0;transition:opacity .6s ease, transform .6s ease;
     transform:translateX(-50%) scale(.5);
     z-index:1;pointer-events:none;cursor:pointer;
