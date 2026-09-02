@@ -588,7 +588,7 @@
         <p class="lead" data-i18n="hero_lead">Trabalho sob encomenda para estilistas e artistas que precisam tirar um look do papel com agilidade — e o acabamento de quem já passou por capa, palco e campanha.</p>
         <div class="hero-actions">
           <a class="btn" data-i18n="cta_whatsapp_header" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Falar no WhatsApp</a>
-          <a class="btn ghost" data-i18n="cta_email" href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o">Escrever por e-mail</a>
+          <a class="btn ghost" data-copy-email="joel.estilista@gmail.com" data-i18n="cta_email" href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o">Escrever por e-mail</a>
         </div>
         <p class="hero-note" data-i18n="hero_note">Disponível para projetos pontuais e parcerias contínuas com equipes de estilo.</p>
       </div>
@@ -736,7 +736,7 @@
         <h3 data-i18n="contact_whatsapp_title">WhatsApp</h3>
         <p class="contact-primary-sub" data-i18n="contact_whatsapp_sub">Pra quem já quer conversar e fechar um projeto agora.</p>
         <a class="btn" data-i18n="cta_whatsapp_contact" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Chamar no WhatsApp</a>
-        <p class="contact-alt" data-i18n-html="contact_email_alt">ou escreva pra <a href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o">joel.estilista@gmail.com</a></p>
+        <p class="contact-alt" data-i18n-html="contact_email_alt">ou escreva pra <a href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o" data-copy-email="joel.estilista@gmail.com">joel.estilista@gmail.com</a></p>
       </div>
 
       <div class="quote-form-card reveal">
@@ -1246,6 +1246,42 @@
   })();
 </script>
 
+<script>
+  // Clique pra copiar o email — em vez de só abrir o mailto:, copia o
+  // endereço pra área de transferência e mostra feedback rápido no
+  // próprio elemento. Usa delegação de evento no document porque esses
+  // links vivem dentro de um elemento reescrito via innerHTML pelo motor
+  // de i18n (data-i18n-html) toda vez que o idioma muda — um listener
+  // anexado direto no <a> seria destruído nessa troca.
+  (function () {
+    var FEEDBACK_MS = 1800;
+    var FEEDBACK_TEXT = { pt: "Copiado!", en: "Copied!", es: "¡Copiado!" };
+    var STORAGE_KEY = "joel_ilustracao_lang";
+
+    document.addEventListener("click", function (e) {
+      var el = e.target.closest && e.target.closest("[data-copy-email]");
+      if (!el) return;
+      var email = el.getAttribute("data-copy-email");
+      if (!navigator.clipboard || !navigator.clipboard.writeText) return;
+      e.preventDefault();
+      navigator.clipboard.writeText(email).then(function () {
+        var lang = "pt";
+        try { lang = localStorage.getItem(STORAGE_KEY) || "pt"; } catch (err) {}
+        if (el._copyTimer) clearTimeout(el._copyTimer);
+        if (el._originalText == null) el._originalText = el.textContent;
+        el.textContent = FEEDBACK_TEXT[lang] || FEEDBACK_TEXT.pt;
+        el._copyTimer = setTimeout(function () {
+          el.textContent = el._originalText;
+          el._originalText = null;
+          el._copyTimer = null;
+        }, FEEDBACK_MS);
+      }, function () {
+        window.location.href = el.getAttribute("href");
+      });
+    });
+  })();
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script>
   // ScrollStack — vanilla port of the React Bits component (reactbits.dev).
@@ -1438,7 +1474,7 @@
         contact_priority_badge: "Resposta mais rápida",
         contact_whatsapp_title: "WhatsApp",
         contact_whatsapp_sub: "Pra quem já quer conversar e fechar um projeto agora.",
-        contact_email_alt: 'ou escreva pra <a href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o">joel.estilista@gmail.com</a>',
+        contact_email_alt: 'ou escreva pra <a href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o" data-copy-email="joel.estilista@gmail.com">joel.estilista@gmail.com</a>',
         quote_h3: "Quer um orçamento? Me conta os detalhes",
         quote_sub: "Preencha o formulário — ele monta uma mensagem com tudo e abre no seu WhatsApp, prontinha pra enviar.",
         quote_select_placeholder: "Selecione",
@@ -1533,7 +1569,7 @@
         contact_priority_badge: "Fastest response",
         contact_whatsapp_title: "WhatsApp",
         contact_whatsapp_sub: "For anyone ready to talk and close a project now.",
-        contact_email_alt: 'or write to <a href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o">joel.estilista@gmail.com</a>',
+        contact_email_alt: 'or write to <a href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o" data-copy-email="joel.estilista@gmail.com">joel.estilista@gmail.com</a>',
         quote_h3: "Want a quote? Tell me the details",
         quote_sub: "Fill in the form — it builds a message with everything and opens your WhatsApp, ready to send.",
         quote_select_placeholder: "Select",
@@ -1628,7 +1664,7 @@
         contact_priority_badge: "Respuesta más rápida",
         contact_whatsapp_title: "WhatsApp",
         contact_whatsapp_sub: "Para quien ya quiere conversar y cerrar un proyecto ahora.",
-        contact_email_alt: 'o escribe a <a href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o">joel.estilista@gmail.com</a>',
+        contact_email_alt: 'o escribe a <a href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o" data-copy-email="joel.estilista@gmail.com">joel.estilista@gmail.com</a>',
         quote_h3: "¿Quieres un presupuesto? Cuéntame los detalles",
         quote_sub: "Completa el formulario — arma un mensaje con todo y abre tu WhatsApp, listo para enviar.",
         quote_select_placeholder: "Selecciona",
