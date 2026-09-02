@@ -328,47 +328,60 @@
   .trust-handle{display:block;font-family:var(--font-mono);font-size:.74rem;color:var(--ink-faint);margin:2px 0 8px;}
   .trust-quote{color:var(--ink-soft);font-size:.88rem;margin:0;}
 
-  /* MorphSlider — vanilla port do componente React Bits (reactbits.dev).
-     O engine (WebGL/ogl) já era vanilla no original; só o wrapper React
-     foi reescrito em JS puro, sem build. ogl é carregado via import()
-     dinâmico do CDN, igual ao site do pack (mesma versão). Sem
-     indicadores em bolinha (inviável com 23 fotos) — troca por um
-     contador "X / 23", igual ao padrão já usado no DepthCarousel. */
-  .morph-slider-wrap{
-    max-width:var(--max);margin:40px auto 0;padding:0 24px;box-sizing:border-box;
-    display:flex;justify-content:center;
+  /* DriftWall — vanilla port do componente React Bits (reactbits.dev).
+     Colunas de fotos deslizando em loop, com tilt 3D que segue o mouse e
+     lift + cor ao passar por cima. Sem dependência externa (só CSS 3D +
+     requestAnimationFrame), então a estrutura das colunas/tiles é toda
+     montada via JS (mesma lógica de distribuição round-robin do original). */
+  .portfolio-driftwall-wrap{height:460px;margin-top:40px;}
+  @media (max-width:820px){ .portfolio-driftwall-wrap{height:380px;} }
+  @media (max-width:520px){ .portfolio-driftwall-wrap{height:320px;} }
+  .drift-wall{
+    position:relative;width:100%;height:100%;overflow:hidden;border-radius:var(--radius);
+    perspective:var(--dw-perspective,1200px);perspective-origin:50% 50%;
+    --dw-tile-w:170px;--dw-tile-h:210px;--dw-gap:16px;--dw-radius:14px;
+    --dw-lift:50px;--dw-dim:.55;--dw-gray:0;--dw-overlay:#0a0710;--dw-edge:45%;
+    -webkit-mask-image:radial-gradient(ellipse 78% 82% at 50% 46%,#000 var(--dw-edge),transparent 100%),
+      linear-gradient(to top,#000 var(--dw-edge),transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-image:radial-gradient(ellipse 78% 82% at 50% 46%,#000 var(--dw-edge),transparent 100%),
+      linear-gradient(to top,#000 var(--dw-edge),transparent 100%);
+    mask-composite:intersect;
   }
-  .morph-slider{
-    position:relative;width:100%;max-width:460px;aspect-ratio:4/5;border-radius:var(--radius);
-    overflow:hidden;background:var(--bg-card);border:1px solid var(--line);
-    user-select:none;touch-action:pan-y;outline:none;
+  .drift-wall__plane{
+    position:absolute;top:50%;left:50%;display:flex;flex-direction:row;
+    transform-style:preserve-3d;cursor:pointer;transform-origin:50% 50%;will-change:transform;
   }
-  .morph-slider-stage{position:absolute;inset:0;cursor:grab;outline:none;}
-  .morph-slider-stage:active{cursor:grabbing;}
-  .morph-slider-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-  .morph-slider-canvas{display:block;width:100%;height:100%;position:relative;z-index:1;}
-  .morph-slider-controls{
-    position:absolute;top:50%;left:0;right:0;z-index:3;
-    display:flex;justify-content:space-between;padding:0 8px;
-    transform:translateY(-50%);pointer-events:none;
+  .drift-wall__col{position:relative;width:calc(var(--dw-tile-w) + var(--dw-gap));transform-style:preserve-3d;}
+  .drift-wall__track{display:flex;flex-direction:column;will-change:transform;transform-style:preserve-3d;}
+  .drift-wall__tile{
+    position:relative;display:block;width:100%;height:calc(var(--dw-tile-h) + var(--dw-gap));
+    flex:0 0 auto;outline:none;transform-style:preserve-3d;
   }
-  .morph-slider-btn{
-    pointer-events:auto;display:grid;place-items:center;width:42px;height:42px;
-    border:1px solid var(--line);border-radius:999px;color:var(--ink);
-    background:rgba(18,11,28,.65);backdrop-filter:blur(8px);cursor:pointer;
-    transition:background .2s ease, border-color .2s ease, transform .2s ease;
+  .drift-wall__inner{
+    position:absolute;inset:calc(var(--dw-gap) / 2);display:block;border-radius:var(--dw-radius);
+    overflow:hidden;background:var(--bg-card);opacity:var(--dw-dim);transform:translateZ(0);
+    pointer-events:none;
+    transition:transform .42s cubic-bezier(.22,1,.36,1),opacity .42s cubic-bezier(.22,1,.36,1),box-shadow .42s cubic-bezier(.22,1,.36,1);
   }
-  .morph-slider-btn:hover{background:rgba(28,20,42,.9);border-color:var(--violet);}
-  .morph-slider-btn:active{transform:scale(.94);}
-  @media (max-width:520px){ .morph-slider-btn{width:36px;height:36px;} }
-  .morph-slider-counter{
-    position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:3;
-    font-family:var(--font-mono);font-size:.76rem;letter-spacing:.06em;color:var(--ink-faint);
-    background:rgba(14,9,22,.55);backdrop-filter:blur(6px);border:1px solid var(--line);
-    padding:5px 12px;border-radius:999px;
+  .drift-wall__tile img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    filter:grayscale(var(--dw-gray)) saturate(.92);
+    transition:filter .42s cubic-bezier(.22,1,.36,1);
+    user-select:none;-webkit-user-drag:none;
   }
-  .morph-slider-counter .ms-current{color:var(--lime);font-weight:700;}
-  @media (prefers-reduced-motion: reduce){ .morph-slider-btn{transition:none;} }
+  .drift-wall__overlay{position:absolute;inset:0;background:var(--dw-overlay);opacity:.42;pointer-events:none;transition:opacity .42s cubic-bezier(.22,1,.36,1);}
+  .drift-wall__tile.is-active .drift-wall__inner,
+  .drift-wall__tile:focus-visible .drift-wall__inner{
+    opacity:1;transform:translateZ(var(--dw-lift));box-shadow:0 24px 60px -18px rgba(0,0,0,.7);
+  }
+  .drift-wall__tile.is-active img,
+  .drift-wall__tile:focus-visible img{filter:grayscale(0) saturate(1.05);}
+  .drift-wall__tile.is-active .drift-wall__overlay,
+  .drift-wall__tile:focus-visible .drift-wall__overlay{opacity:0;}
+  .drift-wall__tile:focus-visible .drift-wall__inner{box-shadow:0 24px 60px -18px rgba(0,0,0,.7), 0 0 0 2px rgba(255,255,255,.9);}
+  @media (prefers-reduced-motion: reduce){ .drift-wall__plane, .drift-wall__track{will-change:auto;} }
+  @media (max-width:820px){ .drift-wall{ --dw-tile-w:130px; --dw-tile-h:162px; --dw-gap:12px; } }
 
   .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .card{
@@ -607,7 +620,7 @@
         </div>
       </div>
       <div class="section-cta reveal">
-        <span data-i18n="section_cta_text">Pronto pra tirar sua ideia do papel?</span>
+        <span data-i18n="section_cta_processo">Vamos começar o seu projeto?</span>
         <a class="btn small" data-i18n="cta_whatsapp_header" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Falar no WhatsApp</a>
       </div>
     </div>
@@ -639,7 +652,7 @@
         </div>
       </div>
       <div class="section-cta reveal">
-        <span data-i18n="section_cta_text">Pronto pra tirar sua ideia do papel?</span>
+        <span data-i18n="section_cta_sobre">Quer um traço desse nível no seu projeto?</span>
         <a class="btn small" data-i18n="cta_whatsapp_header" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Falar no WhatsApp</a>
       </div>
     </div>
@@ -677,7 +690,7 @@
         </div>
       </div>
       <div class="section-cta reveal">
-        <span data-i18n="section_cta_text">Pronto pra tirar sua ideia do papel?</span>
+        <span data-i18n="section_cta_colab">Quer um resultado assim pro seu projeto?</span>
         <a class="btn small" data-i18n="cta_whatsapp_header" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Falar no WhatsApp</a>
       </div>
     </div>
@@ -689,24 +702,12 @@
       <h2 data-i18n="port_h2">Portfólio</h2>
       <p class="section-lead" data-i18n="port_lead">Uma amostra do nível de acabamento que você pode esperar — peças e bastidores do trabalho pessoal do Joel.</p>
     </div>
-    <div class="morph-slider-wrap reveal">
-      <div class="morph-slider" id="portfolio-morph">
-        <img class="morph-slider-fallback" data-i18n-alt="port_alt" src="../assets/portfolio/port-01.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async">
-        <div class="morph-slider-stage" role="group" aria-roledescription="carousel" aria-label="Portfólio" tabindex="0"></div>
-        <div class="morph-slider-controls">
-          <button type="button" class="morph-slider-btn morph-slider-btn--prev" data-i18n-aria="port_prev_aria" aria-label="Anterior">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <button type="button" class="morph-slider-btn morph-slider-btn--next" data-i18n-aria="port_next_aria" aria-label="Próximo">
-            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </div>
-        <div class="morph-slider-counter" aria-hidden="true"><span class="ms-current">01</span> / <span class="ms-total">23</span></div>
-      </div>
+    <div class="portfolio-driftwall-wrap reveal">
+      <div class="drift-wall" id="portfolio-driftwall" role="group" aria-label="Portfólio"></div>
     </div>
     <div class="wrap">
       <div class="section-cta reveal">
-        <span data-i18n="section_cta_text">Pronto pra tirar sua ideia do papel?</span>
+        <span data-i18n="section_cta_portfolio">Gostou do que viu? Vamos criar o seu.</span>
         <a class="btn small" data-i18n="cta_whatsapp_header" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Falar no WhatsApp</a>
       </div>
     </div>
@@ -772,6 +773,7 @@
             <label for="qf-prazo" data-i18n="quote_label_prazo">Prazo de entrega</label>
             <select id="qf-prazo" name="prazo" required>
               <option value="" data-i18n="quote_select_placeholder">Selecione</option>
+              <option value="Urgentíssimo (24-48h)" data-i18n="quote_prazo_opt0">Urgentíssimo (24-48h)</option>
               <option value="Urgente (até 1 semana)" data-i18n="quote_prazo_opt1">Urgente (até 1 semana)</option>
               <option value="2 a 3 semanas" data-i18n="quote_prazo_opt2">2 a 3 semanas</option>
               <option value="1 mês" data-i18n="quote_prazo_opt3">1 mês</option>
@@ -901,426 +903,204 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script>
-  // MorphSlider — vanilla port of the React Bits component (reactbits.dev).
-  // MorphEngine below is already framework-agnostic vanilla JS/WebGL
-  // (unchanged from the source) — only the React wrapper (state, effects,
-  // JSX) was rewritten as plain DOM/event code, since this is a static
-  // site with no build step. ogl loads via a dynamic import from the CDN,
-  // same version already used on the pack site. Falls back to a static
-  // image (controls/counter hidden) if that import fails.
+  // DriftWall — vanilla port of the React Bits component (reactbits.dev).
+  // No external dependency (CSS 3D + requestAnimationFrame), so this is a
+  // close 1:1 translation — same round-robin column distribution, drift
+  // loop, pointer-parallax tilt and hover/focus lift logic as the source.
   (function () {
-    var root = document.getElementById("portfolio-morph");
+    var root = document.getElementById("portfolio-driftwall");
     if (!root) return;
-    var stage = root.querySelector(".morph-slider-stage");
-    var fallback = root.querySelector(".morph-slider-fallback");
-    var prevBtn = root.querySelector(".morph-slider-btn--prev");
-    var nextBtn = root.querySelector(".morph-slider-btn--next");
-    var counter = root.querySelector(".morph-slider-counter");
-    var counterCurrent = root.querySelector(".ms-current");
-    var counterTotal = root.querySelector(".ms-total");
-    if (!stage) return;
 
-    var TOTAL = 23;
     var items = [];
-    for (var i = 1; i <= TOTAL; i++) {
+    for (var i = 1; i <= 23; i++) {
       var n = i < 10 ? "0" + i : "" + i;
       items.push({ image: "../assets/portfolio/port-" + n + ".webp" });
     }
-    if (counterTotal) counterTotal.textContent = String(TOTAL);
 
-    var OPTS = {
-      transition: "melt",
-      duration: 1.1,
-      ease: "power2.inOut",
-      intensity: 0.55,
-      scale: 2.4,
-      aberration: 0.3,
-      drift: 0.35,
-      overlayColor: "#0a0710",
-      loop: true
+    var CFG = {
+      columns: 6,
+      tileWidth: 170,
+      tileHeight: 210,
+      gap: 16,
+      tilt: 14,
+      turn: -10,
+      roll: 0,
+      perspective: 1200,
+      depth: 100,
+      speed: 34,
+      direction: "up",
+      variance: 0.4,
+      parallax: 0.5,
+      pauseOnHover: false,
+      lift: 50
     };
-    var AUTOPLAY_DELAY = 4.5;
 
-    var TRANSITIONS = { melt: 0, ripple: 1, shear: 2, swirl: 3 };
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    var vertexShader = "attribute vec2 position;\nattribute vec2 uv;\nvarying vec2 vUv;\nvoid main() {\n  vUv = uv;\n  gl_Position = vec4(position, 0.0, 1.0);\n}";
-
-    var fragmentShader = "precision highp float;\n\n" +
-      "uniform sampler2D tCurrent;\n" +
-      "uniform sampler2D tNext;\n" +
-      "uniform vec2 uResolution;\n" +
-      "uniform vec2 uCurrentSize;\n" +
-      "uniform vec2 uNextSize;\n" +
-      "uniform float uProgress;\n" +
-      "uniform float uDir;\n" +
-      "uniform int uMode;\n" +
-      "uniform float uIntensity;\n" +
-      "uniform float uScale;\n" +
-      "uniform float uAberration;\n" +
-      "uniform float uDrift;\n" +
-      "uniform float uTime;\n" +
-      "uniform float uReduce;\n" +
-      "uniform vec2 uPointer;\n" +
-      "uniform vec3 uOverlay;\n\n" +
-      "varying vec2 vUv;\n\n" +
-      "const float PI = 3.14159265359;\n\n" +
-      "float hash11(float p) {\n  p = fract(p * 0.1031);\n  p *= p + 33.33;\n  p *= p + p;\n  return fract(p);\n}\n\n" +
-      "float hash21(vec2 p) {\n  vec3 p3 = fract(vec3(p.xyx) * 0.1031);\n  p3 += dot(p3, p3.yzx + 33.33);\n  return fract((p3.x + p3.y) * p3.z);\n}\n\n" +
-      "float noise(vec2 p) {\n  vec2 i = floor(p);\n  vec2 f = fract(p);\n  vec2 u = f * f * (3.0 - 2.0 * f);\n  float a = hash21(i);\n  float b = hash21(i + vec2(1.0, 0.0));\n  float c = hash21(i + vec2(0.0, 1.0));\n  float d = hash21(i + vec2(1.0, 1.0));\n  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);\n}\n\n" +
-      "float fbm(vec2 p) {\n  float v = 0.0;\n  float a = 0.5;\n  for (int i = 0; i < 5; i++) {\n    v += a * noise(p);\n    p *= 2.0;\n    a *= 0.5;\n  }\n  return v;\n}\n\n" +
-      "mat2 rot(float a) {\n  float s = sin(a);\n  float c = cos(a);\n  return mat2(c, -s, s, c);\n}\n\n" +
-      "vec2 coverUV(vec2 uv, vec2 res, vec2 img) {\n" +
-      "  float rA = res.x / max(res.y, 1.0);\n" +
-      "  float iA = img.x / max(img.y, 1.0);\n" +
-      "  vec2 s = vec2(1.0);\n" +
-      "  float ratio = rA / max(iA, 0.0001);\n" +
-      "  if (ratio > 1.0) {\n    s.y = 1.0 / ratio;\n  } else {\n    s.x = ratio;\n  }\n" +
-      "  return (uv - 0.5) * s + 0.5;\n}\n\n" +
-      "void main() {\n" +
-      "  float p = clamp(uProgress, 0.0, 1.0);\n" +
-      "  float env = sin(p * PI);\n\n" +
-      "  vec2 uv = vUv;\n\n" +
-      "  uv += vec2(sin(uTime * 0.25 + uv.y * 4.0), cos(uTime * 0.22 + uv.x * 4.0)) * uDrift * 0.008;\n" +
-      "  uv = (uv - 0.5) * (1.0 - uDrift * 0.02 * sin(uTime * 0.4)) + 0.5;\n\n" +
-      "  vec2 uvC = uv;\n  vec2 uvN = uv;\n  float m = smoothstep(0.0, 1.0, p);\n\n" +
-      "  if (uReduce < 0.5) {\n" +
-      "    if (uMode == 3) {\n" +
-      "      vec2 c = uv - 0.5;\n      float r = length(c);\n      float ang = env * uIntensity * 3.5 * (1.0 - r);\n" +
-      "      uvC = rot(ang) * c + 0.5;\n      uvN = rot(-ang) * c + 0.5;\n      m = smoothstep(0.0, 1.0, p);\n" +
-      "    } else if (uMode == 1) {\n" +
-      "      float d = distance(uv, uPointer);\n      float ring = p * 1.6;\n      float wave = sin((d - ring) * 30.0) * env;\n" +
-      "      vec2 dir = normalize(uv - uPointer + 1e-4);\n      vec2 disp = dir * wave * uIntensity * 0.25;\n" +
-      "      uvC = uv + disp;\n      uvN = uv + disp * 0.6;\n      m = 1.0 - smoothstep(ring - 0.03, ring + 0.03, d);\n" +
-      "    } else if (uMode == 2) {\n" +
-      "      float slices = 14.0;\n      float row = floor(uv.y * slices);\n      float rnd = hash11(row);\n" +
-      "      vec2 disp = vec2((rnd - 0.5) * env * uIntensity * 0.6, 0.0);\n      uvC = uv + disp;\n      uvN = uv + disp;\n" +
-      "      float localX = uDir > 0.0 ? uv.x : 1.0 - uv.x;\n      float th = p * 1.5 - 0.25 + (rnd - 0.5) * 0.25;\n" +
-      "      m = 1.0 - smoothstep(th - 0.06, th + 0.06, localX);\n" +
-      "    } else {\n" +
-      "      float nn = fbm(uv * uScale + uTime * 0.03);\n      float warp = fbm(uv * uScale * 1.7 - uTime * 0.02);\n" +
-      "      vec2 g = vec2(nn, warp) - 0.5;\n      uvC = uv + g * uIntensity * 0.5 * p;\n      uvN = uv - g * uIntensity * 0.5 * (1.0 - p);\n" +
-      "      m = smoothstep(nn - 0.15, nn + 0.15, p);\n" +
-      "    }\n  }\n\n" +
-      "  vec2 sC = coverUV(uvC, uResolution, uCurrentSize);\n  vec2 sN = coverUV(uvN, uResolution, uNextSize);\n\n" +
-      "  float ca = uReduce < 0.5 ? uAberration * env * 0.03 : 0.0;\n\n" +
-      "  vec3 colC = vec3(\n    texture2D(tCurrent, sC + vec2(ca, 0.0)).r,\n    texture2D(tCurrent, sC).g,\n    texture2D(tCurrent, sC - vec2(ca, 0.0)).b\n  );\n" +
-      "  vec3 colN = vec3(\n    texture2D(tNext, sN + vec2(ca, 0.0)).r,\n    texture2D(tNext, sN).g,\n    texture2D(tNext, sN - vec2(ca, 0.0)).b\n  );\n\n" +
-      "  vec3 col = mix(colC, colN, m);\n\n" +
-      "  float vig = smoothstep(1.25, 0.25, length(uv - 0.5));\n  col = mix(col, uOverlay, (1.0 - vig) * 0.28);\n\n" +
-      "  gl_FragColor = vec4(col, 1.0);\n}";
-
-    function hexToRgb(hex) {
-      var h = (hex || "#000000").replace("#", "");
-      if (h.length === 3) h = h.split("").map(function (c) { return c + c; }).join("");
-      var num = parseInt(h, 16);
-      return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
+    function columnFactor(index, variance) {
+      var pseudo = ((index * 0.6180339887 + 0.35) % 1) * 2 - 1;
+      return 1 + variance * pseudo;
     }
 
-    (async function () {
-      var ogl;
-      try {
-        ogl = await import("https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm");
-      } catch (err) {
-        if (prevBtn) prevBtn.style.display = "none";
-        if (nextBtn) nextBtn.style.display = "none";
-        if (counter) counter.style.display = "none";
-        return;
-      }
-      var Renderer = ogl.Renderer, Triangle = ogl.Triangle, Program = ogl.Program, Mesh = ogl.Mesh, Texture = ogl.Texture;
+    var columnItems = [];
+    for (var c0 = 0; c0 < CFG.columns; c0++) columnItems.push([]);
+    items.forEach(function (item, idx) { columnItems[idx % CFG.columns].push(item); });
 
-      function makeFallbackTexture(gl) {
-        var size = 4;
-        var data = new Uint8Array(size * size * 4);
-        for (var j = 0; j < size * size; j++) {
-          data[j * 4] = 24; data[j * 4 + 1] = 24; data[j * 4 + 2] = 28; data[j * 4 + 3] = 255;
-        }
-        return new Texture(gl, { image: data, width: size, height: size, generateMipmaps: false });
-      }
+    var containerHeight = root.clientHeight || 460;
+    var unit = CFG.tileHeight + CFG.gap;
 
-      function MorphEngine(container, opts) {
-        var self = this;
-        this.container = container;
-        this.items = opts.items;
-        this.getOptions = opts.getOptions;
-        this.onIndexChange = opts.onIndexChange;
-        this.reducedMotion = opts.reducedMotion;
+    function computeMeta() {
+      return columnItems.map(function (col) {
+        var copyHeight = Math.max(unit, col.length * unit);
+        var copies = Math.max(2, Math.ceil((containerHeight * 1.6) / copyHeight) + 1);
+        return { copyHeight: copyHeight, copies: copies };
+      });
+    }
+    var columnMeta = computeMeta();
 
-        this.current = opts.startIndex || 0;
-        this.animating = false;
-        this.dragging = false;
-        this.dragDir = 0;
-        this.shownIndex = this.current;
-        this.tween = null;
+    var dirSign = CFG.direction === "up" ? 1 : -1;
+    var baseVelocities = columnItems.map(function (_, c) {
+      var altSign = c % 2 === 0 ? 1 : -1;
+      return CFG.speed * columnFactor(c, CFG.variance) * dirSign * altSign;
+    });
 
-        this.renderer = new Renderer({ alpha: false, antialias: true, dpr: Math.min(window.devicePixelRatio || 1, opts.dprCap) });
-        this.gl = this.renderer.gl;
-        this.gl.clearColor(0.05, 0.05, 0.06, 1);
+    var plane = document.createElement("div");
+    plane.className = "drift-wall__plane";
+    var trackEls = [];
+    var tileId = 0;
+    columnItems.forEach(function (col, c) {
+      var colEl = document.createElement("div");
+      colEl.className = "drift-wall__col";
+      var track = document.createElement("div");
+      track.className = "drift-wall__track";
+      var meta = columnMeta[c];
+      for (var copyIndex = 0; copyIndex < meta.copies; copyIndex++) {
+        col.forEach(function (item) {
+          var tile = document.createElement("div");
+          tile.className = "drift-wall__tile";
+          tile.dataset.tileId = String(tileId++);
+          tile.dataset.col = String(c);
 
-        this.canvas = this.gl.canvas;
-        this.canvas.className = "morph-slider-canvas";
-        container.appendChild(this.canvas);
-
-        this.geometry = new Triangle(this.gl);
-        this.textures = this.items.map(function () { return makeFallbackTexture(self.gl); });
-        this.sizes = this.items.map(function () { return [1, 1]; });
-
-        var o = this.getOptions();
-        this.program = new Program(this.gl, {
-          vertex: vertexShader,
-          fragment: fragmentShader,
-          uniforms: {
-            tCurrent: { value: this.textures[this.current] },
-            tNext: { value: this.textures[this.current] },
-            uResolution: { value: [1, 1] },
-            uCurrentSize: { value: this.sizes[this.current] },
-            uNextSize: { value: this.sizes[this.current] },
-            uProgress: { value: 0 },
-            uDir: { value: 1 },
-            uMode: { value: TRANSITIONS[o.transition] || 0 },
-            uIntensity: { value: o.intensity },
-            uScale: { value: o.scale },
-            uAberration: { value: o.aberration },
-            uDrift: { value: o.drift },
-            uTime: { value: 0 },
-            uReduce: { value: this.reducedMotion ? 1 : 0 },
-            uPointer: { value: [0.5, 0.5] },
-            uOverlay: { value: hexToRgb(o.overlayColor) }
-          }
-        });
-
-        this.mesh = new Mesh(this.gl, { geometry: this.geometry, program: this.program });
-
-        this.boundContextLost = this.onContextLost.bind(this);
-        this.canvas.addEventListener("webglcontextlost", this.boundContextLost, false);
-
-        this.resizeObserver = new ResizeObserver(function () { self.resize(); });
-        this.resizeObserver.observe(container);
-        this.resize();
-
-        this.loadTextures();
-
-        this.boundLoop = this.loop.bind(this);
-        this.raf = requestAnimationFrame(this.boundLoop);
-      }
-
-      MorphEngine.prototype.loadTextures = function () {
-        var self = this;
-        this.items.forEach(function (item, index) {
-          var img = new Image();
-          img.crossOrigin = "anonymous";
+          var inner = document.createElement("span");
+          inner.className = "drift-wall__inner";
+          var img = document.createElement("img");
           img.src = item.image;
-          img.onload = function () {
-            var texture = new Texture(self.gl, { generateMipmaps: false });
-            texture.image = img;
-            self.textures[index] = texture;
-            self.sizes[index] = [img.naturalWidth || 1, img.naturalHeight || 1];
-            if (index === self.current) {
-              self.program.uniforms.tCurrent.value = texture;
-              self.program.uniforms.uCurrentSize.value = self.sizes[index];
-            }
-          };
-          img.onerror = function () {};
+          img.alt = "Ilustração de moda do portfólio de Joel Coveero";
+          img.setAttribute("data-i18n-alt", "port_alt");
+          img.loading = "lazy";
+          img.decoding = "async";
+          img.draggable = false;
+          var overlay = document.createElement("span");
+          overlay.className = "drift-wall__overlay";
+          overlay.setAttribute("aria-hidden", "true");
+
+          inner.appendChild(img);
+          inner.appendChild(overlay);
+          tile.appendChild(inner);
+          track.appendChild(tile);
         });
-      };
-
-      MorphEngine.prototype.resize = function () {
-        var rect = this.container.getBoundingClientRect();
-        var w = Math.max(rect.width, 1);
-        var h = Math.max(rect.height, 1);
-        this.renderer.setSize(w, h);
-        this.program.uniforms.uResolution.value = [this.gl.canvas.width, this.gl.canvas.height];
-      };
-
-      MorphEngine.prototype.syncOptions = function () {
-        var o = this.getOptions();
-        this.program.uniforms.uMode.value = TRANSITIONS[o.transition] || 0;
-        this.program.uniforms.uIntensity.value = o.intensity;
-        this.program.uniforms.uScale.value = o.scale;
-        this.program.uniforms.uAberration.value = o.aberration;
-        this.program.uniforms.uDrift.value = o.drift;
-        this.program.uniforms.uOverlay.value = hexToRgb(o.overlayColor);
-      };
-
-      MorphEngine.prototype.loop = function (t) {
-        this.program.uniforms.uTime.value = t * 0.001;
-        if (!this.dragging && !this.animating) this.syncOptions();
-        this.renderer.render({ scene: this.mesh });
-        this.raf = requestAnimationFrame(this.boundLoop);
-      };
-
-      MorphEngine.prototype.wrap = function (i) {
-        var n = this.items.length;
-        return ((i % n) + n) % n;
-      };
-
-      MorphEngine.prototype.prepareNext = function (dir) {
-        var target = this.wrap(this.current + dir);
-        this.program.uniforms.tCurrent.value = this.textures[this.current];
-        this.program.uniforms.uCurrentSize.value = this.sizes[this.current];
-        this.program.uniforms.tNext.value = this.textures[target];
-        this.program.uniforms.uNextSize.value = this.sizes[target];
-        this.program.uniforms.uDir.value = dir;
-        return target;
-      };
-
-      MorphEngine.prototype.goTo = function (dir) {
-        var self = this;
-        if (this.animating || this.dragging || this.items.length < 2) return;
-        var o = this.getOptions();
-        if (!o.loop) {
-          var raw = this.current + dir;
-          if (raw < 0 || raw > this.items.length - 1) return;
-        }
-        this.syncOptions();
-        var target = this.prepareNext(dir);
-        this.animating = true;
-        this.announce(target);
-        var duration = this.reducedMotion ? Math.min(o.duration, 0.4) : o.duration;
-        this.tween = window.gsap.fromTo(
-          this.program.uniforms.uProgress,
-          { value: 0 },
-          { value: 1, duration: duration, ease: o.ease, onComplete: function () { self.commit(target); } }
-        );
-      };
-
-      MorphEngine.prototype.announce = function (index) {
-        if (index === this.shownIndex) return;
-        this.shownIndex = index;
-        if (this.onIndexChange) this.onIndexChange(index);
-      };
-
-      MorphEngine.prototype.commit = function (target) {
-        this.current = target;
-        this.program.uniforms.tCurrent.value = this.textures[target];
-        this.program.uniforms.uCurrentSize.value = this.sizes[target];
-        this.program.uniforms.uProgress.value = 0;
-        this.animating = false;
-        this.tween = null;
-        this.announce(target);
-      };
-
-      MorphEngine.prototype.next = function () { this.goTo(1); };
-      MorphEngine.prototype.prev = function () { this.goTo(-1); };
-
-      MorphEngine.prototype.setPointer = function (x, y) {
-        this.program.uniforms.uPointer.value = [x, y];
-      };
-
-      MorphEngine.prototype.beginDrag = function () {
-        if (this.animating || this.items.length < 2) return false;
-        this.dragging = true;
-        this.dragDir = 0;
-        this.syncOptions();
-        return true;
-      };
-
-      MorphEngine.prototype.drag = function (ndx) {
-        if (!this.dragging) return;
-        var o = this.getOptions();
-        var dir = ndx < 0 ? 1 : -1;
-        if (!o.loop) {
-          var raw = this.current + dir;
-          if (raw < 0 || raw > this.items.length - 1) {
-            this.program.uniforms.uProgress.value = 0;
-            return;
-          }
-        }
-        if (dir !== this.dragDir) {
-          this.dragDir = dir;
-          this.prepareNext(dir);
-        }
-        var progress = Math.min(Math.abs(ndx), 1);
-        this.program.uniforms.uProgress.value = progress;
-        this.announce(progress > 0.5 ? this.wrap(this.current + dir) : this.current);
-      };
-
-      MorphEngine.prototype.endDrag = function () {
-        var self = this;
-        if (!this.dragging) return;
-        this.dragging = false;
-        var p = this.program.uniforms.uProgress.value;
-        if (this.dragDir === 0) return;
-        var target = this.wrap(this.current + this.dragDir);
-        var duration = this.reducedMotion ? 0.3 : 0.5;
-        this.animating = true;
-        if (p > 0.4) {
-          this.announce(target);
-          this.tween = window.gsap.to(this.program.uniforms.uProgress, {
-            value: 1, duration: duration, ease: "power2.out", onComplete: function () { self.commit(target); }
-          });
-        } else {
-          this.announce(this.current);
-          this.tween = window.gsap.to(this.program.uniforms.uProgress, {
-            value: 0, duration: duration, ease: "power2.out",
-            onComplete: function () { self.animating = false; self.tween = null; }
-          });
-        }
-      };
-
-      MorphEngine.prototype.onContextLost = function (e) {
-        e.preventDefault();
-        cancelAnimationFrame(this.raf);
-      };
-
-      var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      var engine = new MorphEngine(stage, {
-        items: items,
-        startIndex: 0,
-        reducedMotion: reducedMotion,
-        dprCap: 2,
-        getOptions: function () { return OPTS; },
-        onIndexChange: function (idx) {
-          if (counterCurrent) counterCurrent.textContent = idx + 1 < 10 ? "0" + (idx + 1) : "" + (idx + 1);
-          scheduleAutoplay();
-        }
-      });
-
-      if (fallback) fallback.style.display = "none";
-
-      function handleNext() { engine.next(); }
-      function handlePrev() { engine.prev(); }
-      if (prevBtn) prevBtn.addEventListener("click", handlePrev);
-      if (nextBtn) nextBtn.addEventListener("click", handleNext);
-
-      stage.addEventListener("keydown", function (e) {
-        if (e.key === "ArrowRight") { e.preventDefault(); handleNext(); }
-        else if (e.key === "ArrowLeft") { e.preventDefault(); handlePrev(); }
-      });
-
-      var hovered = false;
-      var autoTimer = null;
-      function scheduleAutoplay() {
-        if (autoTimer) clearTimeout(autoTimer);
-        if (hovered || reducedMotion) return;
-        autoTimer = setTimeout(function () { engine.next(); }, Math.max(AUTOPLAY_DELAY, 1) * 1000);
       }
-      root.addEventListener("mouseenter", function () { hovered = true; if (autoTimer) clearTimeout(autoTimer); });
-      root.addEventListener("mouseleave", function () { hovered = false; scheduleAutoplay(); });
-      scheduleAutoplay();
+      colEl.appendChild(track);
+      plane.appendChild(colEl);
+      trackEls.push(track);
+    });
+    root.appendChild(plane);
 
-      var startX = 0, dragWidth = 1, active = false;
-      stage.addEventListener("pointerdown", function (e) {
-        var rect = stage.getBoundingClientRect();
-        dragWidth = rect.width || 1;
-        startX = e.clientX;
-        var px = (e.clientX - rect.left) / rect.width;
-        var py = (e.clientY - rect.top) / rect.height;
-        engine.setPointer(px, 1 - py);
-        active = engine.beginDrag();
-        if (active) { try { stage.setPointerCapture(e.pointerId); } catch (err) {} }
-      });
-      stage.addEventListener("pointermove", function (e) {
-        if (!active) return;
-        engine.drag((e.clientX - startX) / dragWidth);
-      });
-      function onDragEnd() {
-        if (!active) return;
-        active = false;
-        engine.endDrag();
+    root.style.setProperty("--dw-tile-w", CFG.tileWidth + "px");
+    root.style.setProperty("--dw-tile-h", CFG.tileHeight + "px");
+    root.style.setProperty("--dw-gap", CFG.gap + "px");
+    root.style.setProperty("--dw-perspective", CFG.perspective + "px");
+    root.style.setProperty("--dw-lift", CFG.lift + "px");
+
+    var offsets = columnMeta.map(function (meta, c) { return meta.copyHeight * ((c * 0.37) % 1); });
+    var velocities = columnItems.map(function () { return 0; });
+    var hoveredCol = -1;
+    var wallHovered = false;
+    var activeId = null;
+    var pointer = { x: 0, y: 0 };
+    var pointerDamped = { x: 0, y: 0 };
+    var lastTs = null;
+
+    function updateActiveClass() {
+      var tiles = plane.querySelectorAll(".drift-wall__tile");
+      for (var t = 0; t < tiles.length; t++) {
+        tiles[t].classList.toggle("is-active", tiles[t].dataset.tileId === activeId);
       }
-      stage.addEventListener("pointerup", onDragEnd);
-      stage.addEventListener("pointercancel", onDragEnd);
-    })();
+    }
+    function activate(id, colIndex) {
+      if (id === activeId) return;
+      activeId = id;
+      hoveredCol = colIndex;
+      updateActiveClass();
+    }
+    function release() {
+      activeId = null;
+      hoveredCol = -1;
+      updateActiveClass();
+    }
+
+    function applyPlaneTransform(px, py) {
+      plane.style.transform =
+        "translate(-50%, -50%) scale(1.18) rotateX(" + (CFG.tilt + py) + "deg) rotateY(" + (CFG.turn + px) + "deg) rotateZ(" + CFG.roll + "deg) translateZ(" + (-CFG.depth) + "px)";
+    }
+
+    root.addEventListener("pointermove", function (e) {
+      var rect = root.getBoundingClientRect();
+      if (CFG.parallax > 0 && !reduced) {
+        pointer.x = (e.clientX - rect.left) / rect.width - 0.5;
+        pointer.y = (e.clientY - rect.top) / rect.height - 0.5;
+      }
+      var hit = document.elementFromPoint(e.clientX, e.clientY);
+      var tile = hit && hit.closest ? hit.closest("[data-tile-id]") : null;
+      if (!tile) return;
+      activate(tile.dataset.tileId, Number(tile.dataset.col));
+    });
+    root.addEventListener("pointerenter", function () { wallHovered = true; });
+    root.addEventListener("pointerleave", function () {
+      wallHovered = false;
+      pointer.x = 0; pointer.y = 0;
+      release();
+    });
+
+    if ("ResizeObserver" in window) {
+      var ro = new ResizeObserver(function (entries) {
+        containerHeight = entries[0].contentRect.height || containerHeight;
+        columnMeta = computeMeta();
+      });
+      ro.observe(root);
+    }
+
+    function loop(ts) {
+      if (lastTs === null) lastTs = ts;
+      var dt = Math.min(0.05, Math.max(0, ts - lastTs) / 1000);
+      lastTs = ts;
+
+      var maxTilt = CFG.parallax * 8;
+      var targetX = pointer.x * maxTilt;
+      var targetY = -pointer.y * maxTilt;
+      var damp = 1 - Math.exp(-dt / 0.12);
+      pointerDamped.x += (targetX - pointerDamped.x) * damp;
+      pointerDamped.y += (targetY - pointerDamped.y) * damp;
+      applyPlaneTransform(pointerDamped.x, pointerDamped.y);
+
+      if (!reduced) {
+        for (var c = 0; c < trackEls.length; c++) {
+          var meta = columnMeta[c];
+          if (!meta) continue;
+          var paused = wallHovered && CFG.pauseOnHover;
+          var factor = paused || hoveredCol === c ? 0 : 1;
+          var target = baseVelocities[c] * factor;
+          var ease = 1 - Math.exp(-dt / (target === 0 ? 0.16 : 0.28));
+          velocities[c] += (target - velocities[c]) * ease;
+          var next = (offsets[c] || 0) + velocities[c] * dt;
+          next = ((next % meta.copyHeight) + meta.copyHeight) % meta.copyHeight;
+          offsets[c] = next;
+          trackEls[c].style.transform = "translate3d(0, " + (-next) + "px, 0)";
+        }
+      }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
   })();
 </script>
 
@@ -1426,7 +1206,10 @@
         cta_whatsapp_header: "Falar no WhatsApp",
         cta_whatsapp_contact: "Chamar no WhatsApp",
         cta_email: "Escrever por e-mail",
-        section_cta_text: "Pronto pra tirar sua ideia do papel?",
+        section_cta_processo: "Vamos começar o seu projeto?",
+        section_cta_sobre: "Quer um traço desse nível no seu projeto?",
+        section_cta_colab: "Quer um resultado assim pro seu projeto?",
+        section_cta_portfolio: "Gostou do que viu? Vamos criar o seu.",
         mobile_menu_label: "Menu",
         mobile_menu_aria: "Abrir menu",
         hero_eyebrow: "Ilustração de moda sob encomenda",
@@ -1457,8 +1240,6 @@
         port_h2: "Portfólio",
         port_lead: "Uma amostra do nível de acabamento que você pode esperar — peças e bastidores do trabalho pessoal do Joel.",
         port_alt: "Ilustração de moda do portfólio de Joel Coveero",
-        port_prev_aria: "Peça anterior",
-        port_next_aria: "Próxima peça",
         proc_eyebrow: "Como funciona",
         proc_h2: "Do briefing à arte final",
         proc_lead: "Três etapas, escopo e prazo combinados antes de começar.",
@@ -1494,6 +1275,7 @@
         quote_label_pecas: "Número de peças",
         quote_placeholder_pecas: "Ex.: 5",
         quote_label_prazo: "Prazo de entrega",
+        quote_prazo_opt0: "Urgentíssimo (24-48h)",
         quote_prazo_opt1: "Urgente (até 1 semana)",
         quote_prazo_opt2: "2 a 3 semanas",
         quote_prazo_opt3: "1 mês",
@@ -1521,7 +1303,10 @@
         cta_whatsapp_header: "Message on WhatsApp",
         cta_whatsapp_contact: "Chat on WhatsApp",
         cta_email: "Write an email",
-        section_cta_text: "Ready to get your idea off the page?",
+        section_cta_processo: "Ready to start your project?",
+        section_cta_sobre: "Want that same level of craft on your project?",
+        section_cta_colab: "Want a result like this for your project?",
+        section_cta_portfolio: "Liked what you saw? Let's create yours.",
         mobile_menu_label: "Menu",
         mobile_menu_aria: "Open menu",
         hero_eyebrow: "Bespoke fashion illustration",
@@ -1552,8 +1337,6 @@
         port_h2: "Portfolio",
         port_lead: "A sample of the finish level you can expect — pieces and behind-the-scenes from Joel's personal work.",
         port_alt: "Fashion illustration from Joel Coveero's portfolio",
-        port_prev_aria: "Previous piece",
-        port_next_aria: "Next piece",
         proc_eyebrow: "How it works",
         proc_h2: "From briefing to final art",
         proc_lead: "Three steps, scope and timeline agreed before starting.",
@@ -1589,6 +1372,7 @@
         quote_label_pecas: "Number of pieces",
         quote_placeholder_pecas: "E.g.: 5",
         quote_label_prazo: "Delivery deadline",
+        quote_prazo_opt0: "Extremely urgent (24-48h)",
         quote_prazo_opt1: "Urgent (within 1 week)",
         quote_prazo_opt2: "2 to 3 weeks",
         quote_prazo_opt3: "1 month",
@@ -1616,7 +1400,10 @@
         cta_whatsapp_header: "Hablar por WhatsApp",
         cta_whatsapp_contact: "Escribir por WhatsApp",
         cta_email: "Escribir un correo",
-        section_cta_text: "¿Listo para sacar tu idea del papel?",
+        section_cta_processo: "¿Vamos a empezar tu proyecto?",
+        section_cta_sobre: "¿Quieres ese mismo nivel de trazo en tu proyecto?",
+        section_cta_colab: "¿Quieres un resultado así para tu proyecto?",
+        section_cta_portfolio: "¿Te gustó lo que viste? Vamos a crear el tuyo.",
         mobile_menu_label: "Menú",
         mobile_menu_aria: "Abrir menú",
         hero_eyebrow: "Ilustración de moda por encargo",
@@ -1647,8 +1434,6 @@
         port_h2: "Portafolio",
         port_lead: "Una muestra del nivel de acabado que puedes esperar — piezas y detrás de cámaras del trabajo personal de Joel.",
         port_alt: "Ilustración de moda del portafolio de Joel Coveero",
-        port_prev_aria: "Pieza anterior",
-        port_next_aria: "Siguiente pieza",
         proc_eyebrow: "Cómo funciona",
         proc_h2: "Del briefing al arte final",
         proc_lead: "Tres etapas, alcance y plazo acordados antes de empezar.",
