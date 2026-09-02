@@ -275,6 +275,7 @@
   }
 
   .about{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;align-items:center;}
+  .about > *{min-width:0;}
 
   /* TiltedCard — vanilla port do componente React Bits (reactbits.dev).
      Mesmo comportamento, reescrito sem React/Motion porque este é um site
@@ -305,12 +306,21 @@
   .about strong{color:var(--ink);font-weight:600;}
 
   .audience-eyebrow{margin-top:28px;}
-  .audience-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px;}
-  .audience-tags .tag{
-    font-family:var(--font-mono);font-size:.78rem;color:var(--ink);
+  .tag{
+    display:inline-block;white-space:nowrap;font-family:var(--font-mono);font-size:.78rem;color:var(--ink);
     background:rgba(155,92,255,.12);border:1px solid rgba(155,92,255,.4);
     padding:7px 14px;border-radius:999px;
   }
+
+  /* LogoLoop — vanilla port do componente React Bits (reactbits.dev).
+     Sem dependência externa (só requestAnimationFrame), então é uma
+     tradução quase 1:1: mede a largura de uma sequência de tags e clona
+     cópias suficientes pra preencher o container + 2 de folga, criando
+     um loop contínuo sem emenda visível. Usa tags de texto em vez de
+     logos de imagem (não há logos aqui, só categorias de cliente). */
+  .logoloop{position:relative;min-width:0;margin-top:10px;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);}
+  .logoloop__track{display:flex;width:max-content;will-change:transform;}
+  .logoloop__item{flex:0 0 auto;margin-right:14px;}
 
   .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .trust-card{
@@ -655,12 +665,14 @@
           <div class="stat"><b data-i18n="stat_num_followers">6,2 mil+</b><span data-i18n="stat_followers_label">seguidores nas redes sociais</span></div>
         </div>
         <div class="eyebrow audience-eyebrow" data-i18n="audience_eyebrow">Atendo</div>
-        <div class="audience-tags">
-          <span class="tag" data-i18n="tag_marcas">Marcas de moda</span>
-          <span class="tag" data-i18n="tag_estilistas">Estilistas</span>
-          <span class="tag" data-i18n="tag_artistas">Artistas &amp; cantores</span>
-          <span class="tag" data-i18n="tag_producoes">Produções de palco</span>
-          <span class="tag" data-i18n="tag_campanhas">Campanhas</span>
+        <div class="logoloop" id="audience-loop" role="region" aria-label="Atendo">
+          <div class="logoloop__track" id="audience-loop-track">
+            <span class="logoloop__item"><span class="tag" data-i18n="tag_marcas">Marcas de moda</span></span>
+            <span class="logoloop__item"><span class="tag" data-i18n="tag_estilistas">Estilistas</span></span>
+            <span class="logoloop__item"><span class="tag" data-i18n="tag_artistas">Artistas &amp; cantores</span></span>
+            <span class="logoloop__item"><span class="tag" data-i18n="tag_producoes">Produções de palco</span></span>
+            <span class="logoloop__item"><span class="tag" data-i18n="tag_campanhas">Campanhas</span></span>
+          </div>
         </div>
       </div>
     </div>
@@ -669,7 +681,7 @@
   <section class="alt" id="colaboracoes">
     <div class="wrap">
       <div class="eyebrow" data-i18n="colab_eyebrow">Colaborações de elite</div>
-      <h2 data-i18n="colab_h2">Trabalhos que já saíram do papel</h2>
+      <h2 data-i18n="colab_h2">Trabalhos famosos que já saíram do papel</h2>
       <p class="section-lead" data-i18n="colab_lead">E foram parar em capa, palco e campanha.</p>
       <div class="trust-grid">
         <div class="trust-card reveal">
@@ -1093,6 +1105,66 @@
 </script>
 
 <script>
+  // LogoLoop — vanilla port of the React Bits component (reactbits.dev).
+  // No external dependency (just requestAnimationFrame), so this is a
+  // close 1:1 translation: measure one sequence's width, clone enough
+  // copies to fill the container plus a little headroom, and loop the
+  // whole track with translate3d — no seam, no dependency. Text tags in
+  // place of logo images (there are no partner logos here, just client
+  // categories), each still wired to data-i18n so the language switch
+  // keeps working across every cloned copy.
+  (function () {
+    var root = document.getElementById("audience-loop");
+    var track = document.getElementById("audience-loop-track");
+    if (!root || !track) return;
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    var SPEED = 40;
+    var MIN_COPIES = 2;
+    var COPY_HEADROOM = 2;
+
+    var baseItems = Array.prototype.slice.call(track.children);
+    var seqWidth = 0;
+    var offset = 0;
+    var lastTs = null;
+
+    function layout() {
+      track.style.transform = "translate3d(0, 0, 0)";
+      track.innerHTML = "";
+      baseItems.forEach(function (item) { track.appendChild(item.cloneNode(true)); });
+      seqWidth = track.getBoundingClientRect().width;
+      if (seqWidth <= 0) return;
+      var containerWidth = root.clientWidth;
+      var copies = Math.max(MIN_COPIES, Math.ceil(containerWidth / seqWidth) + COPY_HEADROOM);
+      for (var c = 1; c < copies; c++) {
+        baseItems.forEach(function (item) { track.appendChild(item.cloneNode(true)); });
+      }
+    }
+
+    layout();
+    if ("ResizeObserver" in window) {
+      var ro = new ResizeObserver(function () { layout(); });
+      ro.observe(root);
+    } else {
+      window.addEventListener("resize", layout);
+    }
+
+    if (!reduced) {
+      requestAnimationFrame(function loop(ts) {
+        if (lastTs === null) lastTs = ts;
+        var dt = Math.min(0.05, Math.max(0, ts - lastTs) / 1000);
+        lastTs = ts;
+        if (seqWidth > 0) {
+          offset = (offset + SPEED * dt) % seqWidth;
+          track.style.transform = "translate3d(" + (-offset) + "px, 0, 0)";
+        }
+        requestAnimationFrame(loop);
+      });
+    }
+  })();
+</script>
+
+<script>
   // TiltedCard — vanilla port of the React Bits component (reactbits.dev).
   // Same behaviour, rewritten without React/Motion because this is a plain
   // static site with no build step. Uses gsap.quickTo (GSAP already loaded
@@ -1342,7 +1414,7 @@
         tag_producoes: "Produções de palco",
         tag_campanhas: "Campanhas",
         colab_eyebrow: "Colaborações de elite",
-        colab_h2: "Trabalhos que já saíram do papel",
+        colab_h2: "Trabalhos famosos que já saíram do papel",
         colab_lead: "E foram parar em capa, palco e campanha.",
         colab_ludmilla_quote: 'Arte para o single "Fragmentos".',
         colab_katseye_quote: 'Arte para "Welcome to KATSEYE world — WILD".',
@@ -1437,7 +1509,7 @@
         tag_producoes: "Stage productions",
         tag_campanhas: "Campaigns",
         colab_eyebrow: "Elite collaborations",
-        colab_h2: "Work that's already left the page",
+        colab_h2: "Famous work that's already left the page",
         colab_lead: "And ended up on covers, stages and campaigns.",
         colab_ludmilla_quote: 'Artwork for the single "Fragmentos."',
         colab_katseye_quote: 'Artwork for "Welcome to KATSEYE world — WILD."',
@@ -1532,7 +1604,7 @@
         tag_producoes: "Producciones de escenario",
         tag_campanhas: "Campañas",
         colab_eyebrow: "Colaboraciones de élite",
-        colab_h2: "Trabajos que ya salieron del papel",
+        colab_h2: "Trabajos famosos que ya salieron del papel",
         colab_lead: "Y terminaron en portadas, escenarios y campañas.",
         colab_ludmilla_quote: 'Arte para el sencillo "Fragmentos".',
         colab_katseye_quote: 'Arte para "Welcome to KATSEYE world — WILD".',
