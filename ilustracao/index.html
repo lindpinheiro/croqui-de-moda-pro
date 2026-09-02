@@ -340,7 +340,7 @@
     position:relative;width:100%;height:100%;overflow:hidden;border-radius:var(--radius);
     perspective:var(--dw-perspective,1200px);perspective-origin:50% 50%;
     --dw-tile-w:170px;--dw-tile-h:210px;--dw-gap:16px;--dw-radius:14px;
-    --dw-lift:50px;--dw-dim:.55;--dw-gray:0;--dw-overlay:#0a0710;--dw-edge:45%;
+    --dw-lift:50px;--dw-dim:.55;--dw-gray:0;--dw-overlay:#0a0710;--dw-edge:74%;
     -webkit-mask-image:radial-gradient(ellipse 78% 82% at 50% 46%,#000 var(--dw-edge),transparent 100%),
       linear-gradient(to top,#000 var(--dw-edge),transparent 100%);
     -webkit-mask-composite:source-in;
@@ -383,14 +383,6 @@
   @media (prefers-reduced-motion: reduce){ .drift-wall__plane, .drift-wall__track{will-change:auto;} }
   @media (max-width:820px){ .drift-wall{ --dw-tile-w:130px; --dw-tile-h:162px; --dw-gap:12px; } }
 
-  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
-  .card{
-    background:var(--bg-card);border:1px solid var(--line);border-top:3px solid var(--pink);
-    border-radius:var(--radius);padding:28px;transition:transform .18s ease, border-color .18s ease;
-  }
-  .card:hover{transform:translateY(-4px);border-color:var(--violet);}
-  .card.violet{border-top-color:var(--violet);}
-  .card.lime{border-top-color:var(--lime);}
   .icon-badge{
     width:50px;height:50px;border-radius:14px;
     display:flex;align-items:center;justify-content:center;margin-bottom:18px;
@@ -398,24 +390,49 @@
   }
   .icon-badge.lime{background:rgba(215,255,62,.08);border-color:rgba(215,255,62,.35);}
   .icon-badge.violet{background:rgba(155,92,255,.12);border-color:rgba(155,92,255,.4);}
-  .card h3{margin:0 0 8px;font-size:1.02rem;font-weight:600;}
-  .card p{margin:0;color:var(--ink-soft);font-size:.94rem;}
   .process-num{
     display:inline-block;font-family:var(--font-mono);font-size:.7rem;color:var(--ink-faint);
     letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;
   }
 
-  /* Grid do "Como funciona" — reforça a leitura de fluxo (01 → 02 → 03)
-     com setas conectando os cards; escondidas no mobile, onde os cards
-     já empilham verticalmente e a seta perderia o sentido. */
-  .step-arrow{display:none;}
-  @media (min-width:821px){
-    .process-grid{grid-template-columns:1fr auto 1fr auto 1fr;gap:0;align-items:stretch;}
-    .process-grid .card{margin:0 -1px;}
-    .process-grid .step-arrow{
-      display:flex;align-items:center;justify-content:center;
-      color:var(--ink-faint);padding:0 14px;
-    }
+  /* ScrollStack — vanilla port do componente React Bits (reactbits.dev).
+     Ao contrário do demo original (que usa a rolagem da janela inteira),
+     aqui useWindowScroll é false: a pilha rola dentro da própria caixa,
+     sem sequestrar o scroll da página toda pra uma seção com só 3 cards.
+     Lenis (CDN) toca o scroll suave; sem ele cai pro scroll nativo do
+     navegador via listener direto. */
+  .scroll-stack-wrap{height:560px;margin-top:8px;}
+  @media (max-width:820px){ .scroll-stack-wrap{height:460px;} }
+  .scroll-stack-scroller{
+    position:relative;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;
+    overscroll-behavior:contain;-webkit-overflow-scrolling:touch;border-radius:var(--radius);
+  }
+  .scroll-stack-inner{padding:14% 0 72%;min-height:100%;}
+  .scroll-stack-card{
+    transform-origin:top center;backface-visibility:hidden;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,.6);
+    height:340px;width:100%;box-sizing:border-box;position:relative;overflow:hidden;
+    border-radius:var(--radius);background:var(--bg-card);border:1px solid var(--line);
+  }
+  .scroll-stack-end{width:100%;height:1px;}
+  .process-visual-card{padding:44px 44px;display:flex;flex-direction:column;justify-content:center;}
+  .process-visual-card .process-ghost-num{
+    position:absolute;top:-30px;right:6px;font-family:var(--font-display);font-weight:700;
+    font-size:11rem;line-height:1;color:rgba(255,255,255,.045);pointer-events:none;user-select:none;
+  }
+  .process-visual-card.pink{border-top:4px solid var(--pink);}
+  .process-visual-card.violet{border-top:4px solid var(--violet);}
+  .process-visual-card.lime{border-top:4px solid var(--lime);}
+  .process-visual-card .icon-badge{width:64px;height:64px;border-radius:18px;margin-bottom:22px;}
+  .process-visual-card .process-num{font-size:.8rem;margin-bottom:14px;}
+  .process-visual-card h3{margin:0 0 14px;font-size:1.7rem;font-weight:700;}
+  .process-visual-card p{margin:0;color:var(--ink-soft);font-size:1.05rem;max-width:52ch;}
+  @media (max-width:520px){
+    .scroll-stack-card{height:400px;}
+    .process-visual-card{padding:32px 28px;}
+    .process-visual-card h3{font-size:1.4rem;}
+    .process-visual-card p{font-size:.96rem;}
+    .process-visual-card .process-ghost-num{font-size:7rem;}
   }
 
   /* Bloco principal de contato — WhatsApp como CTA único e dominante,
@@ -440,7 +457,7 @@
   }
   @media (max-width:820px){
     .hero .wrap{grid-template-columns:1fr;}
-    .grid-3, .trust-grid{grid-template-columns:1fr;}
+    .trust-grid{grid-template-columns:1fr;}
     .about{grid-template-columns:1fr;}
   }
 
@@ -582,36 +599,38 @@
       <div class="eyebrow" data-i18n="proc_eyebrow">Como funciona</div>
       <h2 data-i18n="proc_h2">Do briefing à arte final</h2>
       <p class="section-lead" data-i18n="proc_lead">Três etapas, escopo e prazo combinados antes de começar.</p>
-      <div class="grid-3 process-grid">
-        <div class="card reveal">
-          <div class="icon-badge">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>
+      <div class="scroll-stack-wrap reveal">
+        <div class="scroll-stack-scroller" id="process-stack">
+          <div class="scroll-stack-inner">
+            <div class="scroll-stack-card process-visual-card pink">
+              <span class="process-ghost-num" aria-hidden="true">01</span>
+              <div class="icon-badge">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--pink)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>
+              </div>
+              <span class="process-num">01</span>
+              <h3 data-i18n="step1_title">Briefing</h3>
+              <p data-i18n="step1_p">Conversa sobre a peça, o artista e o momento — palco, campanha ou editorial — pra entender exatamente o que a ilustração precisa comunicar.</p>
+            </div>
+            <div class="scroll-stack-card process-visual-card violet">
+              <span class="process-ghost-num" aria-hidden="true">02</span>
+              <div class="icon-badge violet">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="var(--violet)" stroke="none"/></svg>
+              </div>
+              <span class="process-num">02</span>
+              <h3 data-i18n="step2_title">Direção</h3>
+              <p data-i18n="step2_p">Joel traduz a referência em conceito visual e ajusta com você até a ideia fechar — antes de partir pro traço final.</p>
+            </div>
+            <div class="scroll-stack-card process-visual-card lime">
+              <span class="process-ghost-num" aria-hidden="true">03</span>
+              <div class="icon-badge lime">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5-5"/></svg>
+              </div>
+              <span class="process-num">03</span>
+              <h3 data-i18n="step3_title">Ilustração final</h3>
+              <p data-i18n="step3_p">Entrega em alta resolução, pronta pra guiar a produção da peça ou pra apresentação ao cliente.</p>
+            </div>
+            <div class="scroll-stack-end"></div>
           </div>
-          <span class="process-num">01</span>
-          <h3 data-i18n="step1_title">Briefing</h3>
-          <p data-i18n="step1_p">Conversa sobre a peça, o artista e o momento — palco, campanha ou editorial — pra entender exatamente o que a ilustração precisa comunicar.</p>
-        </div>
-        <div class="step-arrow" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </div>
-        <div class="card reveal violet">
-          <div class="icon-badge violet">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--violet)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="var(--violet)" stroke="none"/></svg>
-          </div>
-          <span class="process-num">02</span>
-          <h3 data-i18n="step2_title">Direção</h3>
-          <p data-i18n="step2_p">Joel traduz a referência em conceito visual e ajusta com você até a ideia fechar — antes de partir pro traço final.</p>
-        </div>
-        <div class="step-arrow" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </div>
-        <div class="card reveal lime">
-          <div class="icon-badge lime">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lime)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5 5-5"/></svg>
-          </div>
-          <span class="process-num">03</span>
-          <h3 data-i18n="step3_title">Ilustração final</h3>
-          <p data-i18n="step3_p">Entrega em alta resolução, pronta pra guiar a produção da peça ou pra apresentação ao cliente.</p>
         </div>
       </div>
       <div class="section-cta reveal">
@@ -1168,6 +1187,122 @@
       var text = encodeURIComponent(lines.join("\n"));
       window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + text, "_blank", "noopener");
     });
+  })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+  // ScrollStack — vanilla port of the React Bits component (reactbits.dev).
+  // useWindowScroll is intentionally false here (the demo default is a
+  // full-page hijack) — this section lives inside a normal long page, so
+  // the stack scrolls inside its own bounded box instead of taking over
+  // the whole page's scroll via Lenis. Falls back to native scroll if the
+  // Lenis CDN fails to load.
+  (function () {
+    var scroller = document.getElementById("process-stack");
+    if (!scroller) return;
+    var cards = Array.prototype.slice.call(scroller.querySelectorAll(".scroll-stack-card"));
+    if (!cards.length) return;
+
+    var CFG = {
+      itemDistance: 60,
+      itemScale: 0.04,
+      itemStackDistance: 24,
+      stackPosition: "15%",
+      scaleEndPosition: "8%",
+      baseScale: 0.86
+    };
+
+    var lastTransforms = {};
+    var updating = false;
+
+    function parsePercentage(value, containerHeight) {
+      if (typeof value === "string" && value.indexOf("%") > -1) {
+        return (parseFloat(value) / 100) * containerHeight;
+      }
+      return parseFloat(value);
+    }
+
+    function calcProgress(scrollTop, start, end) {
+      if (scrollTop < start) return 0;
+      if (scrollTop > end) return 1;
+      return (scrollTop - start) / (end - start);
+    }
+
+    function update() {
+      if (updating) return;
+      updating = true;
+      var scrollTop = scroller.scrollTop;
+      var containerHeight = scroller.clientHeight;
+      var stackPositionPx = parsePercentage(CFG.stackPosition, containerHeight);
+      var scaleEndPositionPx = parsePercentage(CFG.scaleEndPosition, containerHeight);
+      var endEl = scroller.querySelector(".scroll-stack-end");
+      var endElementTop = endEl ? endEl.offsetTop : 0;
+
+      cards.forEach(function (card, i) {
+        var cardTop = card.offsetTop;
+        var triggerStart = cardTop - stackPositionPx - CFG.itemStackDistance * i;
+        var triggerEnd = cardTop - scaleEndPositionPx;
+        var pinStart = cardTop - stackPositionPx - CFG.itemStackDistance * i;
+        var pinEnd = endElementTop - containerHeight / 2;
+
+        var scaleProgress = calcProgress(scrollTop, triggerStart, triggerEnd);
+        var targetScale = CFG.baseScale + i * CFG.itemScale;
+        var scale = 1 - scaleProgress * (1 - targetScale);
+
+        var translateY = 0;
+        var isPinned = scrollTop >= pinStart && scrollTop <= pinEnd;
+        if (isPinned) {
+          translateY = scrollTop - cardTop + stackPositionPx + CFG.itemStackDistance * i;
+        } else if (scrollTop > pinEnd) {
+          translateY = pinEnd - cardTop + stackPositionPx + CFG.itemStackDistance * i;
+        }
+
+        var t = {
+          translateY: Math.round(translateY * 100) / 100,
+          scale: Math.round(scale * 1000) / 1000
+        };
+        var last = lastTransforms[i];
+        if (!last || Math.abs(last.translateY - t.translateY) > 0.1 || Math.abs(last.scale - t.scale) > 0.001) {
+          card.style.transform = "translate3d(0, " + t.translateY + "px, 0) scale(" + t.scale + ")";
+          lastTransforms[i] = t;
+        }
+      });
+      updating = false;
+    }
+
+    cards.forEach(function (card, i) {
+      if (i < cards.length - 1) card.style.marginBottom = CFG.itemDistance + "px";
+      card.style.willChange = "transform";
+      card.style.transformOrigin = "top center";
+      card.style.backfaceVisibility = "hidden";
+    });
+
+    var hasLenis = typeof window.Lenis !== "undefined";
+    if (hasLenis) {
+      var lenis = new window.Lenis({
+        wrapper: scroller,
+        content: scroller.querySelector(".scroll-stack-inner"),
+        duration: 1.1,
+        easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+        smoothWheel: true,
+        touchMultiplier: 2,
+        gestureOrientationHandler: true,
+        wheelMultiplier: 1,
+        lerp: 0.1,
+        syncTouch: true,
+        syncTouchLerp: 0.075
+      });
+      lenis.on("scroll", update);
+      (function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+      })();
+    } else {
+      scroller.addEventListener("scroll", update, { passive: true });
+    }
+
+    update();
   })();
 </script>
 
