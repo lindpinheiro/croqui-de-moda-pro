@@ -111,7 +111,7 @@
   .brand{font-family:var(--font-display);font-weight:700;letter-spacing:.01em;font-size:1.05rem;text-decoration:none;flex-shrink:0;}
   .brand span{background:linear-gradient(90deg,var(--pink),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;}
   nav.site{display:flex;align-items:center;margin-left:auto;}
-  nav.site a{margin-left:22px;text-decoration:none;font-size:.92rem;color:var(--ink-soft);transition:color .15s ease;}
+  nav.site a{margin-left:22px;text-decoration:none;font-size:.92rem;color:var(--ink-soft);transition:color .15s ease;white-space:nowrap;flex-shrink:0;}
   nav.site a:hover{color:var(--lime);}
   .btn{
     display:inline-block;background:linear-gradient(90deg,var(--pink),var(--violet));
@@ -183,7 +183,7 @@
     text-decoration:none;padding:14px 0;border-bottom:1px solid var(--line);
   }
   .mobile-nav a:hover{color:var(--lime);}
-  @media (max-width:1050px){
+  @media (max-width:1140px){
     nav.site{display:none;}
     .header-cta{display:none;}
     .sm-toggle{display:inline-flex;}
@@ -398,17 +398,15 @@
 
   /* ScrollStack — vanilla port do componente React Bits (reactbits.dev).
      useWindowScroll:true (igual ao demo original) — os cards empilham
-     conforme a PÁGINA rola, não uma caixa interna. A primeira versão
-     usava uma caixa com scroll próprio (useWindowScroll:false) pra não
-     mexer no scroll do site inteiro, mas isso escondia o efeito: quem
-     rolava a página normalmente nunca "entrava" na caixa pra ver o
-     empilhamento, então na prática o componente parecia não existir.
-     Lenis (CDN) toca o scroll suave da janela inteira; sem ele cai pro
-     scroll nativo via listener direto. */
+     conforme a PÁGINA rola, via scroll nativo (sem Lenis — ver o
+     comentário no script). O padding-bottom aqui é só a folga pro
+     último card soltar o pin suavemente; um valor grande demais (o
+     demo original usa 50rem) deixa uma área morta enorme depois que o
+     3º card libera e antes da próxima seção aparecer. */
   .scroll-stack-wrap{margin-top:8px;}
   .scroll-stack-scroller{position:relative;width:100%;}
-  .scroll-stack-inner{padding:2rem 0 26rem;}
-  @media (max-width:820px){ .scroll-stack-inner{padding:1.5rem 0 20rem;} }
+  .scroll-stack-inner{padding:2rem 0 5rem;}
+  @media (max-width:820px){ .scroll-stack-inner{padding:1.5rem 0 4rem;} }
   .scroll-stack-card{
     transform-origin:top center;backface-visibility:hidden;
     box-shadow:0 30px 60px -20px rgba(0,0,0,.6);
@@ -443,7 +441,6 @@
     background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
     padding:48px 32px;text-align:center;box-shadow:inset 0 0 0 1.5px rgba(255,47,143,.35);
   }
-  .contact-primary .icon-badge{margin:0 auto 20px;width:56px;height:56px;border-radius:16px;}
   .contact-primary h3{font-size:1.3rem;margin:0 0 10px;}
   .contact-primary-sub{color:var(--ink-soft);font-size:.98rem;margin:0 0 26px;max-width:42ch;margin-inline:auto;}
   .contact-primary .btn{font-size:1.02rem;padding:15px 36px;}
@@ -484,7 +481,11 @@
     padding:11px 14px;color:var(--ink);font-family:var(--font-body);font-size:.95rem;
     outline:none;transition:border-color .15s ease;color-scheme:dark;
   }
-  .form-field select{padding:14px;}
+  .form-field select{
+    padding:14px 40px 14px 14px;appearance:none;-webkit-appearance:none;-moz-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b80a8' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 14px center;
+  }
   .form-field input::placeholder{color:var(--ink-faint);}
   .form-field input:focus,
   .form-field select:focus{border-color:var(--violet);}
@@ -569,8 +570,8 @@
     <div class="wrap">
       <div class="reveal">
         <div class="eyebrow" data-i18n="hero_eyebrow">Ilustração de moda sob encomenda</div>
-        <h1 data-i18n-html="hero_h1">Joel Pinheiro transforma referência de estilo em <em>ilustração de moda</em>.</h1>
-        <p class="lead" data-i18n="hero_lead">Trabalho sob encomenda para estilistas e artistas que precisam tirar um look do papel com agilidade, com o acabamento de quem já passou por capa, palco e campanha.</p>
+        <h1 data-i18n-html="hero_h1">Transformo sua ideia em <em>ilustração de moda</em>.</h1>
+        <p class="lead" data-i18n="hero_lead">Trabalho sob encomenda para estilistas e marcas que precisam tirar um look do papel com agilidade, com o acabamento de quem já passou por capa, palco e campanha.</p>
         <div class="hero-actions">
           <a class="btn" data-i18n="cta_whatsapp_header" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Falar no WhatsApp</a>
           <a class="btn ghost" data-copy-email="joel.estilista@gmail.com" data-i18n="cta_email" href="mailto:joel.estilista@gmail.com?subject=Projeto%20de%20ilustra%C3%A7%C3%A3o">Escrever por e-mail</a>
@@ -715,9 +716,6 @@
       <p class="section-lead" data-i18n="contato_lead">WhatsApp pra resposta mais rápida, email se preferir escrever com calma.</p>
       <div class="contact-primary reveal">
         <span class="flow-priority-badge" data-i18n="contact_priority_badge">Resposta mais rápida</span>
-        <div class="icon-badge">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--pink)"><path d="M12 21s-7-4.35-9.5-8.5C.5 8.5 3 5 6.5 5c1.9 0 3.3 1 4.5 2.5C12.2 6 13.6 5 15.5 5 19 5 21.5 8.5 21.5 12.5 19 16.65 12 21 12 21z"/></svg>
-        </div>
         <h3 data-i18n="contact_whatsapp_title">WhatsApp</h3>
         <p class="contact-primary-sub" data-i18n="contact_whatsapp_sub">Pra quem já quer conversar e fechar um projeto agora.</p>
         <a class="btn" data-i18n="cta_whatsapp_contact" href="https://wa.me/5585999962897?text=Oi%20Joel%2C%20vim%20pela%20sua%20p%C3%A1gina%20de%20ilustra%C3%A7%C3%A3o.%20Quero%20conversar%20sobre%20um%20projeto." target="_blank" rel="noopener">Chamar no WhatsApp</a>
@@ -972,7 +970,10 @@
           img.src = item.image;
           img.alt = "Ilustração de moda do portfólio de Joel Coveero";
           img.setAttribute("data-i18n-alt", "port_alt");
-          img.loading = "lazy";
+          // loading="lazy" doesn't mix well with heavy 3D transforms/
+          // perspective: the browser's on-screen check misjudges these
+          // tiles, so some never load (or load very late) even though
+          // they're visibly part of the drifting wall from the start.
           img.decoding = "async";
           img.draggable = false;
           var overlay = document.createElement("span");
@@ -1311,8 +1312,25 @@
       return (scrollTop - start) / (end - start);
     }
 
-    function elementTop(el) {
-      return el.getBoundingClientRect().top + window.scrollY;
+    // offsetTop walked up the offsetParent chain — unlike
+    // getBoundingClientRect(), this is never affected by a transform
+    // already applied to the element (or an ancestor), so re-measuring
+    // every frame can't drift once cards start moving. Cached once on
+    // load/resize instead of re-read on every scroll tick.
+    function cumulativeOffsetTop(el) {
+      var top = 0;
+      while (el) {
+        top += el.offsetTop || 0;
+        el = el.offsetParent;
+      }
+      return top;
+    }
+
+    var cardTops = [];
+    var endElementTop = 0;
+    function measure() {
+      cardTops = cards.map(cumulativeOffsetTop);
+      endElementTop = endEl ? cumulativeOffsetTop(endEl) : 0;
     }
 
     function update() {
@@ -1322,10 +1340,9 @@
       var containerHeight = window.innerHeight;
       var stackPositionPx = parsePercentage(CFG.stackPosition, containerHeight);
       var scaleEndPositionPx = parsePercentage(CFG.scaleEndPosition, containerHeight);
-      var endElementTop = endEl ? elementTop(endEl) : 0;
 
       cards.forEach(function (card, i) {
-        var cardTop = elementTop(card);
+        var cardTop = cardTops[i];
         var triggerStart = cardTop - stackPositionPx - CFG.itemStackDistance * i;
         var triggerEnd = cardTop - scaleEndPositionPx;
         var pinStart = cardTop - stackPositionPx - CFG.itemStackDistance * i;
@@ -1374,8 +1391,12 @@
       });
     }
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", update);
+    window.addEventListener("resize", function () {
+      measure();
+      update();
+    });
 
+    measure();
     update();
   })();
 </script>
@@ -1403,8 +1424,8 @@
         mobile_menu_label: "Menu",
         mobile_menu_aria: "Abrir menu",
         hero_eyebrow: "Ilustração de moda sob encomenda",
-        hero_h1: 'Joel Pinheiro transforma referência de estilo em <em>ilustração de moda</em>.',
-        hero_lead: "Trabalho sob encomenda para estilistas e artistas que precisam tirar um look do papel com agilidade, com o acabamento de quem já passou por capa, palco e campanha.",
+        hero_h1: 'Transformo sua ideia em <em>ilustração de moda</em>.',
+        hero_lead: "Trabalho sob encomenda para estilistas e marcas que precisam tirar um look do papel com agilidade, com o acabamento de quem já passou por capa, palco e campanha.",
         hero_note: "Disponível para projetos pontuais e parcerias contínuas com equipes de estilo.",
         stat_label_colabs: "Colabs de elite",
         stat_label_followers: "Seguidores",
@@ -1494,8 +1515,8 @@
         mobile_menu_label: "Menu",
         mobile_menu_aria: "Open menu",
         hero_eyebrow: "Bespoke fashion illustration",
-        hero_h1: 'Joel Pinheiro turns a style reference into <em>fashion illustration</em>.',
-        hero_lead: "Commissioned work for stylists and artists who need to bring a look off the page fast, with the finish of someone who has already been through covers, stages and campaigns.",
+        hero_h1: 'I turn your idea into <em>fashion illustration</em>.',
+        hero_lead: "Commissioned work for stylists and brands who need to bring a look off the page fast, with the finish of someone who has already been through covers, stages and campaigns.",
         hero_note: "Available for one-off projects and ongoing partnerships with style teams.",
         stat_label_colabs: "Elite collabs",
         stat_label_followers: "Followers",
@@ -1585,8 +1606,8 @@
         mobile_menu_label: "Menú",
         mobile_menu_aria: "Abrir menú",
         hero_eyebrow: "Ilustración de moda por encargo",
-        hero_h1: 'Joel Pinheiro transforma una referencia de estilo en <em>ilustración de moda</em>.',
-        hero_lead: "Trabajo por encargo para estilistas y artistas que necesitan sacar un look del papel con agilidad, con el acabado de quien ya pasó por portadas, escenarios y campañas.",
+        hero_h1: 'Transformo tu idea en <em>ilustración de moda</em>.',
+        hero_lead: "Trabajo por encargo para estilistas y marcas que necesitan sacar un look del papel con agilidad, con el acabado de quien ya pasó por portadas, escenarios y campañas.",
         hero_note: "Disponible para proyectos puntuales y colaboraciones continuas con equipos de estilo.",
         stat_label_colabs: "Colabs de élite",
         stat_label_followers: "Seguidores",
