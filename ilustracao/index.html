@@ -256,12 +256,29 @@
   .section-lead{color:var(--ink-soft);max-width:60ch;margin:0 0 36px;}
 
   .about{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;align-items:center;}
+
+  /* TiltedCard — vanilla port do componente React Bits (reactbits.dev).
+     Mesmo comportamento, reescrito sem React/Motion porque este é um site
+     estático sem build. Usa gsap.quickTo (GSAP já carregado pro
+     DepthCarousel) pro amortecimento tipo "spring"; em telas sem hover
+     (touch) o tilt não é ativado e a foto fica estática, sem aviso. */
   .about-photo{
+    position:relative;perspective:800px;
     aspect-ratio:1;border-radius:var(--radius);background:var(--bg-card);
     box-shadow:0 0 0 4px rgba(155,92,255,.14), 0 30px 60px -25px rgba(255,47,143,.35);
-    overflow:hidden;
   }
-  .about-photo img{width:100%;height:100%;object-fit:cover;object-position:center 30%;}
+  .tilted-card-inner{position:absolute;inset:0;transform-style:preserve-3d;}
+  .tilted-card-inner img{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:center 30%;border-radius:var(--radius);
+    will-change:transform;backface-visibility:hidden;
+  }
+  .tilted-card-caption{
+    pointer-events:none;position:absolute;left:0;top:0;
+    border-radius:6px;background:var(--ink);padding:5px 12px;
+    font-family:var(--font-mono);font-size:.72rem;font-weight:600;color:#0a0710;
+    opacity:0;z-index:3;white-space:nowrap;
+  }
   .stats{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap;}
   .stat b{display:block;font-family:var(--font-mono);font-size:1.3rem;color:var(--lime);text-shadow:0 0 16px rgba(215,255,62,.35);}
   .stat span{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);}
@@ -285,68 +302,53 @@
   .trust-card:hover{transform:translateY(-4px);border-color:var(--pink);}
   .trust-avatar{
     width:44px;height:44px;border-radius:50%;flex-shrink:0;
-    display:flex;align-items:center;justify-content:center;
-    font-family:var(--font-display);font-weight:700;font-size:.95rem;color:#0a0710;
+    object-fit:cover;border:1px solid var(--line);
   }
-  .trust-avatar.pink{background:linear-gradient(135deg,var(--pink),#ff9ecf);}
-  .trust-avatar.lime{background:linear-gradient(135deg,var(--lime),#a8e600);}
-  .trust-avatar.violet{background:linear-gradient(135deg,var(--violet),#c9a6ff);}
   .trust-body a.trust-name{color:var(--ink);text-decoration:none;font-weight:700;font-size:.98rem;}
   .trust-body a.trust-name:hover{color:var(--lime);}
   .trust-handle{display:block;font-family:var(--font-mono);font-size:.74rem;color:var(--ink-faint);margin:2px 0 8px;}
   .trust-quote{color:var(--ink-soft);font-size:.88rem;margin:0;}
 
-  /* DepthCarousel — vanilla port do componente React Bits (reactbits.dev).
-     Mesmo comportamento e marcação, reescrito sem React porque este é um
-     site estático sem build. GSAP anima a posição quando disponível, com
-     fallback via requestAnimationFrame se o CDN for bloqueado. */
-  .depth-carousel-wrap{height:460px;position:relative;margin-top:40px;}
-  @media (max-width:820px){ .depth-carousel-wrap{height:380px;} }
-  @media (max-width:520px){ .depth-carousel-wrap{height:320px;} }
-  .depth-carousel{
-    position:relative;width:100%;height:100%;min-height:260px;
-    display:flex;align-items:center;justify-content:center;
-    perspective:var(--dc-perspective,1400px);perspective-origin:50% 50%;
-    touch-action:pan-y;outline:none;user-select:none;-webkit-user-select:none;cursor:grab;
-  }
-  .depth-carousel:active{cursor:grabbing;}
-  .depth-carousel:focus-visible{outline:2px solid rgba(255,255,255,.35);outline-offset:6px;border-radius:var(--radius);}
-  .depth-carousel__stage{position:absolute;inset:0;transform-style:preserve-3d;}
-  .depth-carousel__card{
-    position:absolute;top:50%;left:50%;transform-origin:center center;
+  /* MorphSlider — vanilla port do componente React Bits (reactbits.dev).
+     O engine (WebGL/ogl) já era vanilla no original; só o wrapper React
+     foi reescrito em JS puro, sem build. ogl é carregado via import()
+     dinâmico do CDN, igual ao site do pack (mesma versão). Sem
+     indicadores em bolinha (inviável com 23 fotos) — troca por um
+     contador "X / 23", igual ao padrão já usado no DepthCarousel. */
+  .morph-slider-wrap{height:460px;margin-top:40px;}
+  @media (max-width:820px){ .morph-slider-wrap{height:380px;} }
+  @media (max-width:520px){ .morph-slider-wrap{height:320px;} }
+  .morph-slider{
+    position:relative;width:100%;height:100%;border-radius:var(--radius);
     overflow:hidden;background:var(--bg-card);border:1px solid var(--line);
-    box-shadow:0 30px 60px -20px rgba(0,0,0,.65), 0 8px 20px -10px rgba(0,0,0,.5);
-    will-change:transform,opacity,filter;cursor:pointer;transform:translate(-50%,-50%);
+    user-select:none;touch-action:pan-y;outline:none;
   }
-  .depth-carousel__img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none;}
-  .depth-carousel__tint{position:absolute;inset:0;opacity:0;pointer-events:none;mix-blend-mode:multiply;}
-  .depth-carousel__arrow{
-    position:absolute;top:50%;transform:translateY(-50%);z-index:3000;
-    width:42px;height:42px;display:grid;place-items:center;
-    border:1px solid var(--line);border-radius:999px;
-    background:rgba(18,11,28,.65);backdrop-filter:blur(8px);color:var(--ink);cursor:pointer;
+  .morph-slider-stage{position:absolute;inset:0;cursor:grab;outline:none;}
+  .morph-slider-stage:active{cursor:grabbing;}
+  .morph-slider-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .morph-slider-canvas{display:block;width:100%;height:100%;position:relative;z-index:1;}
+  .morph-slider-controls{
+    position:absolute;top:50%;left:0;right:0;z-index:3;
+    display:flex;justify-content:space-between;padding:0 8px;
+    transform:translateY(-50%);pointer-events:none;
+  }
+  .morph-slider-btn{
+    pointer-events:auto;display:grid;place-items:center;width:42px;height:42px;
+    border:1px solid var(--line);border-radius:999px;color:var(--ink);
+    background:rgba(18,11,28,.65);backdrop-filter:blur(8px);cursor:pointer;
     transition:background .2s ease, border-color .2s ease, transform .2s ease;
   }
-  .depth-carousel__arrow:hover{background:rgba(28,20,42,.9);border-color:var(--violet);}
-  .depth-carousel__arrow:active{transform:translateY(-50%) scale(.94);}
-  .depth-carousel__arrow--prev{left:8px;}
-  .depth-carousel__arrow--next{right:8px;}
-  @media (max-width:520px){
-    .depth-carousel__arrow{width:36px;height:36px;}
-    .depth-carousel__arrow--prev{left:2px;}
-    .depth-carousel__arrow--next{right:2px;}
-  }
-  .depth-carousel__counter{
-    position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:3000;
+  .morph-slider-btn:hover{background:rgba(28,20,42,.9);border-color:var(--violet);}
+  .morph-slider-btn:active{transform:scale(.94);}
+  @media (max-width:520px){ .morph-slider-btn{width:36px;height:36px;} }
+  .morph-slider-counter{
+    position:absolute;bottom:14px;left:50%;transform:translateX(-50%);z-index:3;
     font-family:var(--font-mono);font-size:.76rem;letter-spacing:.06em;color:var(--ink-faint);
     background:rgba(14,9,22,.55);backdrop-filter:blur(6px);border:1px solid var(--line);
     padding:5px 12px;border-radius:999px;
   }
-  .depth-carousel__counter .dc-current{color:var(--lime);font-weight:700;}
-  @media (prefers-reduced-motion: reduce){
-    .depth-carousel__card{will-change:auto;}
-    .depth-carousel__arrow{transition:none;}
-  }
+  .morph-slider-counter .ms-current{color:var(--lime);font-weight:700;}
+  @media (prefers-reduced-motion: reduce){ .morph-slider-btn{transition:none;} }
 
   .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .card{
@@ -483,13 +485,16 @@
 
   <section id="sobre">
     <div class="wrap about">
-      <div class="about-photo reveal">
-        <img src="../assets/joel-foto-ilustracao.webp" alt="Joel Pinheiro (@joelcoveero)" loading="lazy" decoding="async">
+      <div class="about-photo reveal" id="joel-tilt">
+        <div class="tilted-card-inner">
+          <img src="../assets/joel-foto-ilustracao.webp" alt="Joel Pinheiro (@joelcoveero)" loading="lazy" decoding="async">
+        </div>
+        <div class="tilted-card-caption" aria-hidden="true">@joelcoveero</div>
       </div>
       <div class="reveal">
         <div class="eyebrow" data-i18n="sobre_eyebrow">Do papel à passarela</div>
         <h2>Joel Pinheiro (@joelcoveero)</h2>
-        <p data-i18n-html="sobre_p1">Joel é estilista e ilustrador de moda, de Fortaleza. <strong>O traço dele já deu forma a conceitos para ícones da cultura pop e marcas de vanguarda</strong> — repertório de quem entende o tempo e a exigência do mercado de luxo e do entretenimento.</p>
+        <p data-i18n-html="sobre_p1">Joel é estilista, formado em Design de Moda e especialista em ilustração de moda, de Fortaleza - CE 🇧🇷. <strong>O traço dele já deu forma a conceitos para ícones da cultura pop nacionais e internacionais, além de marcas de vanguarda</strong> — repertório de quem entende o tempo e a exigência do mercado de luxo e do entretenimento.</p>
         <p data-i18n="sobre_p2">Não é ilustração genérica de referência. É a tradução de uma ideia — um figurino, um momento de palco, uma campanha — em imagem pronta pra guiar a produção.</p>
         <div class="stats">
           <div class="stat"><b data-i18n="stat_num_followers">6,2 mil+</b><span data-i18n="stat_followers_label">seguidores nas redes sociais</span></div>
@@ -513,7 +518,7 @@
       <p class="section-lead" data-i18n="colab_lead">E foram parar em capa, palco e campanha.</p>
       <div class="trust-grid">
         <div class="trust-card reveal">
-          <div class="trust-avatar pink">L</div>
+          <img class="trust-avatar" src="../assets/trust/ludmilla.webp" alt="Ludmilla" loading="lazy" decoding="async">
           <div class="trust-body">
             <a class="trust-name" href="https://www.instagram.com/ludmilla/" target="_blank" rel="noopener">Ludmilla</a>
             <span class="trust-handle">@ludmilla · Grammy Winner</span>
@@ -521,7 +526,7 @@
           </div>
         </div>
         <div class="trust-card reveal">
-          <div class="trust-avatar violet">K</div>
+          <img class="trust-avatar" src="../assets/trust/katseye.webp" alt="KATSEYE" loading="lazy" decoding="async">
           <div class="trust-body">
             <a class="trust-name" href="https://www.instagram.com/katseyeworld/" target="_blank" rel="noopener">KATSEYE</a>
             <span class="trust-handle">@katseyeworld</span>
@@ -529,7 +534,7 @@
           </div>
         </div>
         <div class="trust-card reveal">
-          <div class="trust-avatar lime">S</div>
+          <img class="trust-avatar" src="../assets/trust/ssjheni.webp" alt="ssjheni" loading="lazy" decoding="async">
           <div class="trust-body">
             <a class="trust-name" href="https://www.instagram.com/ssjheni/" target="_blank" rel="noopener">ssjheni</a>
             <span class="trust-handle">@ssjheni</span>
@@ -546,40 +551,19 @@
       <h2 data-i18n="port_h2">Portfólio</h2>
       <p class="section-lead" data-i18n="port_lead">Uma amostra do nível de acabamento que você pode esperar — peças e bastidores do trabalho pessoal do Joel.</p>
     </div>
-    <div class="depth-carousel-wrap reveal">
-      <div class="depth-carousel" id="portfolio-carousel" role="group" aria-roledescription="carousel" aria-label="Portfólio" tabindex="0">
-        <div class="depth-carousel__stage">
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-01.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-02.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-03.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-04.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-05.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-06.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-07.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-08.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-09.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-10.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-11.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-12.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-13.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-14.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-15.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-16.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-17.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-18.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-19.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-20.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-21.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-22.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
-        <div class="depth-carousel__card"><img class="depth-carousel__img" data-i18n-alt="port_alt" src="../assets/portfolio/port-23.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async"><span class="depth-carousel__tint"></span></div>
+    <div class="morph-slider-wrap reveal">
+      <div class="morph-slider" id="portfolio-morph">
+        <img class="morph-slider-fallback" data-i18n-alt="port_alt" src="../assets/portfolio/port-01.webp" alt="Ilustração de moda do portfólio de Joel Coveero" loading="lazy" decoding="async">
+        <div class="morph-slider-stage" role="group" aria-roledescription="carousel" aria-label="Portfólio" tabindex="0"></div>
+        <div class="morph-slider-controls">
+          <button type="button" class="morph-slider-btn morph-slider-btn--prev" data-i18n-aria="port_prev_aria" aria-label="Anterior">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button type="button" class="morph-slider-btn morph-slider-btn--next" data-i18n-aria="port_next_aria" aria-label="Próximo">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
         </div>
-        <button type="button" class="depth-carousel__arrow depth-carousel__arrow--prev" data-i18n-aria="port_prev_aria" aria-label="Anterior">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <button type="button" class="depth-carousel__arrow depth-carousel__arrow--next" data-i18n-aria="port_next_aria" aria-label="Próximo">
-          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <div class="depth-carousel__counter" aria-hidden="true"><span class="dc-current">01</span> / <span class="dc-total">23</span></div>
+        <div class="morph-slider-counter" aria-hidden="true"><span class="ms-current">01</span> / <span class="ms-total">23</span></div>
       </div>
     </div>
   </section>
@@ -747,261 +731,477 @@
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script>
-  // DepthCarousel — vanilla port of the React Bits component (reactbits.dev).
-  // Same behaviour and markup contract; rewritten without React because this
-  // is a plain static site with no build step. GSAP drives the position
-  // tween when available, with a requestAnimationFrame fallback otherwise.
+  // MorphSlider — vanilla port of the React Bits component (reactbits.dev).
+  // MorphEngine below is already framework-agnostic vanilla JS/WebGL
+  // (unchanged from the source) — only the React wrapper (state, effects,
+  // JSX) was rewritten as plain DOM/event code, since this is a static
+  // site with no build step. ogl loads via a dynamic import from the CDN,
+  // same version already used on the pack site. Falls back to a static
+  // image (controls/counter hidden) if that import fails.
   (function () {
-    var root = document.getElementById("portfolio-carousel");
+    var root = document.getElementById("portfolio-morph");
     if (!root) return;
-    var cards = Array.prototype.slice.call(root.querySelectorAll(".depth-carousel__card"));
-    var overlays = cards.map(function (c) { return c.querySelector(".depth-carousel__tint"); });
-    var count = cards.length;
-    if (!count) return;
+    var stage = root.querySelector(".morph-slider-stage");
+    var fallback = root.querySelector(".morph-slider-fallback");
+    var prevBtn = root.querySelector(".morph-slider-btn--prev");
+    var nextBtn = root.querySelector(".morph-slider-btn--next");
+    var counter = root.querySelector(".morph-slider-counter");
+    var counterCurrent = root.querySelector(".ms-current");
+    var counterTotal = root.querySelector(".ms-total");
+    if (!stage) return;
 
-    var cfg = {
-      cardWidth: 320,
-      cardHeight: 400,
-      depth: 190,
-      spread: 74,
-      tilt: 16,
-      tiltDirection: "right",
-      visibleCards: 4,
-      falloff: 0.22,
-      blur: 6,
-      duration: 650,
-      ease: "power3.out",
-      loop: true,
-      autoplay: true,
-      autoplayDelay: 3800
+    var TOTAL = 23;
+    var items = [];
+    for (var i = 1; i <= TOTAL; i++) {
+      var n = i < 10 ? "0" + i : "" + i;
+      items.push({ image: "../assets/portfolio/port-" + n + ".webp" });
+    }
+    if (counterTotal) counterTotal.textContent = String(TOTAL);
+
+    var OPTS = {
+      transition: "melt",
+      duration: 1.1,
+      ease: "power2.inOut",
+      intensity: 0.55,
+      scale: 2.4,
+      aberration: 0.3,
+      drift: 0.35,
+      overlayColor: "#0a0710",
+      loop: true
     };
+    var AUTOPLAY_DELAY = 4.5;
 
-    var hasGsap = typeof window.gsap !== "undefined";
-    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var TRANSITIONS = { melt: 0, ripple: 1, shear: 2, swirl: 3 };
 
-    var posRef = 0;
-    var focusRef = 0;
-    var scaleRef = 1;
-    var tweenHandle = null;
-    var dragState = null;
-    var wheelTimer = null;
-    var autoTimer = null;
+    var vertexShader = "attribute vec2 position;\nattribute vec2 uv;\nvarying vec2 vUv;\nvoid main() {\n  vUv = uv;\n  gl_Position = vec4(position, 0.0, 1.0);\n}";
 
-    var counterCurrent = root.querySelector(".dc-current");
-    var counterTotal = root.querySelector(".dc-total");
-    if (counterTotal) counterTotal.textContent = count < 10 ? "0" + count : "" + count;
+    var fragmentShader = "precision highp float;\n\n" +
+      "uniform sampler2D tCurrent;\n" +
+      "uniform sampler2D tNext;\n" +
+      "uniform vec2 uResolution;\n" +
+      "uniform vec2 uCurrentSize;\n" +
+      "uniform vec2 uNextSize;\n" +
+      "uniform float uProgress;\n" +
+      "uniform float uDir;\n" +
+      "uniform int uMode;\n" +
+      "uniform float uIntensity;\n" +
+      "uniform float uScale;\n" +
+      "uniform float uAberration;\n" +
+      "uniform float uDrift;\n" +
+      "uniform float uTime;\n" +
+      "uniform float uReduce;\n" +
+      "uniform vec2 uPointer;\n" +
+      "uniform vec3 uOverlay;\n\n" +
+      "varying vec2 vUv;\n\n" +
+      "const float PI = 3.14159265359;\n\n" +
+      "float hash11(float p) {\n  p = fract(p * 0.1031);\n  p *= p + 33.33;\n  p *= p + p;\n  return fract(p);\n}\n\n" +
+      "float hash21(vec2 p) {\n  vec3 p3 = fract(vec3(p.xyx) * 0.1031);\n  p3 += dot(p3, p3.yzx + 33.33);\n  return fract((p3.x + p3.y) * p3.z);\n}\n\n" +
+      "float noise(vec2 p) {\n  vec2 i = floor(p);\n  vec2 f = fract(p);\n  vec2 u = f * f * (3.0 - 2.0 * f);\n  float a = hash21(i);\n  float b = hash21(i + vec2(1.0, 0.0));\n  float c = hash21(i + vec2(0.0, 1.0));\n  float d = hash21(i + vec2(1.0, 1.0));\n  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);\n}\n\n" +
+      "float fbm(vec2 p) {\n  float v = 0.0;\n  float a = 0.5;\n  for (int i = 0; i < 5; i++) {\n    v += a * noise(p);\n    p *= 2.0;\n    a *= 0.5;\n  }\n  return v;\n}\n\n" +
+      "mat2 rot(float a) {\n  float s = sin(a);\n  float c = cos(a);\n  return mat2(c, -s, s, c);\n}\n\n" +
+      "vec2 coverUV(vec2 uv, vec2 res, vec2 img) {\n" +
+      "  float rA = res.x / max(res.y, 1.0);\n" +
+      "  float iA = img.x / max(img.y, 1.0);\n" +
+      "  vec2 s = vec2(1.0);\n" +
+      "  float ratio = rA / max(iA, 0.0001);\n" +
+      "  if (ratio > 1.0) {\n    s.y = 1.0 / ratio;\n  } else {\n    s.x = ratio;\n  }\n" +
+      "  return (uv - 0.5) * s + 0.5;\n}\n\n" +
+      "void main() {\n" +
+      "  float p = clamp(uProgress, 0.0, 1.0);\n" +
+      "  float env = sin(p * PI);\n\n" +
+      "  vec2 uv = vUv;\n\n" +
+      "  uv += vec2(sin(uTime * 0.25 + uv.y * 4.0), cos(uTime * 0.22 + uv.x * 4.0)) * uDrift * 0.008;\n" +
+      "  uv = (uv - 0.5) * (1.0 - uDrift * 0.02 * sin(uTime * 0.4)) + 0.5;\n\n" +
+      "  vec2 uvC = uv;\n  vec2 uvN = uv;\n  float m = smoothstep(0.0, 1.0, p);\n\n" +
+      "  if (uReduce < 0.5) {\n" +
+      "    if (uMode == 3) {\n" +
+      "      vec2 c = uv - 0.5;\n      float r = length(c);\n      float ang = env * uIntensity * 3.5 * (1.0 - r);\n" +
+      "      uvC = rot(ang) * c + 0.5;\n      uvN = rot(-ang) * c + 0.5;\n      m = smoothstep(0.0, 1.0, p);\n" +
+      "    } else if (uMode == 1) {\n" +
+      "      float d = distance(uv, uPointer);\n      float ring = p * 1.6;\n      float wave = sin((d - ring) * 30.0) * env;\n" +
+      "      vec2 dir = normalize(uv - uPointer + 1e-4);\n      vec2 disp = dir * wave * uIntensity * 0.25;\n" +
+      "      uvC = uv + disp;\n      uvN = uv + disp * 0.6;\n      m = 1.0 - smoothstep(ring - 0.03, ring + 0.03, d);\n" +
+      "    } else if (uMode == 2) {\n" +
+      "      float slices = 14.0;\n      float row = floor(uv.y * slices);\n      float rnd = hash11(row);\n" +
+      "      vec2 disp = vec2((rnd - 0.5) * env * uIntensity * 0.6, 0.0);\n      uvC = uv + disp;\n      uvN = uv + disp;\n" +
+      "      float localX = uDir > 0.0 ? uv.x : 1.0 - uv.x;\n      float th = p * 1.5 - 0.25 + (rnd - 0.5) * 0.25;\n" +
+      "      m = 1.0 - smoothstep(th - 0.06, th + 0.06, localX);\n" +
+      "    } else {\n" +
+      "      float nn = fbm(uv * uScale + uTime * 0.03);\n      float warp = fbm(uv * uScale * 1.7 - uTime * 0.02);\n" +
+      "      vec2 g = vec2(nn, warp) - 0.5;\n      uvC = uv + g * uIntensity * 0.5 * p;\n      uvN = uv - g * uIntensity * 0.5 * (1.0 - p);\n" +
+      "      m = smoothstep(nn - 0.15, nn + 0.15, p);\n" +
+      "    }\n  }\n\n" +
+      "  vec2 sC = coverUV(uvC, uResolution, uCurrentSize);\n  vec2 sN = coverUV(uvN, uResolution, uNextSize);\n\n" +
+      "  float ca = uReduce < 0.5 ? uAberration * env * 0.03 : 0.0;\n\n" +
+      "  vec3 colC = vec3(\n    texture2D(tCurrent, sC + vec2(ca, 0.0)).r,\n    texture2D(tCurrent, sC).g,\n    texture2D(tCurrent, sC - vec2(ca, 0.0)).b\n  );\n" +
+      "  vec3 colN = vec3(\n    texture2D(tNext, sN + vec2(ca, 0.0)).r,\n    texture2D(tNext, sN).g,\n    texture2D(tNext, sN - vec2(ca, 0.0)).b\n  );\n\n" +
+      "  vec3 col = mix(colC, colN, m);\n\n" +
+      "  float vig = smoothstep(1.25, 0.25, length(uv - 0.5));\n  col = mix(col, uOverlay, (1.0 - vig) * 0.28);\n\n" +
+      "  gl_FragColor = vec4(col, 1.0);\n}";
 
-    cards.forEach(function (c) {
-      c.style.width = cfg.cardWidth + "px";
-      c.style.height = cfg.cardHeight + "px";
-      c.style.borderRadius = "var(--radius)";
-    });
-
-    function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
-
-    function killTween() {
-      if (tweenHandle == null) return;
-      if (typeof tweenHandle === "number") cancelAnimationFrame(tweenHandle);
-      else if (tweenHandle.kill) tweenHandle.kill();
-      tweenHandle = null;
+    function hexToRgb(hex) {
+      var h = (hex || "#000000").replace("#", "");
+      if (h.length === 3) h = h.split("").map(function (c) { return c + c; }).join("");
+      var num = parseInt(h, 16);
+      return [((num >> 16) & 255) / 255, ((num >> 8) & 255) / 255, (num & 255) / 255];
     }
 
-    function layout(pos) {
-      var dir = cfg.tiltDirection === "left" ? -1 : 1;
-      var sc = scaleRef;
-      for (var i = 0; i < count; i++) {
-        var el = cards[i];
-        var d = i - pos;
-        if (cfg.loop && count > 1) {
-          d = ((d % count) + count) % count;
-          if (d > count / 2) d -= count;
-        }
-        var back = Math.max(0, d);
-        var az = Math.abs(d);
-        var shown = az <= cfg.visibleCards + 0.5;
-
-        var tz = -cfg.depth * d;
-        var tx = dir * cfg.spread * d;
-        var ry = dir * cfg.tilt * clamp(d, 0, 1);
-
-        var opacity = d < 0 ? Math.max(0, 1 + d) : 1;
-        if (!shown) opacity = 0;
-
-        var brightness = Math.max(0.15, 1 - back * cfg.falloff);
-        var blurPx = cfg.blur > 0 ? Math.min(cfg.blur, (back / Math.max(1, cfg.visibleCards)) * cfg.blur) : 0;
-        var zi = Math.round(2000 - d * 20);
-
-        el.style.transform = "translate(-50%, -50%) scale(" + sc + ") translateX(" + tx.toFixed(2) + "px) translateZ(" + tz.toFixed(2) + "px) rotateY(" + ry.toFixed(3) + "deg)";
-        el.style.opacity = opacity.toFixed(3);
-        el.style.filter = "brightness(" + brightness.toFixed(3) + ") blur(" + blurPx.toFixed(2) + "px)";
-        el.style.zIndex = String(zi);
-        el.style.pointerEvents = shown && opacity > 0.05 ? "auto" : "none";
-
-        var ov = overlays[i];
-        if (ov) ov.style.opacity = clamp(back * cfg.falloff * 1.25, 0, 0.86).toFixed(3);
-      }
-    }
-
-    function notify(idx) {
-      cards.forEach(function (c, i) { c.setAttribute("aria-hidden", i === idx ? "false" : "true"); });
-      if (counterCurrent) counterCurrent.textContent = idx + 1 < 10 ? "0" + (idx + 1) : "" + (idx + 1);
-    }
-
-    function tweenTo(target, animate) {
-      killTween();
-      var dur = animate && !reduced ? cfg.duration / 1000 : 0;
-
-      if (dur <= 0) {
-        posRef = ((target % count) + count) % count;
-        layout(posRef);
+    (async function () {
+      var ogl;
+      try {
+        ogl = await import("https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm");
+      } catch (err) {
+        if (prevBtn) prevBtn.style.display = "none";
+        if (nextBtn) nextBtn.style.display = "none";
+        if (counter) counter.style.display = "none";
         return;
       }
+      var Renderer = ogl.Renderer, Triangle = ogl.Triangle, Program = ogl.Program, Mesh = ogl.Mesh, Texture = ogl.Texture;
 
-      if (hasGsap) {
-        var proxy = { p: posRef };
-        tweenHandle = window.gsap.to(proxy, {
-          p: target,
-          duration: dur,
-          ease: cfg.ease,
-          onUpdate: function () { posRef = proxy.p; layout(posRef); },
-          onComplete: function () {
-            posRef = ((posRef % count) + count) % count;
-            layout(posRef);
+      function makeFallbackTexture(gl) {
+        var size = 4;
+        var data = new Uint8Array(size * size * 4);
+        for (var j = 0; j < size * size; j++) {
+          data[j * 4] = 24; data[j * 4 + 1] = 24; data[j * 4 + 2] = 28; data[j * 4 + 3] = 255;
+        }
+        return new Texture(gl, { image: data, width: size, height: size, generateMipmaps: false });
+      }
+
+      function MorphEngine(container, opts) {
+        var self = this;
+        this.container = container;
+        this.items = opts.items;
+        this.getOptions = opts.getOptions;
+        this.onIndexChange = opts.onIndexChange;
+        this.reducedMotion = opts.reducedMotion;
+
+        this.current = opts.startIndex || 0;
+        this.animating = false;
+        this.dragging = false;
+        this.dragDir = 0;
+        this.shownIndex = this.current;
+        this.tween = null;
+
+        this.renderer = new Renderer({ alpha: false, antialias: true, dpr: Math.min(window.devicePixelRatio || 1, opts.dprCap) });
+        this.gl = this.renderer.gl;
+        this.gl.clearColor(0.05, 0.05, 0.06, 1);
+
+        this.canvas = this.gl.canvas;
+        this.canvas.className = "morph-slider-canvas";
+        container.appendChild(this.canvas);
+
+        this.geometry = new Triangle(this.gl);
+        this.textures = this.items.map(function () { return makeFallbackTexture(self.gl); });
+        this.sizes = this.items.map(function () { return [1, 1]; });
+
+        var o = this.getOptions();
+        this.program = new Program(this.gl, {
+          vertex: vertexShader,
+          fragment: fragmentShader,
+          uniforms: {
+            tCurrent: { value: this.textures[this.current] },
+            tNext: { value: this.textures[this.current] },
+            uResolution: { value: [1, 1] },
+            uCurrentSize: { value: this.sizes[this.current] },
+            uNextSize: { value: this.sizes[this.current] },
+            uProgress: { value: 0 },
+            uDir: { value: 1 },
+            uMode: { value: TRANSITIONS[o.transition] || 0 },
+            uIntensity: { value: o.intensity },
+            uScale: { value: o.scale },
+            uAberration: { value: o.aberration },
+            uDrift: { value: o.drift },
+            uTime: { value: 0 },
+            uReduce: { value: this.reducedMotion ? 1 : 0 },
+            uPointer: { value: [0.5, 0.5] },
+            uOverlay: { value: hexToRgb(o.overlayColor) }
           }
         });
-      } else {
-        var start = posRef;
-        var startTime = null;
-        var durationMs = dur * 1000;
-        var step = function (ts) {
-          if (startTime === null) startTime = ts;
-          var t = Math.min(1, (ts - startTime) / durationMs);
-          var eased = 1 - Math.pow(1 - t, 3);
-          posRef = start + (target - start) * eased;
-          layout(posRef);
-          if (t < 1) {
-            tweenHandle = requestAnimationFrame(step);
-          } else {
-            posRef = ((posRef % count) + count) % count;
-            layout(posRef);
-          }
-        };
-        tweenHandle = requestAnimationFrame(step);
+
+        this.mesh = new Mesh(this.gl, { geometry: this.geometry, program: this.program });
+
+        this.boundContextLost = this.onContextLost.bind(this);
+        this.canvas.addEventListener("webglcontextlost", this.boundContextLost, false);
+
+        this.resizeObserver = new ResizeObserver(function () { self.resize(); });
+        this.resizeObserver.observe(container);
+        this.resize();
+
+        this.loadTextures();
+
+        this.boundLoop = this.loop.bind(this);
+        this.raf = requestAnimationFrame(this.boundLoop);
       }
-    }
 
-    function setFocus(rawIndex, animate) {
-      if (!count) return;
-      var idx = cfg.loop ? (((rawIndex % count) + count) % count) : clamp(rawIndex, 0, count - 1);
-      var delta = idx - posRef;
-      if (cfg.loop && count > 1) {
-        delta = ((delta % count) + count) % count;
-        if (delta > count / 2) delta -= count;
-      }
-      tweenTo(posRef + delta, animate !== false);
-      if (idx !== focusRef) {
-        focusRef = idx;
-        notify(idx);
-      }
-    }
-
-    function navigateBy(step) { setFocus(focusRef + step, true); }
-
-    if ("ResizeObserver" in window) {
-      var ro = new ResizeObserver(function (entries) {
-        var w = entries[0].contentRect.width;
-        var needed = cfg.cardWidth + Math.abs(cfg.spread) * 2 + 120;
-        scaleRef = clamp(w / needed, 0.4, 1);
-        layout(posRef);
-      });
-      ro.observe(root);
-    }
-
-    root.addEventListener("wheel", function (e) {
-      if (count < 2) return;
-      e.preventDefault();
-      killTween();
-      var raw = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      var delta = e.deltaMode === 1 ? raw * 24 : raw;
-      var step = clamp(delta / (cfg.cardWidth * 0.9), -0.6, 0.6);
-      posRef += step;
-      layout(posRef);
-      if (wheelTimer) clearTimeout(wheelTimer);
-      wheelTimer = setTimeout(function () { setFocus(Math.round(posRef), true); }, 130);
-    }, { passive: false });
-
-    root.addEventListener("pointerdown", function (e) {
-      if (count < 2) return;
-      killTween();
-      dragState = { x: e.clientX, startPos: posRef, lastX: e.clientX, lastT: performance.now(), v: 0, moved: false, id: e.pointerId };
-    });
-    root.addEventListener("pointermove", function (e) {
-      var drag = dragState;
-      if (!drag) return;
-      var stepPx = Math.max(cfg.cardWidth * 0.55 * scaleRef, 40);
-      var dx = e.clientX - drag.x;
-      if (!drag.moved && Math.abs(dx) > 4) {
-        drag.moved = true;
-        try { root.setPointerCapture(drag.id); } catch (err) {}
-      }
-      if (!drag.moved) return;
-      var now = performance.now();
-      var dt = Math.max(now - drag.lastT, 1);
-      drag.v = (e.clientX - drag.lastX) / dt;
-      drag.lastX = e.clientX;
-      drag.lastT = now;
-      posRef = drag.startPos - dx / stepPx;
-      layout(posRef);
-    });
-    function onPointerEnd() {
-      var drag = dragState;
-      if (!drag) return;
-      dragState = null;
-      if (!drag.moved) return;
-      var stepPx = Math.max(cfg.cardWidth * 0.55 * scaleRef, 40);
-      var projected = posRef - (drag.v * 180) / stepPx;
-      setFocus(Math.round(projected), true);
-    }
-    root.addEventListener("pointerup", onPointerEnd);
-    root.addEventListener("pointercancel", onPointerEnd);
-
-    root.addEventListener("keydown", function (e) {
-      if (e.key === "ArrowLeft") { e.preventDefault(); navigateBy(-1); }
-      else if (e.key === "ArrowRight") { e.preventDefault(); navigateBy(1); }
-    });
-
-    cards.forEach(function (card, i) {
-      card.setAttribute("aria-roledescription", "slide");
-      card.setAttribute("aria-label", (i + 1) + "/" + count);
-      card.addEventListener("click", function () {
-        if (dragState && dragState.moved) return;
-        setFocus(i, true);
-      });
-    });
-
-    var prevBtn = root.querySelector(".depth-carousel__arrow--prev");
-    var nextBtn = root.querySelector(".depth-carousel__arrow--next");
-    if (prevBtn) prevBtn.addEventListener("click", function () { navigateBy(-1); });
-    if (nextBtn) nextBtn.addEventListener("click", function () { navigateBy(1); });
-
-    if (cfg.autoplay && !reduced && count > 1) {
-      var hovered = false, focused = false;
-      var stopAuto = function () { if (autoTimer) clearInterval(autoTimer); autoTimer = null; };
-      var startAuto = function () {
-        stopAuto();
-        autoTimer = window.setInterval(function () {
-          if (!hovered && !focused) navigateBy(1);
-        }, Math.max(cfg.autoplayDelay, 600));
+      MorphEngine.prototype.loadTextures = function () {
+        var self = this;
+        this.items.forEach(function (item, index) {
+          var img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = item.image;
+          img.onload = function () {
+            var texture = new Texture(self.gl, { generateMipmaps: false });
+            texture.image = img;
+            self.textures[index] = texture;
+            self.sizes[index] = [img.naturalWidth || 1, img.naturalHeight || 1];
+            if (index === self.current) {
+              self.program.uniforms.tCurrent.value = texture;
+              self.program.uniforms.uCurrentSize.value = self.sizes[index];
+            }
+          };
+          img.onerror = function () {};
+        });
       };
-      root.addEventListener("mouseenter", function () { hovered = true; });
-      root.addEventListener("mouseleave", function () { hovered = false; });
-      root.addEventListener("focusin", function () { focused = true; });
-      root.addEventListener("focusout", function () { focused = false; });
-      startAuto();
-    }
 
-    notify(0);
-    layout(posRef);
+      MorphEngine.prototype.resize = function () {
+        var rect = this.container.getBoundingClientRect();
+        var w = Math.max(rect.width, 1);
+        var h = Math.max(rect.height, 1);
+        this.renderer.setSize(w, h);
+        this.program.uniforms.uResolution.value = [this.gl.canvas.width, this.gl.canvas.height];
+      };
+
+      MorphEngine.prototype.syncOptions = function () {
+        var o = this.getOptions();
+        this.program.uniforms.uMode.value = TRANSITIONS[o.transition] || 0;
+        this.program.uniforms.uIntensity.value = o.intensity;
+        this.program.uniforms.uScale.value = o.scale;
+        this.program.uniforms.uAberration.value = o.aberration;
+        this.program.uniforms.uDrift.value = o.drift;
+        this.program.uniforms.uOverlay.value = hexToRgb(o.overlayColor);
+      };
+
+      MorphEngine.prototype.loop = function (t) {
+        this.program.uniforms.uTime.value = t * 0.001;
+        if (!this.dragging && !this.animating) this.syncOptions();
+        this.renderer.render({ scene: this.mesh });
+        this.raf = requestAnimationFrame(this.boundLoop);
+      };
+
+      MorphEngine.prototype.wrap = function (i) {
+        var n = this.items.length;
+        return ((i % n) + n) % n;
+      };
+
+      MorphEngine.prototype.prepareNext = function (dir) {
+        var target = this.wrap(this.current + dir);
+        this.program.uniforms.tCurrent.value = this.textures[this.current];
+        this.program.uniforms.uCurrentSize.value = this.sizes[this.current];
+        this.program.uniforms.tNext.value = this.textures[target];
+        this.program.uniforms.uNextSize.value = this.sizes[target];
+        this.program.uniforms.uDir.value = dir;
+        return target;
+      };
+
+      MorphEngine.prototype.goTo = function (dir) {
+        var self = this;
+        if (this.animating || this.dragging || this.items.length < 2) return;
+        var o = this.getOptions();
+        if (!o.loop) {
+          var raw = this.current + dir;
+          if (raw < 0 || raw > this.items.length - 1) return;
+        }
+        this.syncOptions();
+        var target = this.prepareNext(dir);
+        this.animating = true;
+        this.announce(target);
+        var duration = this.reducedMotion ? Math.min(o.duration, 0.4) : o.duration;
+        this.tween = window.gsap.fromTo(
+          this.program.uniforms.uProgress,
+          { value: 0 },
+          { value: 1, duration: duration, ease: o.ease, onComplete: function () { self.commit(target); } }
+        );
+      };
+
+      MorphEngine.prototype.announce = function (index) {
+        if (index === this.shownIndex) return;
+        this.shownIndex = index;
+        if (this.onIndexChange) this.onIndexChange(index);
+      };
+
+      MorphEngine.prototype.commit = function (target) {
+        this.current = target;
+        this.program.uniforms.tCurrent.value = this.textures[target];
+        this.program.uniforms.uCurrentSize.value = this.sizes[target];
+        this.program.uniforms.uProgress.value = 0;
+        this.animating = false;
+        this.tween = null;
+        this.announce(target);
+      };
+
+      MorphEngine.prototype.next = function () { this.goTo(1); };
+      MorphEngine.prototype.prev = function () { this.goTo(-1); };
+
+      MorphEngine.prototype.setPointer = function (x, y) {
+        this.program.uniforms.uPointer.value = [x, y];
+      };
+
+      MorphEngine.prototype.beginDrag = function () {
+        if (this.animating || this.items.length < 2) return false;
+        this.dragging = true;
+        this.dragDir = 0;
+        this.syncOptions();
+        return true;
+      };
+
+      MorphEngine.prototype.drag = function (ndx) {
+        if (!this.dragging) return;
+        var o = this.getOptions();
+        var dir = ndx < 0 ? 1 : -1;
+        if (!o.loop) {
+          var raw = this.current + dir;
+          if (raw < 0 || raw > this.items.length - 1) {
+            this.program.uniforms.uProgress.value = 0;
+            return;
+          }
+        }
+        if (dir !== this.dragDir) {
+          this.dragDir = dir;
+          this.prepareNext(dir);
+        }
+        var progress = Math.min(Math.abs(ndx), 1);
+        this.program.uniforms.uProgress.value = progress;
+        this.announce(progress > 0.5 ? this.wrap(this.current + dir) : this.current);
+      };
+
+      MorphEngine.prototype.endDrag = function () {
+        var self = this;
+        if (!this.dragging) return;
+        this.dragging = false;
+        var p = this.program.uniforms.uProgress.value;
+        if (this.dragDir === 0) return;
+        var target = this.wrap(this.current + this.dragDir);
+        var duration = this.reducedMotion ? 0.3 : 0.5;
+        this.animating = true;
+        if (p > 0.4) {
+          this.announce(target);
+          this.tween = window.gsap.to(this.program.uniforms.uProgress, {
+            value: 1, duration: duration, ease: "power2.out", onComplete: function () { self.commit(target); }
+          });
+        } else {
+          this.announce(this.current);
+          this.tween = window.gsap.to(this.program.uniforms.uProgress, {
+            value: 0, duration: duration, ease: "power2.out",
+            onComplete: function () { self.animating = false; self.tween = null; }
+          });
+        }
+      };
+
+      MorphEngine.prototype.onContextLost = function (e) {
+        e.preventDefault();
+        cancelAnimationFrame(this.raf);
+      };
+
+      var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var engine = new MorphEngine(stage, {
+        items: items,
+        startIndex: 0,
+        reducedMotion: reducedMotion,
+        dprCap: 2,
+        getOptions: function () { return OPTS; },
+        onIndexChange: function (idx) {
+          if (counterCurrent) counterCurrent.textContent = idx + 1 < 10 ? "0" + (idx + 1) : "" + (idx + 1);
+          scheduleAutoplay();
+        }
+      });
+
+      if (fallback) fallback.style.display = "none";
+
+      function handleNext() { engine.next(); }
+      function handlePrev() { engine.prev(); }
+      if (prevBtn) prevBtn.addEventListener("click", handlePrev);
+      if (nextBtn) nextBtn.addEventListener("click", handleNext);
+
+      stage.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") { e.preventDefault(); handleNext(); }
+        else if (e.key === "ArrowLeft") { e.preventDefault(); handlePrev(); }
+      });
+
+      var hovered = false;
+      var autoTimer = null;
+      function scheduleAutoplay() {
+        if (autoTimer) clearTimeout(autoTimer);
+        if (hovered || reducedMotion) return;
+        autoTimer = setTimeout(function () { engine.next(); }, Math.max(AUTOPLAY_DELAY, 1) * 1000);
+      }
+      root.addEventListener("mouseenter", function () { hovered = true; if (autoTimer) clearTimeout(autoTimer); });
+      root.addEventListener("mouseleave", function () { hovered = false; scheduleAutoplay(); });
+      scheduleAutoplay();
+
+      var startX = 0, dragWidth = 1, active = false;
+      stage.addEventListener("pointerdown", function (e) {
+        var rect = stage.getBoundingClientRect();
+        dragWidth = rect.width || 1;
+        startX = e.clientX;
+        var px = (e.clientX - rect.left) / rect.width;
+        var py = (e.clientY - rect.top) / rect.height;
+        engine.setPointer(px, 1 - py);
+        active = engine.beginDrag();
+        if (active) { try { stage.setPointerCapture(e.pointerId); } catch (err) {} }
+      });
+      stage.addEventListener("pointermove", function (e) {
+        if (!active) return;
+        engine.drag((e.clientX - startX) / dragWidth);
+      });
+      function onDragEnd() {
+        if (!active) return;
+        active = false;
+        engine.endDrag();
+      }
+      stage.addEventListener("pointerup", onDragEnd);
+      stage.addEventListener("pointercancel", onDragEnd);
+    })();
+  })();
+</script>
+
+<script>
+  // TiltedCard — vanilla port of the React Bits component (reactbits.dev).
+  // Same behaviour, rewritten without React/Motion because this is a plain
+  // static site with no build step. Uses gsap.quickTo (GSAP already loaded
+  // for the DepthCarousel) for the spring-like smoothing; skips the tilt
+  // entirely on touch/coarse-pointer devices instead of showing a warning.
+  (function () {
+    var figure = document.getElementById("joel-tilt");
+    if (!figure) return;
+    var inner = figure.querySelector(".tilted-card-inner");
+    var caption = figure.querySelector(".tilted-card-caption");
+    if (!inner) return;
+
+    var isTouch = window.matchMedia && window.matchMedia("(hover: none), (pointer: coarse)").matches;
+    if (isTouch) return;
+
+    var hasGsap = typeof window.gsap !== "undefined";
+    if (!hasGsap) return;
+
+    var ROTATE_AMPLITUDE = 12;
+    var SCALE_ON_HOVER = 1.06;
+
+    var setRX = window.gsap.quickTo(inner, "rotateX", { duration: 0.5, ease: "power3.out" });
+    var setRY = window.gsap.quickTo(inner, "rotateY", { duration: 0.5, ease: "power3.out" });
+    var setScale = window.gsap.quickTo(inner, "scale", { duration: 0.5, ease: "power3.out" });
+    var setCX = caption && window.gsap.quickTo(caption, "x", { duration: 0.22, ease: "power3.out" });
+    var setCY = caption && window.gsap.quickTo(caption, "y", { duration: 0.22, ease: "power3.out" });
+    var setCOpacity = caption && window.gsap.quickTo(caption, "opacity", { duration: 0.3 });
+
+    figure.addEventListener("mousemove", function (e) {
+      var rect = figure.getBoundingClientRect();
+      var offsetX = e.clientX - rect.left - rect.width / 2;
+      var offsetY = e.clientY - rect.top - rect.height / 2;
+      setRX((offsetY / (rect.height / 2)) * -ROTATE_AMPLITUDE);
+      setRY((offsetX / (rect.width / 2)) * ROTATE_AMPLITUDE);
+      if (setCX) setCX(e.clientX - rect.left);
+      if (setCY) setCY(e.clientY - rect.top);
+    });
+    figure.addEventListener("mouseenter", function () {
+      setScale(SCALE_ON_HOVER);
+      if (setCOpacity) setCOpacity(1);
+    });
+    figure.addEventListener("mouseleave", function () {
+      setScale(1);
+      setRX(0);
+      setRY(0);
+      if (setCOpacity) setCOpacity(0);
+    });
   })();
 </script>
 
@@ -1035,7 +1235,7 @@
         stat_num_followers: "6,2 mil+",
         carousel_alt: "Croqui de Joel Coveero ao lado da peça já executada",
         sobre_eyebrow: "Do papel à passarela",
-        sobre_p1: 'Joel é estilista e ilustrador de moda, de Fortaleza. <strong>O traço dele já deu forma a conceitos para ícones da cultura pop e marcas de vanguarda</strong> — repertório de quem entende o tempo e a exigência do mercado de luxo e do entretenimento.',
+        sobre_p1: 'Joel é estilista, formado em Design de Moda e especialista em ilustração de moda, de Fortaleza - CE 🇧🇷. <strong>O traço dele já deu forma a conceitos para ícones da cultura pop nacionais e internacionais, além de marcas de vanguarda</strong> — repertório de quem entende o tempo e a exigência do mercado de luxo e do entretenimento.',
         sobre_p2: "Não é ilustração genérica de referência. É a tradução de uma ideia — um figurino, um momento de palco, uma campanha — em imagem pronta pra guiar a produção.",
         stat_followers_label: "seguidores nas redes sociais",
         audience_eyebrow: "Atendo",
@@ -1097,7 +1297,7 @@
         stat_num_followers: "6.2K+",
         carousel_alt: "Croqui by Joel Coveero next to the finished garment",
         sobre_eyebrow: "From paper to runway",
-        sobre_p1: 'Joel is a fashion stylist and illustrator from Fortaleza, Brazil. <strong>His line work has already shaped concepts for pop culture icons and forward-thinking brands</strong> — the range of someone who understands the pace and the demands of the luxury and entertainment markets.',
+        sobre_p1: 'Joel is a fashion stylist, trained in Fashion Design and specialized in fashion illustration, from Fortaleza, Brazil 🇧🇷. <strong>His line work has already shaped concepts for national and international pop culture icons, as well as forward-thinking brands</strong> — the range of someone who understands the pace and the demands of the luxury and entertainment markets.',
         sobre_p2: "This isn't generic reference art. It's the translation of an idea — an outfit, a stage moment, a campaign — into an image ready to guide production.",
         stat_followers_label: "followers across social media",
         audience_eyebrow: "I work with",
@@ -1159,7 +1359,7 @@
         stat_num_followers: "6,2 mil+",
         carousel_alt: "Croqui de Joel Coveero junto a la prenda ya confeccionada",
         sobre_eyebrow: "Del papel a la pasarela",
-        sobre_p1: 'Joel es estilista e ilustrador de moda, de Fortaleza, Brasil. <strong>Su trazo ya le dio forma a conceptos para íconos de la cultura pop y marcas de vanguardia</strong> — el repertorio de quien entiende el ritmo y la exigencia del mercado de lujo y del entretenimiento.',
+        sobre_p1: 'Joel es estilista, formado en Diseño de Moda y especialista en ilustración de moda, de Fortaleza, Brasil 🇧🇷. <strong>Su trazo ya le dio forma a conceptos para íconos de la cultura pop nacionales e internacionales, además de marcas de vanguardia</strong> — el repertorio de quien entiende el ritmo y la exigencia del mercado de lujo y del entretenimiento.',
         sobre_p2: "No es una ilustración genérica de referencia. Es la traducción de una idea — un vestuario, un momento de escenario, una campaña — en una imagen lista para guiar la producción.",
         stat_followers_label: "seguidores en redes sociales",
         audience_eyebrow: "Atiendo a",
