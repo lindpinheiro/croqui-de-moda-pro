@@ -469,6 +469,31 @@
     .section-cta{flex-direction:column;align-items:stretch;text-align:center;}
     .section-cta .btn{width:100%;text-align:center;}
   }
+
+  /* FAQ — acordeão nativo (<details>), sem JS. */
+  .faq-card{
+    margin-top:40px;background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:6px 28px;
+  }
+  .faq-card h3{margin:30px 0 4px;font-size:1.2rem;font-weight:700;}
+  .faq-item{border-bottom:1px solid var(--line);padding:22px 0;}
+  .faq-item:last-child{border-bottom:none;}
+  .faq-item summary{
+    cursor:pointer;list-style:none;display:flex;align-items:center;
+    justify-content:space-between;gap:16px;font-family:var(--font-display);
+    font-weight:600;font-size:1rem;color:var(--ink);
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{
+    content:"+";flex-shrink:0;font-family:var(--font-mono);font-size:1.3rem;
+    color:var(--lime);line-height:1;
+  }
+  .faq-item[open] summary::after{content:"–";}
+  .faq-item summary:hover{color:var(--pink);}
+  .faq-item p{margin:14px 0 0;color:var(--ink-soft);font-size:.95rem;line-height:1.6;}
+  @media (max-width:640px){
+    .faq-card{padding:4px 22px;}
+  }
   @media (max-width:820px){
     .hero .wrap{grid-template-columns:1fr;}
     .trust-grid{grid-template-columns:1fr;}
@@ -834,6 +859,38 @@
             <button type="submit" class="btn" data-i18n="quote_submit">Enviar pelo WhatsApp</button>
           </div>
         </form>
+      </div>
+
+      <div class="faq-card reveal">
+        <h3 data-i18n="faq_h3">Perguntas frequentes</h3>
+        <details class="faq-item">
+          <summary data-i18n="faq_q1">Quanto custa uma ilustração?</summary>
+          <p data-i18n="faq_a1">Cada projeto tem um valor diferente, dependendo do número de peças, da complexidade e do prazo. Preencha o formulário acima com os detalhes do seu projeto e eu te retorno com um orçamento sob medida.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq_q2">Qual o prazo de entrega?</summary>
+          <p data-i18n="faq_a2">Depende da demanda do momento e da opção que você escolher no formulário — desde urgentíssimo (24-48h) até sem pressa, priorizando mais tempo pra revisão e acabamento.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq_q3">Só atende marcas grandes ou também autônomos e estilistas independentes?</summary>
+          <p data-i18n="faq_a3">Atendo de autônomos e estilistas independentes a marcas e produções de grande porte — o processo é o mesmo, só ajusto o escopo pro seu projeto.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq_q4">Em que formato eu recebo a ilustração?</summary>
+          <p data-i18n="faq_a4">Você recebe os arquivos em alta resolução, prontos pra apresentação, portfólio ou produção, no formato combinado com você conforme o uso.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq_q5">Posso pedir ajustes depois de ver o croqui?</summary>
+          <p data-i18n="faq_a5">Sim, o processo inclui uma rodada de ajustes pra alinhar detalhes do look antes da entrega final.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq_q6">Atende clientes fora do Brasil?</summary>
+          <p data-i18n="faq_a6">Atendo, sim — todo o processo roda por WhatsApp e e-mail, então funciona remoto pra qualquer lugar.</p>
+        </details>
+        <details class="faq-item">
+          <summary data-i18n="faq_q7">Como funciona o pagamento?</summary>
+          <p data-i18n="faq_a7">Combinamos a forma de pagamento direto pelo WhatsApp depois de fechar o orçamento, de acordo com o tamanho do projeto.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -1561,6 +1618,21 @@
         quote_tipo_opt7: "Campanha",
         quote_tipo_opt8: "Outro",
         quote_submit: "Enviar pelo WhatsApp",
+        faq_h3: "Perguntas frequentes",
+        faq_q1: "Quanto custa uma ilustração?",
+        faq_a1: "Cada projeto tem um valor diferente, dependendo do número de peças, da complexidade e do prazo. Preencha o formulário acima com os detalhes do seu projeto e eu te retorno com um orçamento sob medida.",
+        faq_q2: "Qual o prazo de entrega?",
+        faq_a2: "Depende da demanda do momento e da opção que você escolher no formulário — desde urgentíssimo (24-48h) até sem pressa, priorizando mais tempo pra revisão e acabamento.",
+        faq_q3: "Só atende marcas grandes ou também autônomos e estilistas independentes?",
+        faq_a3: "Atendo de autônomos e estilistas independentes a marcas e produções de grande porte — o processo é o mesmo, só ajusto o escopo pro seu projeto.",
+        faq_q4: "Em que formato eu recebo a ilustração?",
+        faq_a4: "Você recebe os arquivos em alta resolução, prontos pra apresentação, portfólio ou produção, no formato combinado com você conforme o uso.",
+        faq_q5: "Posso pedir ajustes depois de ver o croqui?",
+        faq_a5: "Sim, o processo inclui uma rodada de ajustes pra alinhar detalhes do look antes da entrega final.",
+        faq_q6: "Atende clientes fora do Brasil?",
+        faq_a6: "Atendo, sim — todo o processo roda por WhatsApp e e-mail, então funciona remoto pra qualquer lugar.",
+        faq_q7: "Como funciona o pagamento?",
+        faq_a7: "Combinamos a forma de pagamento direto pelo WhatsApp depois de fechar o orçamento, de acordo com o tamanho do projeto.",
         footer_privacy: "Privacidade",
         footer_copy: "Joel Pinheiro: Ilustração de Moda. Todos os direitos reservados."
       },
@@ -1656,6 +1728,21 @@
         quote_tipo_opt7: "Campaign",
         quote_tipo_opt8: "Other",
         quote_submit: "Send via WhatsApp",
+        faq_h3: "Frequently asked questions",
+        faq_q1: "How much does an illustration cost?",
+        faq_a1: "Each project has a different price, depending on the number of pieces, complexity and deadline. Fill out the form above with your project's details and I'll get back to you with a custom quote.",
+        faq_q2: "What's the turnaround time?",
+        faq_a2: "It depends on current demand and the option you choose in the form — from super rush (24-48h) to no rush, prioritizing more time for revisions and finish.",
+        faq_q3: "Do you only work with big brands, or also independent designers?",
+        faq_a3: "I work with everyone from independent designers and freelancers to brands and large-scale productions — the process is the same, I just adjust the scope to your project.",
+        faq_q4: "What format do I receive the illustration in?",
+        faq_a4: "You get high-resolution files, ready for presentations, portfolios or production, in the format we agree on based on your use case.",
+        faq_q5: "Can I ask for changes after seeing the sketch?",
+        faq_a5: "Yes, the process includes one round of revisions to align details of the look before final delivery.",
+        faq_q6: "Do you work with clients outside Brazil?",
+        faq_a6: "Yes — the whole process runs over WhatsApp and email, so it works remotely from anywhere.",
+        faq_q7: "How does payment work?",
+        faq_a7: "We agree on the payment method directly over WhatsApp after the quote is set, based on the size of the project.",
         footer_privacy: "Privacy",
         footer_copy: "Joel Pinheiro: Fashion Illustration. All rights reserved."
       },
@@ -1750,6 +1837,21 @@
         quote_tipo_opt7: "Campaña",
         quote_tipo_opt8: "Otro",
         quote_submit: "Enviar por WhatsApp",
+        faq_h3: "Preguntas frecuentes",
+        faq_q1: "¿Cuánto cuesta una ilustración?",
+        faq_a1: "Cada proyecto tiene un valor diferente, según la cantidad de piezas, la complejidad y el plazo. Completa el formulario de arriba con los detalles de tu proyecto y te respondo con un presupuesto a medida.",
+        faq_q2: "¿Cuál es el plazo de entrega?",
+        faq_a2: "Depende de la demanda del momento y de la opción que elijas en el formulario — desde urgentísimo (24-48h) hasta sin apuro, priorizando más tiempo para revisión y acabado.",
+        faq_q3: "¿Solo atiendes marcas grandes o también a diseñadores independientes?",
+        faq_a3: "Atiendo desde autónomos y diseñadores independientes hasta marcas y producciones de gran escala — el proceso es el mismo, solo ajusto el alcance a tu proyecto.",
+        faq_q4: "¿En qué formato recibo la ilustración?",
+        faq_a4: "Recibes los archivos en alta resolución, listos para presentación, portafolio o producción, en el formato que acordemos según el uso.",
+        faq_q5: "¿Puedo pedir ajustes después de ver el boceto?",
+        faq_a5: "Sí, el proceso incluye una ronda de ajustes para alinear detalles del look antes de la entrega final.",
+        faq_q6: "¿Atiendes clientes fuera de Brasil?",
+        faq_a6: "Sí — todo el proceso se hace por WhatsApp y correo electrónico, así que funciona en remoto desde cualquier lugar.",
+        faq_q7: "¿Cómo funciona el pago?",
+        faq_a7: "Acordamos la forma de pago directamente por WhatsApp después de cerrar el presupuesto, según el tamaño del proyecto.",
         footer_privacy: "Privacidad",
         footer_copy: "Joel Pinheiro: Ilustración de Moda. Todos los derechos reservados."
       }
