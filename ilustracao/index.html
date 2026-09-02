@@ -307,8 +307,11 @@
   .logoloop__track{display:flex;width:max-content;will-change:transform;}
   .logoloop__item{flex:0 0 auto;margin-right:14px;}
 
-  .trust-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .colab-loop-wrap{margin-top:36px;}
+  .colab-loop-wrap .logoloop{-webkit-mask-image:linear-gradient(to right,transparent,#000 60px,#000 calc(100% - 60px),transparent);mask-image:linear-gradient(to right,transparent,#000 60px,#000 calc(100% - 60px),transparent);}
+  .colab-loop-wrap .logoloop__item{margin-right:20px;}
   .trust-card{
+    width:340px;flex-shrink:0;
     background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
     padding:24px;display:flex;gap:16px;align-items:flex-start;
     transition:transform .18s ease, border-color .18s ease;
@@ -686,29 +689,59 @@
       <div class="eyebrow" data-i18n="colab_eyebrow">Colaborações de elite</div>
       <h2 data-i18n="colab_h2">Trabalhos famosos que já saíram do papel</h2>
       <p class="section-lead" data-i18n="colab_lead">E foram parar em capa, palco e campanha.</p>
-      <div class="trust-grid">
-        <div class="trust-card reveal">
-          <img class="trust-avatar" src="../assets/trust/ludmilla.webp" alt="Ludmilla" loading="lazy" decoding="async">
-          <div class="trust-body">
-            <a class="trust-name" href="https://www.instagram.com/ludmilla/" target="_blank" rel="noopener">Ludmilla</a>
-            <span class="trust-handle">@ludmilla · Grammy Winner</span>
-            <p class="trust-quote" data-i18n="colab_ludmilla_quote">Croquis para os visuais do álbum "Fragmentos" e outros projetos.</p>
-          </div>
-        </div>
-        <div class="trust-card reveal">
-          <img class="trust-avatar" src="../assets/trust/katseye.webp" alt="KATSEYE" loading="lazy" decoding="async">
-          <div class="trust-body">
-            <a class="trust-name" href="https://www.instagram.com/katseyeworld/" target="_blank" rel="noopener">KATSEYE</a>
-            <span class="trust-handle">@katseyeworld</span>
-            <p class="trust-quote" data-i18n="colab_katseye_quote">Croquis para a apresentação do grupo no Festival Estéreo Picnic, na Colômbia.</p>
-          </div>
-        </div>
-        <div class="trust-card reveal">
-          <img class="trust-avatar" src="../assets/trust/ssjheni.webp" alt="ssjheni" loading="lazy" decoding="async">
-          <div class="trust-body">
-            <a class="trust-name" href="https://www.instagram.com/ssjheni/" target="_blank" rel="noopener">ssjheni</a>
-            <span class="trust-handle">@ssjheni</span>
-            <p class="trust-quote" data-i18n="colab_ssjheni_quote">Croquis looks de festivais para artistas com direção criativa da estilista.</p>
+      <div class="colab-loop-wrap reveal">
+        <div class="logoloop" id="colab-loop" role="region" aria-label="Colaborações">
+          <div class="logoloop__track" id="colab-loop-track">
+            <div class="logoloop__item">
+              <div class="trust-card">
+                <img class="trust-avatar" src="../assets/trust/ludmilla.webp" alt="Ludmilla" loading="lazy" decoding="async">
+                <div class="trust-body">
+                  <a class="trust-name" href="https://www.instagram.com/ludmilla/" target="_blank" rel="noopener">Ludmilla</a>
+                  <span class="trust-handle">@ludmilla · Grammy Winner</span>
+                  <p class="trust-quote" data-i18n="colab_ludmilla_quote">Croquis para os visuais do álbum "Fragmentos" e outros projetos.</p>
+                </div>
+              </div>
+            </div>
+            <div class="logoloop__item">
+              <div class="trust-card">
+                <img class="trust-avatar" src="../assets/trust/katseye.webp" alt="KATSEYE" loading="lazy" decoding="async">
+                <div class="trust-body">
+                  <a class="trust-name" href="https://www.instagram.com/katseyeworld/" target="_blank" rel="noopener">KATSEYE</a>
+                  <span class="trust-handle">@katseyeworld</span>
+                  <p class="trust-quote" data-i18n="colab_katseye_quote">Croquis para a apresentação do grupo no Festival Estéreo Picnic, na Colômbia.</p>
+                </div>
+              </div>
+            </div>
+            <div class="logoloop__item">
+              <div class="trust-card">
+                <img class="trust-avatar" src="../assets/trust/ssjheni.webp" alt="ssjheni" loading="lazy" decoding="async">
+                <div class="trust-body">
+                  <a class="trust-name" href="https://www.instagram.com/ssjheni/" target="_blank" rel="noopener">ssjheni</a>
+                  <span class="trust-handle">@ssjheni</span>
+                  <p class="trust-quote" data-i18n="colab_ssjheni_quote">Croquis looks de festivais para artistas com direção criativa da estilista.</p>
+                </div>
+              </div>
+            </div>
+            <div class="logoloop__item">
+              <div class="trust-card">
+                <img class="trust-avatar" src="../assets/trust/quermar.webp" alt="Quermar Wear" loading="lazy" decoding="async">
+                <div class="trust-body">
+                  <a class="trust-name" href="https://www.instagram.com/quermarwear/" target="_blank" rel="noopener">Quermar Wear</a>
+                  <span class="trust-handle">@quermarwear</span>
+                  <p class="trust-quote" data-i18n="colab_quermar_quote">Croquis de looks de coleção beachwear para a marca.</p>
+                </div>
+              </div>
+            </div>
+            <div class="logoloop__item">
+              <div class="trust-card">
+                <img class="trust-avatar" src="../assets/trust/juanduarte.webp" alt="Juan Duarte" loading="lazy" decoding="async">
+                <div class="trust-body">
+                  <a class="trust-name" href="https://www.instagram.com/juanduarte/" target="_blank" rel="noopener">Juan Duarte</a>
+                  <span class="trust-handle">@juanduarte · Estilista</span>
+                  <p class="trust-quote" data-i18n="colab_juanduarte_quote">Diversos looks para artistas nacionais, para eventos e passarela.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1116,58 +1149,62 @@
   // No external dependency (just requestAnimationFrame), so this is a
   // close 1:1 translation: measure one sequence's width, clone enough
   // copies to fill the container plus a little headroom, and loop the
-  // whole track with translate3d — no seam, no dependency. Text tags in
-  // place of logo images (there are no partner logos here, just client
-  // categories), each still wired to data-i18n so the language switch
-  // keeps working across every cloned copy.
+  // whole track with translate3d — no seam, no dependency. initLogoLoop
+  // is called once per instance on the page (client categories under
+  // Sobre, collaboration cards under Colaborações) — same engine, just
+  // different content and speed.
   (function () {
-    var root = document.getElementById("audience-loop");
-    var track = document.getElementById("audience-loop-track");
-    if (!root || !track) return;
-    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function initLogoLoop(rootId, trackId, speed) {
+      var root = document.getElementById(rootId);
+      var track = document.getElementById(trackId);
+      if (!root || !track) return;
+      var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    var SPEED = 40;
-    var MIN_COPIES = 2;
-    var COPY_HEADROOM = 2;
+      var MIN_COPIES = 2;
+      var COPY_HEADROOM = 2;
 
-    var baseItems = Array.prototype.slice.call(track.children);
-    var seqWidth = 0;
-    var offset = 0;
-    var lastTs = null;
+      var baseItems = Array.prototype.slice.call(track.children);
+      var seqWidth = 0;
+      var offset = 0;
+      var lastTs = null;
 
-    function layout() {
-      track.style.transform = "translate3d(0, 0, 0)";
-      track.innerHTML = "";
-      baseItems.forEach(function (item) { track.appendChild(item.cloneNode(true)); });
-      seqWidth = track.getBoundingClientRect().width;
-      if (seqWidth <= 0) return;
-      var containerWidth = root.clientWidth;
-      var copies = Math.max(MIN_COPIES, Math.ceil(containerWidth / seqWidth) + COPY_HEADROOM);
-      for (var c = 1; c < copies; c++) {
+      function layout() {
+        track.style.transform = "translate3d(0, 0, 0)";
+        track.innerHTML = "";
         baseItems.forEach(function (item) { track.appendChild(item.cloneNode(true)); });
+        seqWidth = track.getBoundingClientRect().width;
+        if (seqWidth <= 0) return;
+        var containerWidth = root.clientWidth;
+        var copies = Math.max(MIN_COPIES, Math.ceil(containerWidth / seqWidth) + COPY_HEADROOM);
+        for (var c = 1; c < copies; c++) {
+          baseItems.forEach(function (item) { track.appendChild(item.cloneNode(true)); });
+        }
+      }
+
+      layout();
+      if ("ResizeObserver" in window) {
+        var ro = new ResizeObserver(function () { layout(); });
+        ro.observe(root);
+      } else {
+        window.addEventListener("resize", layout);
+      }
+
+      if (!reduced) {
+        requestAnimationFrame(function loop(ts) {
+          if (lastTs === null) lastTs = ts;
+          var dt = Math.min(0.05, Math.max(0, ts - lastTs) / 1000);
+          lastTs = ts;
+          if (seqWidth > 0) {
+            offset = (offset + speed * dt) % seqWidth;
+            track.style.transform = "translate3d(" + (-offset) + "px, 0, 0)";
+          }
+          requestAnimationFrame(loop);
+        });
       }
     }
 
-    layout();
-    if ("ResizeObserver" in window) {
-      var ro = new ResizeObserver(function () { layout(); });
-      ro.observe(root);
-    } else {
-      window.addEventListener("resize", layout);
-    }
-
-    if (!reduced) {
-      requestAnimationFrame(function loop(ts) {
-        if (lastTs === null) lastTs = ts;
-        var dt = Math.min(0.05, Math.max(0, ts - lastTs) / 1000);
-        lastTs = ts;
-        if (seqWidth > 0) {
-          offset = (offset + SPEED * dt) % seqWidth;
-          track.style.transform = "translate3d(" + (-offset) + "px, 0, 0)";
-        }
-        requestAnimationFrame(loop);
-      });
-    }
+    initLogoLoop("audience-loop", "audience-loop-track", 40);
+    initLogoLoop("colab-loop", "colab-loop-track", 32);
   })();
 </script>
 
@@ -1468,6 +1505,8 @@
         colab_ludmilla_quote: 'Croquis para os visuais do álbum "Fragmentos" e outros projetos.',
         colab_katseye_quote: 'Croquis para a apresentação do grupo no Festival Estéreo Picnic, na Colômbia.',
         colab_ssjheni_quote: "Croquis looks de festivais para artistas com direção criativa da estilista.",
+        colab_quermar_quote: "Croquis de looks de coleção beachwear para a marca.",
+        colab_juanduarte_quote: "Diversos looks para artistas nacionais, para eventos e passarela.",
         port_eyebrow: "O traço do Joel",
         port_h2: "Portfólio",
         port_lead: "Uma amostra do nível de acabamento que você pode esperar: peças e bastidores do trabalho pessoal do Joel.",
@@ -1561,6 +1600,8 @@
         colab_ludmilla_quote: 'Sketches for the "Fragmentos" album visuals and other projects.',
         colab_katseye_quote: "Fashion sketches for the group's performance at the Estéreo Picnic Festival, in Colombia.",
         colab_ssjheni_quote: "Festival-look sketches for artists, under the stylist's creative direction.",
+        colab_quermar_quote: "Fashion sketches for the brand's beachwear collection looks.",
+        colab_juanduarte_quote: "Various looks for national artists, for events and runway shows.",
         port_eyebrow: "Joel's line work",
         port_h2: "Portfolio",
         port_lead: "A sample of the finish level you can expect: pieces and behind-the-scenes from Joel's personal work.",
@@ -1654,6 +1695,8 @@
         colab_ludmilla_quote: 'Croquis para los visuales del álbum "Fragmentos" y otros proyectos.',
         colab_katseye_quote: 'Croquis para la presentación del grupo en el Festival Estéreo Picnic, en Colombia.',
         colab_ssjheni_quote: "Croquis de looks de festivales para artistas, bajo la dirección creativa de la estilista.",
+        colab_quermar_quote: "Croquis de looks de la colección beachwear para la marca.",
+        colab_juanduarte_quote: "Varios looks para artistas nacionales, para eventos y pasarela.",
         port_eyebrow: "El trazo de Joel",
         port_h2: "Portafolio",
         port_lead: "Una muestra del nivel de acabado que puedes esperar: piezas y detrás de cámaras del trabajo personal de Joel.",
