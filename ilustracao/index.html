@@ -3,6 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '4493762200768979');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
 <title>Joel Pinheiro | Ilustração de Moda Sob Encomenda</title>
 <meta name="description" content="Ilustração de moda sob encomenda para marcas, estilistas e artistas: croqui personalizado com o traço que já assinou looks para Ludmilla e KATSEYE. Projetos pontuais e parcerias contínuas.">
 <meta name="robots" content="index, follow">
@@ -1351,7 +1370,35 @@
         "Prazo desejado: " + data.get("prazo")
       ];
       var text = encodeURIComponent(lines.join("\n"));
+      trackLead("quote_form", { content_name: "Formulário de orçamento", empresa: data.get("empresa"), prazo: data.get("prazo") });
       window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + text, "_blank", "noopener");
+    });
+  })();
+</script>
+
+<script>
+  // Meta Pixel — eventos de Lead. Um clique real em qualquer link de
+  // WhatsApp (header, hero, CTAs de seção, contato) conta como "whatsapp
+  // click"; o envio do formulário de orçamento (acima) conta como
+  // "quote_form", com um pouco mais de contexto (sem PII — nome/telefone/
+  // email não vão pro Pixel). Cada evento leva um eventID próprio pra
+  // permitir deduplicação quando o CAPI (server-side) for ligado depois.
+  (function () {
+    function makeEventId() {
+      return "evt_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+    }
+
+    window.trackLead = function (source, customData) {
+      var eventId = makeEventId();
+      var data = Object.assign({ content_category: source }, customData || {});
+      if (window.fbq) fbq("track", "Lead", data, { eventID: eventId });
+      // CAPI (server-side, via Cloudflare Worker) entra aqui depois,
+      // reusando o mesmo eventId pra deduplicar com este evento do Pixel.
+    };
+
+    document.addEventListener("click", function (e) {
+      var link = e.target.closest('a[href*="wa.me"]');
+      if (link) trackLead("whatsapp_click", { content_name: "Clique no WhatsApp" });
     });
   })();
 </script>
