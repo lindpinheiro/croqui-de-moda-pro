@@ -1267,17 +1267,18 @@
   })();
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script>
   // ScrollStack — vanilla port of the React Bits component (reactbits.dev).
   // useWindowScroll:true, matching the original demo — the cards stack as
   // the PAGE scrolls (not a bounded inner box). An earlier version used a
   // contained scroller to avoid touching the whole site's scroll feel, but
   // that hid the effect entirely: scrolling the page normally never
-  // "entered" the box, so the component looked absent. Lenis (CDN) now
-  // smooths the whole window's scroll; falls back to native scroll (no
-  // animation smoothing, but the pin/scale still works via the scroll
-  // listener) if the CDN fails to load.
+  // "entered" the box, so the component looked absent. A later version
+  // added Lenis to smooth the whole window's scroll (matching the original
+  // demo's dependency), but that made scrolling feel hijacked/sticky for
+  // some users — removed. This now drives purely off native scroll, so
+  // scrolling always feels normal; the pin/scale effect still runs via a
+  // rAF-throttled scroll listener.
   (function () {
     var scroller = document.getElementById("process-stack");
     if (!scroller) return;
@@ -1363,28 +1364,17 @@
       card.style.position = "relative";
     });
 
-    var hasLenis = typeof window.Lenis !== "undefined";
-    if (hasLenis) {
-      var lenis = new window.Lenis({
-        duration: 1.1,
-        easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-        smoothWheel: true,
-        touchMultiplier: 2,
-        infinite: false,
-        wheelMultiplier: 1,
-        lerp: 0.1,
-        syncTouch: true,
-        syncTouchLerp: 0.075
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        update();
+        ticking = false;
       });
-      lenis.on("scroll", update);
-      (function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-      })();
-    } else {
-      window.addEventListener("scroll", update, { passive: true });
-      window.addEventListener("resize", update);
     }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update);
 
     update();
   })();
