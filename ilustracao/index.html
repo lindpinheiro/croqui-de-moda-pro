@@ -122,7 +122,7 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
   .wrap{max-width:var(--max);margin:0 auto;padding:0 24px;}
 
   header.site{
-    position:sticky;top:0;z-index:20;
+    position:sticky;top:0;z-index:40;
     background:rgba(10,7,16,.78);
     backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line);
@@ -2133,6 +2133,26 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
         if (!isOpen) {
           sw.classList.add("open");
           trigger.setAttribute("aria-expanded", "true");
+          // No menu mobile o dropdown empurra o conteúdo pra baixo (não é
+          // um overlay flutuante) — rola pra garantir que as opções abertas
+          // fiquem visíveis, em vez do usuário ter que descobrir sozinho
+          // que dá pra rolar. scrollIntoView não funciona de forma
+          // confiável aqui (o body fica com overflow:hidden enquanto o
+          // menu está aberto, o que atrapalha a detecção automática do
+          // "ancestral rolável"), então calcula e rola manualmente.
+          var navEl = sw.closest(".mobile-nav");
+          if (navEl) {
+            setTimeout(function () {
+              var menu = sw.querySelector(".lang-menu");
+              if (!menu) return;
+              var menuRect = menu.getBoundingClientRect();
+              var navRect = navEl.getBoundingClientRect();
+              var overflow = menuRect.bottom - navRect.bottom;
+              if (overflow > 0) {
+                navEl.scrollTop = navEl.scrollTop + overflow + 16;
+              }
+            }, 50);
+          }
         }
       });
       sw.querySelectorAll(".lang-menu button").forEach(function (btn) {
