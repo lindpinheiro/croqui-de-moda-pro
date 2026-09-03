@@ -244,7 +244,8 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
      ativa no centro, duas vizinhas solidas e duas mais distantes e
      transparentes. No desktop as duas distantes ficam escondidas (so 3
      visiveis, girando nas pontas); no mobile as 5 aparecem. */
-  .showcase-carousel{position:relative;width:464px;height:580px;max-width:100%;margin:8px auto 0;}
+  .showcase-carousel{position:relative;width:464px;height:580px;max-width:100%;margin:8px auto 0;touch-action:pan-y;cursor:grab;}
+  .showcase-carousel.is-dragging{cursor:grabbing;}
   @media (min-width:821px){ .hero .wrap{align-items:start;gap:120px;} }
   .showcase-carousel img{
     /* height:100% e nao top/bottom:0 — imagens sao elementos substituidos e
@@ -254,6 +255,7 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
     opacity:0;transition:opacity .6s ease, transform .6s ease;
     transform:translateX(-50%) scale(.5);
     z-index:1;pointer-events:none;cursor:pointer;
+    -webkit-user-drag:none;user-select:none;
   }
   .showcase-carousel img.active{opacity:1;transform:translateX(-50%) scale(1);z-index:5;pointer-events:auto;}
   .showcase-carousel img.near-prev{opacity:1;transform:translateX(calc(-50% - 130px)) scale(.78);z-index:4;pointer-events:auto;}
@@ -323,7 +325,9 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
      cópias suficientes pra preencher o container + 2 de folga, criando
      um loop contínuo sem emenda visível. Usa tags de texto em vez de
      logos de imagem (não há logos aqui, só categorias de cliente). */
-  .logoloop{position:relative;min-width:0;margin-top:10px;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);}
+  .logoloop{position:relative;min-width:0;margin-top:10px;overflow:hidden;touch-action:pan-y;cursor:grab;-webkit-mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);}
+  .logoloop.is-dragging{cursor:grabbing;}
+  .logoloop__item{-webkit-user-drag:none;user-select:none;}
   .logoloop__track{display:flex;width:max-content;will-change:transform;}
   .logoloop__item{flex:0 0 auto;margin-right:14px;}
 
@@ -995,6 +999,35 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
       }, 4000);
     }
 
+    // Arrastar/swipe (mouse e touch, via Pointer Events) — solta e passa
+    // pro próximo/anterior conforme a direção, sem seguir o dedo em tempo
+    // real (mais simples e já é o padrão esperado num carrossel assim).
+    var dragStartX = null;
+    var dragging = false;
+    var SWIPE_THRESHOLD = 40;
+
+    carousel.addEventListener("pointerdown", function (e) {
+      dragStartX = e.clientX;
+      dragging = true;
+      carousel.classList.add("is-dragging");
+    });
+    carousel.addEventListener("pointerup", function (e) {
+      if (!dragging) return;
+      dragging = false;
+      carousel.classList.remove("is-dragging");
+      var dx = e.clientX - dragStartX;
+      dragStartX = null;
+      if (Math.abs(dx) < SWIPE_THRESHOLD) return;
+      active = dx < 0 ? (active + 1) % n : (active - 1 + n) % n;
+      render();
+      resetTimer();
+    });
+    carousel.addEventListener("pointercancel", function () {
+      dragging = false;
+      dragStartX = null;
+      carousel.classList.remove("is-dragging");
+    });
+
     render();
     resetTimer();
   })();
@@ -1253,6 +1286,44 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
       root.addEventListener("mouseleave", function () { paused = false; });
       root.addEventListener("focusin", function () { paused = true; });
       root.addEventListener("focusout", function () { paused = false; });
+
+      // Arrastar com o dedo (ou mouse) pra controlar manualmente — Pointer
+      // Events cobre touch e mouse com o mesmo código. Segue o dedo em
+      // tempo real (diferente do carrossel do hero); ao soltar, retoma o
+      // scroll automático depois de um respiro.
+      var dragging = false;
+      var dragStartX = 0;
+      var dragStartOffset = 0;
+      var resumeTimer = null;
+
+      root.addEventListener("pointerdown", function (e) {
+        if (seqWidth <= 0) return;
+        dragging = true;
+        paused = true;
+        dragStartX = e.clientX;
+        dragStartOffset = offset;
+        root.classList.add("is-dragging");
+        clearTimeout(resumeTimer);
+        if (root.setPointerCapture) {
+          try { root.setPointerCapture(e.pointerId); } catch (err) {}
+        }
+      });
+      root.addEventListener("pointermove", function (e) {
+        if (!dragging || seqWidth <= 0) return;
+        var dx = e.clientX - dragStartX;
+        var next = ((dragStartOffset - dx) % seqWidth + seqWidth) % seqWidth;
+        offset = next;
+        track.style.transform = "translate3d(" + (-offset) + "px, 0, 0)";
+      });
+      function endDrag() {
+        if (!dragging) return;
+        dragging = false;
+        root.classList.remove("is-dragging");
+        clearTimeout(resumeTimer);
+        resumeTimer = setTimeout(function () { paused = false; }, 2500);
+      }
+      root.addEventListener("pointerup", endDrag);
+      root.addEventListener("pointercancel", endDrag);
 
       function layout() {
         track.style.transform = "translate3d(0, 0, 0)";
