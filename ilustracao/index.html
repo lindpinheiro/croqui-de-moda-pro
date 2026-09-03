@@ -1370,8 +1370,15 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
         "Prazo desejado: " + data.get("prazo")
       ];
       var text = encodeURIComponent(lines.join("\n"));
-      trackLead("quote_form", { content_name: "Formulário de orçamento", empresa: data.get("empresa"), prazo: data.get("prazo") });
+      // window.open primeiro, ainda síncrono dentro do gesto de clique —
+      // o hash (assíncrono) do trackLead não pode atrasar isso, senão
+      // alguns navegadores bloqueiam o pop-up.
       window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + text, "_blank", "noopener");
+      trackLead(
+        "quote_form",
+        { content_name: "Formulário de orçamento", empresa: data.get("empresa"), prazo: data.get("prazo") },
+        { email: data.get("email"), telefone: data.get("telefone") }
+      );
     });
   })();
 </script>
@@ -1395,27 +1402,73 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
       return match ? decodeURIComponent(match[1]) : undefined;
     }
 
-    window.trackLead = function (source, customData) {
+    // Normalização exigida pela Meta antes de hashear em/ph (email
+    // minúsculo/sem espaço; telefone só dígitos, com DDI 55 na frente).
+    function normalizeEmail(email) {
+      return (email || "").trim().toLowerCase();
+    }
+    function normalizePhone(phone) {
+      var digits = (phone || "").replace(/\D/g, "");
+      if (digits && digits.length <= 11 && digits.slice(0, 2) !== "55") digits = "55" + digits;
+      return digits;
+    }
+    async function sha256Hex(str) {
+      var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+      return Array.prototype.map
+        .call(new Uint8Array(buf), function (b) { return b.toString(16).padStart(2, "0"); })
+        .join("");
+    }
+
+    // rawUserData opcional: { email, telefone } em texto puro (só usado no
+    // formulário de orçamento, onde já coletamos esse dado do próprio
+    // cliente). Pro Pixel, a Meta hasheia sozinha via fbq('set','userData').
+    // Pro CAPI, hasheamos aqui no navegador (SHA-256) — a Meta nunca recebe
+    // o email/telefone em texto puro em nenhum dos dois caminhos.
+    window.trackLead = function (source, customData, rawUserData) {
       var eventId = makeEventId();
       var data = Object.assign({ content_category: source }, customData || {});
+
+      if (rawUserData && window.fbq) {
+        var fbqUserData = {};
+        if (rawUserData.email) fbqUserData.em = normalizeEmail(rawUserData.email);
+        if (rawUserData.telefone) fbqUserData.ph = normalizePhone(rawUserData.telefone);
+        fbq("set", "userData", fbqUserData);
+      }
       if (window.fbq) fbq("track", "Lead", data, { eventID: eventId });
 
       // CAPI (server-side, via Cloudflare Worker) — mesmo eventId do Pixel
       // acima, pra Meta deduplicar os dois lados do mesmo evento.
-      if (window.fetch) {
+      function sendCapi(hashedEm, hashedPh) {
+        if (!window.fetch) return;
+        var body = {
+          event_name: "Lead",
+          event_id: eventId,
+          event_source_url: window.location.href,
+          custom_data: data,
+          fbp: getCookie("_fbp"),
+          fbc: getCookie("_fbc")
+        };
+        if (hashedEm) body.em = hashedEm;
+        if (hashedPh) body.ph = hashedPh;
         fetch(CAPI_ENDPOINT, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            event_name: "Lead",
-            event_id: eventId,
-            event_source_url: window.location.href,
-            custom_data: data,
-            fbp: getCookie("_fbp"),
-            fbc: getCookie("_fbc")
-          }),
+          body: JSON.stringify(body),
           keepalive: true
         }).catch(function () {});
+      }
+
+      if (rawUserData && window.crypto && window.crypto.subtle) {
+        var emailNorm = rawUserData.email ? normalizeEmail(rawUserData.email) : null;
+        var phoneNorm = rawUserData.telefone ? normalizePhone(rawUserData.telefone) : null;
+        Promise.all([
+          emailNorm ? sha256Hex(emailNorm) : Promise.resolve(null),
+          phoneNorm ? sha256Hex(phoneNorm) : Promise.resolve(null)
+        ])
+          .then(function (results) { sendCapi(results[0], results[1]); })
+          .catch(function () { sendCapi(null, null); });
+      } else {
+        sendCapi(null, null);
       }
     };
 
