@@ -195,8 +195,10 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
   .mobile-nav{
     display:none;position:fixed;inset:0;z-index:30;background:rgba(10,7,16,.97);
     padding:100px 24px 40px;opacity:0;pointer-events:none;transition:opacity .25s ease;
+    overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
   }
   .mobile-nav.is-open{opacity:1;pointer-events:auto;}
+  body.nav-open{overflow:hidden;}
   .mobile-nav a{
     display:block;font-family:var(--font-display);font-size:1.6rem;color:var(--ink);
     text-decoration:none;padding:14px 0;border-bottom:1px solid var(--line);
@@ -208,7 +210,17 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
     .sm-toggle{display:inline-flex;}
     .mobile-nav{display:block;}
   }
-  .mobile-nav .btn{display:block;width:100%;text-align:center;margin-top:24px;}
+  .mobile-nav .btn{
+    display:block;width:100%;text-align:center;margin-top:24px;
+    font-size:.95rem;padding:14px 16px;white-space:nowrap;
+  }
+
+  /* Ícone hambúrguer -> X quando o menu está aberto (dá uma pista visual
+     clara de que aquele mesmo botão fecha o menu). */
+  .sm-icon span{transition:transform .22s ease, opacity .22s ease;}
+  .sm-toggle.is-open .sm-icon span:nth-child(1){transform:translateY(4.5px) rotate(45deg);}
+  .sm-toggle.is-open .sm-icon span:nth-child(2){opacity:0;}
+  .sm-toggle.is-open .sm-icon span:nth-child(3){transform:translateY(-4.5px) rotate(-45deg);}
 
   .hero{padding:64px 0 56px;}
   .hero .wrap{display:grid;grid-template-columns:1fr .85fr;gap:48px;align-items:center;}
@@ -943,11 +955,15 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
     if (!toggle || !nav) return;
     function close() {
       nav.classList.remove("is-open");
+      toggle.classList.remove("is-open");
       toggle.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("nav-open");
     }
     toggle.addEventListener("click", function () {
       var open = nav.classList.toggle("is-open");
+      toggle.classList.toggle("is-open", open);
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      document.body.classList.toggle("nav-open", open);
     });
     nav.querySelectorAll("a").forEach(function (a) {
       a.addEventListener("click", close);
