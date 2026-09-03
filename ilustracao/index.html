@@ -1384,16 +1384,39 @@ src="https://www.facebook.com/tr?id=4493762200768979&ev=PageView&noscript=1"
   // email não vão pro Pixel). Cada evento leva um eventID próprio pra
   // permitir deduplicação quando o CAPI (server-side) for ligado depois.
   (function () {
+    var CAPI_ENDPOINT = "https://joel-capi.lindberg-pinheiro.workers.dev/";
+
     function makeEventId() {
       return "evt_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+    }
+
+    function getCookie(name) {
+      var match = document.cookie.match(new RegExp("(?:^|; )" + name + "=([^;]*)"));
+      return match ? decodeURIComponent(match[1]) : undefined;
     }
 
     window.trackLead = function (source, customData) {
       var eventId = makeEventId();
       var data = Object.assign({ content_category: source }, customData || {});
       if (window.fbq) fbq("track", "Lead", data, { eventID: eventId });
-      // CAPI (server-side, via Cloudflare Worker) entra aqui depois,
-      // reusando o mesmo eventId pra deduplicar com este evento do Pixel.
+
+      // CAPI (server-side, via Cloudflare Worker) — mesmo eventId do Pixel
+      // acima, pra Meta deduplicar os dois lados do mesmo evento.
+      if (window.fetch) {
+        fetch(CAPI_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event_name: "Lead",
+            event_id: eventId,
+            event_source_url: window.location.href,
+            custom_data: data,
+            fbp: getCookie("_fbp"),
+            fbc: getCookie("_fbc")
+          }),
+          keepalive: true
+        }).catch(function () {});
+      }
     };
 
     document.addEventListener("click", function (e) {
